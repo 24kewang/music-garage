@@ -1,0 +1,182 @@
+.root {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  z-index: 40;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+.gear {
+  display: grid;
+  place-items: center;
+  width: 52px;
+  height: 52px;
+  margin-left: auto;
+  border: 1px solid #d5cfc2;
+  border-radius: 50%;
+  background: #f6f3ec;
+  color: #4a463e;
+  box-shadow: 0 2px 10px rgb(20 23 51 / 0.14);
+  cursor: pointer;
+  transition: background 120ms ease, transform 120ms ease;
+}
+
+.gear:hover {
+  background: #fffdf8;
+  transform: rotate(25deg);
+}
+
+.panel {
+  width: min(21rem, calc(100vw - 48px));
+  margin-bottom: 12px;
+  padding: 20px;
+  background: #f6f3ec;
+  border: 1px solid #d5cfc2;
+  border-radius: 14px;
+  box-shadow: 0 12px 32px rgb(20 23 51 / 0.2);
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  max-height: min(32rem, calc(100vh - 140px));
+  overflow-y: auto;
+}
+
+.title {
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: 11px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: #8d887e;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.label {
+  font-size: 12px;
+  font-weight: 600;
+  color: #16172f;
+}
+
+.hint {
+  font-size: 12px;
+  line-height: 1.45;
+  color: #6f6a60;
+}
+
+/* Mode selector: three segments in one pill. */
+
+.modes {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 4px;
+  padding: 4px;
+  background: #e6e1d6;
+  border-radius: 10px;
+}
+
+.mode {
+  padding: 8px 4px;
+  border: none;
+  border-radius: 7px;
+  background: transparent;
+  color: #6f6a60;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 120ms ease, color 120ms ease;
+}
+
+.mode:hover {
+  color: #16172f;
+}
+
+.modeActive,
+.modeActive:hover {
+  background: #b9373b;
+  color: #f6f3ec;
+}
+
+.row {
+  display: flex;
+  gap: 10px;
+}
+
+.input {
+  width: 100%;
+  padding: 9px 10px;
+  border: 1px solid #d5cfc2;
+  border-radius: 8px;
+  background: #fffdf8;
+  color: #16172f;
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: 13px;
+}
+
+.input:focus-visible {
+  outline: 2px solid #b9373b;
+  outline-offset: 1px;
+}
+
+.inputInvalid {
+  border-color: #b9373b;
+}
+
+.error {
+  font-size: 12px;
+  line-height: 1.4;
+  color: #b9373b;
+}
+
+.divider {
+  height: 1px;
+  background: #e0dacd;
+}
+
+.status {
+  font-size: 12px;
+  color: #6f6a60;
+}
+
+.micButton {
+  padding: 9px 14px;
+  border: 1px solid #d5cfc2;
+  border-radius: 8px;
+  background: #fffdf8;
+  color: #16172f;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.micButton:hover {
+  background: #ffffff;
+}
+
+/* The shared PitchReadout is built from app tokens; these override it to sit on the
+   game's own palette without changing the shared component. */
+.readout {
+  --color-surface: #fffdf8;
+  --color-surface-raised: #eee9de;
+  --color-border: #ddd6c8;
+  --color-border-strong: #c9c1b1;
+  --color-text: #16172f;
+  --color-text-muted: #6f6a60;
+  --color-text-faint: #9a9488;
+  --color-accent: #2f6f4f;
+  --color-accent-soft: #dfeade;
+  --color-warn: #a86a1f;
+  --text-xs: 11px;
+  --text-sm: 12px;
+  --text-lg: 15px;
+  --radius-md: 8px;
+  --radius-lg: 10px;
+  --space-1: 3px;
+  --space-2: 6px;
+  --space-3: 9px;
+  --space-4: 12px;
+  --space-5: 14px;
+}

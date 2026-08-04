@@ -1,0 +1,145 @@
+.readout {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  padding: var(--space-5);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+}
+
+.noteRow {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-4);
+  min-height: 4rem;
+}
+
+.note {
+  font-size: 3.5rem;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  font-variant-numeric: tabular-nums;
+  min-width: 5ch;
+}
+
+.noteIdle {
+  color: var(--color-text-faint);
+}
+
+.frequency {
+  font-family: var(--font-mono);
+  font-size: var(--text-lg);
+  color: var(--color-text-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.hint {
+  color: var(--color-text-faint);
+  font-size: var(--text-sm);
+}
+
+/* Cents meter: a centre line with a needle that slides ±50 cents. */
+
+.meter {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.meterLabels {
+  display: flex;
+  justify-content: space-between;
+  font-size: var(--text-xs);
+  color: var(--color-text-faint);
+  font-variant-numeric: tabular-nums;
+}
+
+.meterTrack {
+  position: relative;
+  height: 2.5rem;
+  background: var(--color-surface-raised);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+
+.meterCentre {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  transform: translateX(-50%);
+  background: var(--color-border-strong);
+}
+
+.meterTolerance {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  /* ±10 cents is roughly "in tune" to the ear. */
+  left: 40%;
+  width: 20%;
+  background: var(--color-accent-soft);
+}
+
+.needle {
+  position: absolute;
+  top: 4px;
+  bottom: 4px;
+  width: 4px;
+  margin-left: -2px;
+  border-radius: var(--radius-pill);
+  background: var(--color-accent);
+  transition: left var(--transition-fast);
+}
+
+.needleOff {
+  background: var(--color-warn);
+}
+
+.cents {
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Clarity bar */
+
+.clarity {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+}
+
+.clarityLabel {
+  flex-shrink: 0;
+}
+
+.clarityTrack {
+  flex: 1;
+  height: 0.5rem;
+  border-radius: var(--radius-pill);
+  background: var(--color-surface-raised);
+  border: 1px solid var(--color-border);
+  overflow: hidden;
+}
+
+.clarityFill {
+  height: 100%;
+  background: var(--color-accent);
+  transition: width var(--transition-fast);
+}
+
+.clarityValue {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  flex-shrink: 0;
+  min-width: 3ch;
+  text-align: right;
+}

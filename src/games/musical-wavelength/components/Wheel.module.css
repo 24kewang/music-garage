@@ -1,0 +1,27 @@
+/*
+ * The scored band pulses for a fixed number of cycles, then holds at full strength.
+ * Timing comes from config.reveal via the custom properties set on the element.
+ */
+
+.hit {
+  animation: pulse var(--glow-pulse-ms, 900ms) ease-in-out var(--glow-iterations, 3);
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.55;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  /* Keep the highlight, drop the flashing. */
+  .hit {
+    animation: none;
+  }
+}

@@ -1,0 +1,101 @@
+/*
+ * Design tokens for Music Garage.
+ *
+ * Every game and shared component styles itself from these custom properties, so
+ * games look like they belong together without importing each other's stylesheets.
+ * Add a token here rather than hard-coding a value inside a game.
+ */
+
+:root {
+  /* Surfaces, from furthest back to closest */
+  --color-bg: #f7f5f2;
+  --color-surface: #ffffff;
+  --color-surface-raised: #ffffff;
+  --color-border: #e3ded7;
+  --color-border-strong: #cdc5ba;
+
+  /* Text */
+  --color-text: #1c1a17;
+  --color-text-muted: #6b645b;
+  --color-text-faint: #948c81;
+
+  /* Accents */
+  --color-accent: #2f6f4f;
+  --color-accent-hover: #275c42;
+  --color-accent-contrast: #ffffff;
+  --color-accent-soft: #e4efe8;
+
+  --color-warn: #a86a1f;
+  --color-warn-soft: #fbf0dd;
+  --color-danger: #a83232;
+  --color-danger-soft: #fbe6e6;
+
+  /* Spacing scale */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2rem;
+  --space-7: 3rem;
+  --space-8: 4rem;
+
+  /* Radii */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --radius-pill: 999px;
+
+  /* Type scale */
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, -apple-system,
+    "Segoe UI", Roboto, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, "SFMono-Regular", "Cascadia Mono",
+    Menlo, monospace;
+
+  --text-xs: 0.75rem;
+  --text-sm: 0.875rem;
+  --text-base: 1rem;
+  --text-lg: 1.125rem;
+  --text-xl: 1.375rem;
+  --text-2xl: 1.75rem;
+  --text-3xl: 2.25rem;
+
+  /* Elevation */
+  --shadow-sm: 0 1px 2px rgb(28 26 23 / 0.06);
+  --shadow-md: 0 2px 8px rgb(28 26 23 / 0.08);
+  --shadow-lg: 0 8px 24px rgb(28 26 23 / 0.1);
+
+  /* Layout */
+  --page-max-width: 68rem;
+  --nav-height: 3.5rem;
+
+  --transition-fast: 120ms ease;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-bg: #14140f;
+    --color-surface: #1d1d19;
+    --color-surface-raised: #262622;
+    --color-border: #33332d;
+    --color-border-strong: #4a4a42;
+
+    --color-text: #f2efe9;
+    --color-text-muted: #a8a296;
+    --color-text-faint: #77726a;
+
+    --color-accent: #6fbf90;
+    --color-accent-hover: #8bd0a7;
+    --color-accent-contrast: #10251a;
+    --color-accent-soft: #1e3328;
+
+    --color-warn: #e0a95c;
+    --color-warn-soft: #33280f;
+    --color-danger: #e08585;
+    --color-danger-soft: #331a1a;
+
+    --shadow-sm: 0 1px 2px rgb(0 0 0 / 0.4);
+    --shadow-md: 0 2px 8px rgb(0 0 0 / 0.45);
+    --shadow-lg: 0 8px 24px rgb(0 0 0 / 0.5);
+  }
+}

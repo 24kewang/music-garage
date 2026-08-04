@@ -1,0 +1,2 @@
+Assets used only by Musical Wavelength (images, sound files, prompt/spectrum data).
+Import them from the game's components so they code-split with the game route.

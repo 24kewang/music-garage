@@ -1,0 +1,29 @@
+/* Typography lifted verbatim from the design's caption strip. */
+
+.strip {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 22px;
+  align-items: center;
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #8d887e;
+  text-align: center;
+}
+
+.item {
+  display: inline-flex;
+  align-items: center;
+  gap: 22px;
+}
+
+.dot {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: #b9373b;
+  flex-shrink: 0;
+}

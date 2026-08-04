@@ -1,0 +1,71 @@
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: var(--space-5);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast),
+    border-color var(--transition-fast);
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  border-color: var(--color-border-strong);
+  box-shadow: var(--shadow-md);
+}
+
+.top {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.icon {
+  font-size: var(--text-2xl);
+  line-height: 1;
+}
+
+.title {
+  font-size: var(--text-lg);
+  flex: 1;
+}
+
+.blurb {
+  color: var(--color-text-muted);
+  font-size: var(--text-sm);
+}
+
+.meta {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-top: var(--space-2);
+  font-size: var(--text-xs);
+  color: var(--color-text-faint);
+}
+
+.status {
+  padding: 0 var(--space-2);
+  border-radius: var(--radius-pill);
+  font-weight: 600;
+  line-height: 1.6;
+}
+
+.statusPlayable {
+  background: var(--color-accent-soft);
+  color: var(--color-accent);
+}
+
+.statusInProgress {
+  background: var(--color-warn-soft);
+  color: var(--color-warn);
+}
+
+.statusPlanned {
+  background: var(--color-surface-raised);
+  color: var(--color-text-muted);
+  border: 1px solid var(--color-border);
+}

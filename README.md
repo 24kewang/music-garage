@@ -1,0 +1,184 @@
+# Music Garage
+
+A collection of small music games, picked from a tab bar at the top of the page.
+Everything runs in the browser — no server, no accounts, no audio leaves the tab.
+
+Built with Next.js (App Router) + TypeScript, CSS Modules, and Vitest.
+
+## Getting started
+
+```bash
+npm install
+npm run dev        # http://localhost:3000
+```
+
+| Script | What it does |
+| --- | --- |
+| `npm run dev` | Dev server |
+| `npm run build` | Production build |
+| `npm start` | Serve the production build |
+| `npm test` | Run the test suite once |
+| `npm run test:watch` | Tests in watch mode |
+| `npm run lint` | ESLint |
+
+**Microphone access needs a secure origin.** `localhost` counts, so `npm run dev`
+works; if you open the dev server from another device on your network it needs HTTPS.
+
+## Architecture
+
+The organising rule: **games are self-contained, the shell knows nothing about them
+beyond their manifest.**
+
+```
+src/
+├── app/          Routing and shell only — no game logic lives here
+├── games/        One folder per game, plus the registry
+└── shared/       Cross-game dependencies (audio, UI chrome, design tokens)
+```
+
+- `src/games/registry.ts` is the single source of truth. The tab bar and the home
+  gallery are both rendered from it, so registering a game is what makes it appear.
+- `src/app/games/<slug>/page.tsx` is a thin adapter that re-exports the game's root
+  component. Keeping real route folders (rather than one `[slug]` catch-all) gives
+  each game automatic code-splitting and its own page metadata.
+- A game may import from `@/shared/*`. It must **not** import from another game.
+
+### Adding a game
+
+Three steps:
+
+1. **Create the game folder**, `src/games/<slug>/`:
+
+   ```
+   src/games/<slug>/
+   ├── manifest.ts       # slug, title, blurb, icon, status — see src/games/types.ts
+   ├── Game.tsx          # 'use client' root component
+   ├── components/       # game-only UI
+   ├── lib/              # game-only logic
+   ├── assets/           # game-only assets
+   └── game.module.css
+   ```
+
+2. **Add the route adapter**, `src/app/games/<slug>/page.tsx`:
+
+   ```tsx
+   import Game from "@/games/<slug>/Game";
+   import { manifest } from "@/games/<slug>/manifest";
+
+   export const metadata = { title: manifest.title, description: manifest.blurb };
+
+   export default function Page() {
+     return <Game />;
+   }
+   ```
+
+3. **Register it** in `src/games/registry.ts` by adding its manifest to `GAMES`.
+
+`src/games/registry.test.ts` fails the build if these three drift apart — a registered
+game with no route 404s, and a route with no registry entry never shows up in the tabs.
+
+### Styling
+
+Colours, spacing, radii and type come from CSS custom properties in
+`src/shared/styles/tokens.css`. Reference tokens (`var(--color-accent)`) instead of
+hard-coding values, and games inherit a consistent look, light and dark, without
+importing each other's stylesheets. Everything else is CSS Modules, colocated with the
+component it styles.
+
+## Shared audio module
+
+`@/shared/audio` is the pitch-detection stack every game shares. Import from the
+package root, never from the individual files or from `pitchy` directly, so the
+implementation stays swappable.
+
+```tsx
+"use client";
+import { useMicrophone, usePitchDetector } from "@/shared/audio";
+
+const mic = useMicrophone();
+const pitch = usePitchDetector(mic.analyser, mic.sampleRate);
+// mic.start() must be called from a click.
+// pitch => { frequency, note: { name, octave, midi, cents }, clarity, isDetecting }
+```
+
+| Export | Purpose |
+| --- | --- |
+| `useMicrophone()` | Owns the mic stream and Web Audio graph; returns an `AnalyserNode` |
+| `usePitchDetector(analyser, sampleRate)` | rAF detection loop with median smoothing |
+| `detectPitch()` / `createPitchDetector()` | The detector itself — pure, unit-tested |
+| `frequencyToNote()`, `midiToFrequency()`, … | Music-theory conversions in `notes.ts` |
+| `parseNoteName()` / `formatMidi()` | `"Bb4"` ↔ MIDI, for note-name input and labels |
+
+Three details in there are load-bearing and easy to undo by accident:
+
+- **`echoCancellation`, `noiseSuppression` and `autoGainControl` are all disabled.**
+  They are tuned for speech intelligibility and actively distort pitch.
+- **The `AudioContext` is created inside `start()`**, which must be called from a user
+  gesture. Safari and iOS refuse to start audio any other way.
+- **Smoothing takes a median, not a mean**, so a single bad frame can't drag the
+  reading — which is what keeps octave jumps off the screen.
+
+Detection is unit-tested against synthesized sine and harmonic buffers in
+`pitch.test.ts`, so accuracy regressions fail loudly rather than quietly sounding off.
+
+## Games
+
+### 🎯 Musical Wavelength
+
+Wavelength with a musical twist, for two players around one screen. A scoring target
+is hidden under the cover; bands score 2-3-4-3-2, and a 4 earns confetti.
+
+**Three rounds of play:**
+
+1. **Setup** — the clue-giver scrolls or drags the wheel to place the target and opens
+   the cover to see where it landed. They describe it out loud — an ordinary spoken
+   clue — then press **START**, which shuts the cover.
+2. **Guess** — the other player, who never saw the target, aims the needle by ear. The
+   wheel is locked.
+3. **Reveal** — slide the handle fully open. The hub shows the score and the band that
+   was hit pulses. Touch the wheel to start again.
+
+**How the guesser answers** is set from the gear in the bottom-right corner:
+
+| Mode | Needle follows | Settings |
+| --- | --- | --- |
+| **Manual** | The pointer, dragged near the needle | — |
+| **Pitch** | The note played or sung, low note at the left | Range, as note names (`C4`–`C5`) |
+| **Intonation** | How sharp or flat that note is against the nearest semitone | Span, 10–50 cents |
+
+So the answer can come off an instrument, out of a voice, or straight from the mouse.
+
+In the two audio modes the cover carries a tick scale while the guess is being made,
+and the hub becomes a lock that holds the needle at its current angle. Settings persist
+across reloads, and invalid input is rejected rather than committed, so there is always
+a usable configuration.
+
+Peeking is safe: the cover only ends the round if you release it past halfway. Let go
+before that and it springs shut with nothing changed.
+
+#### Customising the dial
+
+Every geometry, colour, motion, tick, glow and confetti parameter lives in one place —
+[`config.ts`](src/games/musical-wavelength/config.ts). Components read from it instead
+of embedding literals, so the look can be retuned without touching JSX.
+
+Two knobs are worth knowing about, both in
+[`geometry.ts`](src/games/musical-wavelength/lib/geometry.ts)'s hands:
+
+- **`targetHalfWidthDeg`** resizes the whole scoring zone in one number. Each band's
+  `edgeFraction` is its outer edge as a share of that total, so the proportions hold.
+  The SVG wedge paths and the scoring maths are both generated from these, so a resize
+  moves the drawn shape and the score together — they cannot disagree.
+- **`geometry.scaleMaxDeg`** (84°) is how far the tick scale reaches either side of
+  vertical, and so how far the needle travels in the audio modes. It stops short of
+  `needleMaxDeg` (88°) on purpose: out at 88° a tick label sits only ~8 units above the
+  window's straight edge and is rotated to run almost vertically, so its own length
+  carries it past the edge — and moving it radially inward makes that *worse*, not
+  better. `modes.test.ts` pins the clearance, and fails if this is widened past 85°.
+
+The cover and the housing window are both drawn from one `windowPath()`, so the lid's
+outline *is* the opening's and it cannot leave a gap — a gap would show a sliver of the
+wheel through the closed cover and leak the target.
+
+`geometry.test.ts` pins the generated coordinates to the original design's values, so a
+change that breaks fidelity fails the suite.
