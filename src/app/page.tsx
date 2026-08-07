@@ -6,7 +6,7 @@ export default function Home() {
   return (
     <>
       <section className={styles.hero}>
-        <p className={styles.eyebrow}>Trumpet Tuck's</p>
+        <p className={styles.eyebrow}>Trumpet Tuck&apos;s</p>
         <h1 className={styles.title}>Music Garage</h1>
         <p className={styles.subtitle}>
           A collection of small games for people who like making noise together. Pick

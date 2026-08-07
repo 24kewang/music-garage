@@ -9,7 +9,7 @@ import { gameHref } from "./types";
  * Guards the three-part contract for adding a game: a folder under `src/games/`, a
  * route adapter under `src/app/games/`, and an entry in the registry. Two of the
  * three can drift silently otherwise — a registered game with no route 404s, and a
- * route with no registry entry never appears in the tab bar.
+ * route with no registry entry never appears in the Games menu.
  */
 
 const SRC = join(process.cwd(), "src");

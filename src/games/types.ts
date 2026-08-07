@@ -4,7 +4,7 @@ import type { IconId } from "@/shared/icons";
  * The contract every game in the garage implements.
  *
  * A game's manifest is the only thing the app shell knows about it. The shell uses
- * it to build the tab bar and the home gallery; it never imports game internals.
+ * it to build the Games menu and the home gallery; it never imports game internals.
  */
 
 export type GameStatus =
@@ -21,7 +21,7 @@ export interface GameManifest {
    * and the route folder under `src/app/games/`. Enforced by `registry.test.ts`.
    */
   slug: string;
-  /** Display name, used in the tab bar and the gallery card. */
+  /** Display name, used in the Games menu and the gallery card. */
   title: string;
   /** One-line description shown on the gallery card. */
   blurb: string;

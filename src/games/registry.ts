@@ -2,7 +2,7 @@ import type { GameManifest } from "@/games/types";
 import { manifest as musicalWavelength } from "@/games/musical-wavelength/manifest";
 
 /**
- * Every game in the garage, in the order they appear in the tab bar and gallery.
+ * Every game in the garage, in the order they appear in the Games menu and gallery.
  *
  * To add a game, see the "Adding a game" section of the README — the short version
  * is: create `src/games/<slug>/`, add a route adapter at

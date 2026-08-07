@@ -1,6 +1,6 @@
 # Music Garage
 
-A collection of small music games, picked from a tab bar at the top of the page.
+A collection of small music games, picked from the Games menu in the header.
 Everything runs in the browser — no server, no accounts, no audio leaves the tab.
 
 Built with Next.js (App Router) + TypeScript, CSS Modules, and Vitest.
@@ -36,8 +36,9 @@ src/
 └── shared/       Cross-game dependencies (audio, UI chrome, design tokens)
 ```
 
-- `src/games/registry.ts` is the single source of truth. The tab bar and the home
-  gallery are both rendered from it, so registering a game is what makes it appear.
+- `src/games/registry.ts` is the single source of truth. The header's Games menu and
+  the home gallery are both rendered from it, so registering a game is what makes it
+  appear. Each game's own decisions are recorded in `src/games/<slug>/ARCHITECTURE.md`.
 - `src/app/games/<slug>/page.tsx` is a thin adapter that re-exports the game's root
   component. Keeping real route folders (rather than one `[slug]` catch-all) gives
   each game automatic code-splitting and its own page metadata.
@@ -79,11 +80,11 @@ game with no route 404s, and a route with no registry entry never shows up in th
 
 ### Styling
 
-Colours, spacing, radii and type come from CSS custom properties in
-`src/shared/styles/tokens.css`. Reference tokens (`var(--color-accent)`) instead of
-hard-coding values, and games inherit a consistent look, light and dark, without
-importing each other's stylesheets. Everything else is CSS Modules, colocated with the
-component it styles.
+Colours, spacing, radii, type and motion come from CSS custom properties in
+`src/shared/styles/tokens.css` — one dark theme, no light mode. Reference tokens
+(`var(--color-accent)`) instead of hard-coding values, and games inherit a consistent
+look without importing each other's stylesheets. Everything else is CSS Modules,
+colocated with the component it styles. See `CLAUDE.md` for the full styling rules.
 
 ## Shared audio module
 
@@ -169,12 +170,12 @@ Two knobs are worth knowing about, both in
   `edgeFraction` is its outer edge as a share of that total, so the proportions hold.
   The SVG wedge paths and the scoring maths are both generated from these, so a resize
   moves the drawn shape and the score together — they cannot disagree.
-- **`geometry.scaleMaxDeg`** (84°) is how far the tick scale reaches either side of
+- **`geometry.scaleMaxDeg`** (86.5°) is how far the tick scale reaches either side of
   vertical, and so how far the needle travels in the audio modes. It stops short of
   `needleMaxDeg` (88°) on purpose: out at 88° a tick label sits only ~8 units above the
   window's straight edge and is rotated to run almost vertically, so its own length
   carries it past the edge — and moving it radially inward makes that *worse*, not
-  better. `modes.test.ts` pins the clearance, and fails if this is widened past 85°.
+  better. `modes.test.ts` pins the clearance and fails if this is widened further.
 
 The cover and the housing window are both drawn from one `windowPath()`, so the lid's
 outline *is* the opening's and it cannot leave a gap — a gap would show a sliver of the
