@@ -116,8 +116,9 @@ describe("WEDGES", () => {
     for (let i = 1; i < WEDGES.length; i++) {
       expect(WEDGES[i].startDeg).toBeCloseTo(WEDGES[i - 1].endDeg, 10);
     }
-    expect(WEDGES[0].startDeg).toBe(-18);
-    expect(WEDGES[WEDGES.length - 1].endDeg).toBe(18);
+    // Derived, not literal, so this holds at whatever targetHalfWidthDeg is set to.
+    expect(WEDGES[0].startDeg).toBeCloseTo(-config.targetHalfWidthDeg, 9);
+    expect(WEDGES[WEDGES.length - 1].endDeg).toBeCloseTo(config.targetHalfWidthDeg, 9);
   });
 
   it("spans exactly targetHalfWidthDeg either side of centre", () => {
@@ -140,19 +141,22 @@ describe("WEDGES", () => {
     );
   });
 
-  it("centres each label in its wedge, matching the design's label angles", () => {
-    // toBeCloseTo, not toEqual: edges are now targetHalfWidthDeg × edgeFraction, and
-    // 18 × 0.6 is 10.799999999999999 rather than exactly 10.8.
-    const expected = [-14.4, -7.2, 0, 7.2, 14.4];
-    WEDGES.forEach((wedge, index) => {
-      expect(wedge.labelDeg).toBeCloseTo(expected[index], 9);
-    });
+  it("centres each label in its wedge", () => {
+    for (const wedge of WEDGES) {
+      expect(wedge.labelDeg).toBeCloseTo((wedge.startDeg + wedge.endDeg) / 2, 9);
+    }
+    // The centre wedge straddles the line, so its label sits dead ahead.
+    expect(WEDGES[2].labelDeg).toBeCloseTo(0, 9);
   });
 
-  it("gives every wedge 7.2° of width", () => {
+  it("gives every wedge the same width", () => {
+    // The configured fractions (0.2 / 0.6 / 1.0) make the five wedges equal, which is
+    // what the design's 2-3-4-3-2 strip looks like. Derived so it survives a resize.
+    const width = WEDGES[0].endDeg - WEDGES[0].startDeg;
     for (const wedge of WEDGES) {
-      expect(wedge.endDeg - wedge.startDeg).toBeCloseTo(7.2, 10);
+      expect(wedge.endDeg - wedge.startDeg).toBeCloseTo(width, 9);
     }
+    expect(width).toBeCloseTo((2 * config.targetHalfWidthDeg) / WEDGES.length, 9);
   });
 });
 

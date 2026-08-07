@@ -1,6 +1,7 @@
 import { existsSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
+import { ICONS } from "@/shared/icons";
 import { GAMES, getGame } from "./registry";
 import { gameHref } from "./types";
 
@@ -41,8 +42,15 @@ describe("game registry", () => {
     for (const game of GAMES) {
       expect(game.title).toBeTruthy();
       expect(game.blurb).toBeTruthy();
-      expect(game.icon).toBeTruthy();
       expect(["playable", "in-progress", "planned"]).toContain(game.status);
+    }
+  });
+
+  it("points every game at an icon that exists", () => {
+    // Typing catches this at build time; the test catches it if the icon set is
+    // pruned without updating the manifests that referenced it.
+    for (const game of GAMES) {
+      expect(Object.keys(ICONS)).toContain(game.iconId);
     }
   });
 

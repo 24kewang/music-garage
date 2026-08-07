@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useId, useRef, useState } from "react";
+import { Gear } from "@phosphor-icons/react";
 import type { LivePitch, Microphone } from "@/shared/audio";
 import PitchReadout from "@/shared/components/PitchReadout";
 import {
@@ -233,26 +234,9 @@ export default function SettingsPanel({
         aria-controls={open ? panelId : undefined}
         aria-label="Game settings"
       >
-        <GearIcon />
+        <Gear size={22} weight="bold" />
       </button>
     </div>
   );
 }
 
-function GearIcon() {
-  return (
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-      <path
-        d="M12 15.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Z"
-        stroke="currentColor"
-        strokeWidth="1.7"
-      />
-      <path
-        d="M19.4 13a1.7 1.7 0 0 0 .34 1.88l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.7 1.7 0 0 0-1.88-.34 1.7 1.7 0 0 0-1.03 1.56V19a2 2 0 1 1-4 0v-.09A1.7 1.7 0 0 0 8.9 17.3a1.7 1.7 0 0 0-1.88.34l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.7 1.7 0 0 0 .34-1.88 1.7 1.7 0 0 0-1.56-1.03H2.8a2 2 0 1 1 0-4h.09A1.7 1.7 0 0 0 4.5 6.9a1.7 1.7 0 0 0-.34-1.88l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.7 1.7 0 0 0 1.88.34H9a1.7 1.7 0 0 0 1.03-1.56V.8a2 2 0 1 1 4 0v.09a1.7 1.7 0 0 0 1.03 1.56 1.7 1.7 0 0 0 1.88-.34l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.7 1.7 0 0 0-.34 1.88V7a1.7 1.7 0 0 0 1.56 1.03h.09a2 2 0 1 1 0 4h-.09A1.7 1.7 0 0 0 19.4 13Z"
-        stroke="currentColor"
-        strokeWidth="1.7"
-        transform="translate(0 2) scale(0.92)"
-      />
-    </svg>
-  );
-}

@@ -1,0 +1,163 @@
+/* Catches the pointer at the very top of the screen and calls the header down. */
+.hoverZone {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: var(--nav-hover-zone);
+  z-index: 30;
+}
+
+/*
+ * The always-visible sliver. A header that disappears completely gives no hint it
+ * exists; this is the hint, and it sits inside the hover zone so aiming at it works.
+ */
+.peek {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: var(--nav-peek);
+  z-index: 29;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    var(--color-accent-line) 20%,
+    var(--color-accent) 50%,
+    var(--color-accent-line) 80%,
+    transparent
+  );
+  opacity: 0.65;
+  transition: opacity var(--dur-base) var(--ease-out);
+  pointer-events: none;
+}
+
+.peekHidden {
+  opacity: 0;
+}
+
+.header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 40;
+  transform: translateY(-100%);
+  transition: transform var(--dur-base) var(--ease-out),
+    opacity var(--dur-base) var(--ease-out);
+  opacity: 0;
+
+  background: color-mix(in srgb, var(--color-surface) 82%, transparent);
+  backdrop-filter: blur(14px) saturate(1.3);
+  -webkit-backdrop-filter: blur(14px) saturate(1.3);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.headerOpen {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+.inner {
+  max-width: var(--page-max-width);
+  margin: 0 auto;
+  padding: 0 var(--space-5);
+  min-height: var(--nav-height);
+  display: flex;
+  align-items: center;
+  gap: var(--space-6);
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  flex-shrink: 0;
+  color: var(--color-text);
+  transition: color var(--dur-fast) var(--ease-out);
+}
+
+.brand:hover {
+  color: var(--color-accent-hover);
+}
+
+.brandMark {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border-radius: var(--radius-md);
+  background: var(--color-accent-soft);
+  color: var(--color-accent);
+  transition: background var(--dur-fast) var(--ease-out);
+}
+
+.brand:hover .brandMark {
+  background: color-mix(in srgb, var(--color-accent) 22%, transparent);
+}
+
+.brandText {
+  font-family: var(--font-display);
+  font-size: var(--text-lg);
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+}
+
+.nav {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.link {
+  position: relative;
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-md);
+  color: var(--color-text-muted);
+  font-size: var(--text-sm);
+  font-weight: 500;
+  white-space: nowrap;
+  transition: color var(--dur-fast) var(--ease-out),
+    background var(--dur-fast) var(--ease-out);
+}
+
+.link:hover {
+  color: var(--color-text);
+  background: var(--color-surface-raised);
+}
+
+.linkActive {
+  color: var(--color-accent);
+}
+
+.linkActive:hover {
+  color: var(--color-accent-hover);
+}
+
+@media (max-width: 560px) {
+  .inner {
+    padding: 0 var(--space-4);
+    gap: var(--space-4);
+  }
+
+  .brandText {
+    display: none;
+  }
+}
+
+/*
+ * Coarse pointers have no hover, so the reveal would strand them: pin the header open
+ * and let it push nothing — it simply sits there like an ordinary sticky bar.
+ */
+@media (hover: none), (pointer: coarse) {
+  .header {
+    position: sticky;
+    transform: none;
+    opacity: 1;
+  }
+
+  .hoverZone,
+  .peek {
+    display: none;
+  }
+}

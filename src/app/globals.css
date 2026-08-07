@@ -16,7 +16,7 @@ body {
 
 html {
   height: 100%;
-  color-scheme: light dark;
+  scroll-behavior: smooth;
 }
 
 body {
@@ -62,7 +62,56 @@ button {
   border-radius: var(--radius-sm);
 }
 
+/* Interactive things say so. */
+a,
+button,
+[role="button"],
+label {
+  cursor: pointer;
+}
+
+button:disabled {
+  cursor: default;
+}
+
+::selection {
+  background: var(--color-accent-soft);
+  color: var(--color-text);
+}
+
+/* Dark scrollbars, so they don't punch a white hole in the page. */
+* {
+  scrollbar-color: var(--color-border-strong) transparent;
+}
+
+/**
+ * Visible only when focused — lets keyboard users jump the header, which matters more
+ * than usual here because the header overlays the page.
+ */
+.skipLink {
+  position: fixed;
+  top: var(--space-3);
+  left: var(--space-3);
+  z-index: 100;
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-pill);
+  background: var(--color-accent);
+  color: var(--color-accent-contrast);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  transform: translateY(-200%);
+  transition: transform var(--dur-base) var(--ease-out);
+}
+
+.skipLink:focus-visible {
+  transform: translateY(0);
+}
+
 @media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
   *,
   *::before,
   *::after {

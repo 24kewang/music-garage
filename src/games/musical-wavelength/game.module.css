@@ -1,34 +1,88 @@
 /*
- * The game owns its look. The design's page background and type stack are scoped to
- * this wrapper rather than pushed into the app's tokens, so the shell and the other
- * games are untouched.
+ * The page around the dial. The dial itself — wheel, cover, housing, needle, button —
+ * is untouched by design and is styled entirely inside its own SVG.
  */
 
 .game {
-  /* Break out of the app's centred column — the design is a full-bleed board. */
-  margin: calc(var(--space-6) * -1) calc(50% - 50vw) calc(var(--space-8) * -1);
-  min-height: calc(100dvh - var(--nav-height));
-  padding: 40px 24px 56px;
-  background: #edeae3;
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  color: #16172f;
+  /* Break out of the app's centred column: the board wants the full width. */
+  margin: calc(var(--space-7) * -1) calc(50% - 50vw) calc(var(--space-8) * -1);
+  min-height: 100dvh;
+  padding: var(--space-8) var(--space-5);
 
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 30px;
+  gap: var(--space-6);
   box-sizing: border-box;
+}
+
+/*
+ * The cabinet the dial is mounted in.
+ *
+ * This exists for a concrete reason: the dial's housing is #141733, near enough to the
+ * page background that the console silhouette would dissolve into it. A panel a few
+ * shades lighter, with a rim and an ambient glow behind it, keeps the instrument
+ * reading as a distinct object.
+ */
+.stage {
+  position: relative;
+  width: 100%;
+  max-width: 52rem;
+  padding: var(--space-6) var(--space-6) var(--space-5);
+
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--color-stage) 96%, white 4%),
+    var(--color-stage)
+  );
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-lg), inset 0 1px 0 rgb(255 255 255 / 0.04);
+
+  animation: stageIn var(--dur-slow) var(--ease-out) backwards;
+}
+
+/* Ambient light spilling out from behind the cabinet. */
+.stage::before {
+  content: "";
+  position: absolute;
+  inset: -12% -8% -18%;
+  background: radial-gradient(
+    ellipse at 50% 40%,
+    var(--color-accent-glow),
+    transparent 70%
+  );
+  filter: blur(38px);
+  z-index: -1;
+  pointer-events: none;
+}
+
+@keyframes stageIn {
+  from {
+    opacity: 0;
+    transform: translateY(16px) scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
 }
 
 .dial {
   width: 100%;
   max-width: 820px;
+  margin: 0 auto;
 }
 
 @media (max-width: 640px) {
   .game {
-    padding: 24px 12px 40px;
-    gap: 22px;
+    padding: var(--space-6) var(--space-3);
+    gap: var(--space-5);
+  }
+
+  .stage {
+    padding: var(--space-4) var(--space-4) var(--space-3);
+    border-radius: var(--radius-lg);
   }
 }

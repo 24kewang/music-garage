@@ -1,0 +1,162 @@
+.root {
+  position: relative;
+}
+
+.trigger {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  border: none;
+  border-radius: var(--radius-md);
+  background: transparent;
+  color: var(--color-text-muted);
+  font-size: var(--text-sm);
+  font-weight: 500;
+  white-space: nowrap;
+  transition: color var(--dur-fast) var(--ease-out),
+    background var(--dur-fast) var(--ease-out);
+}
+
+.trigger:hover,
+.triggerOpen {
+  color: var(--color-text);
+  background: var(--color-surface-raised);
+}
+
+.triggerActive {
+  color: var(--color-accent);
+}
+
+.triggerActive:hover,
+.triggerActive.triggerOpen {
+  color: var(--color-accent-hover);
+}
+
+.caret {
+  transition: transform var(--dur-base) var(--ease-out);
+}
+
+.triggerOpen .caret {
+  transform: rotate(180deg);
+}
+
+/*
+ * The panel is a child of the trigger's wrapper, and the wrapper's padding-top bridges
+ * the visual gap — a gap with no hit area is what makes hover menus feel broken.
+ */
+.panel {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  padding-top: var(--space-2);
+  z-index: 50;
+
+  opacity: 0;
+  transform: translateY(-6px) scale(0.98);
+  transform-origin: top left;
+  pointer-events: none;
+  transition: opacity var(--dur-base) var(--ease-out),
+    transform var(--dur-base) var(--ease-out);
+}
+
+.panelOpen {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  pointer-events: auto;
+}
+
+.panelInner {
+  width: min(23rem, calc(100vw - var(--space-6)));
+  padding: var(--space-2);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+
+  background: color-mix(in srgb, var(--color-surface-raised) 94%, transparent);
+  backdrop-filter: blur(18px) saturate(1.3);
+  -webkit-backdrop-filter: blur(18px) saturate(1.3);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+}
+
+.item {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  padding: var(--space-3);
+  border-radius: var(--radius-md);
+  transition: background var(--dur-fast) var(--ease-out);
+}
+
+.item:hover,
+.item:focus-visible {
+  background: var(--color-surface);
+}
+
+.itemIcon {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 34px;
+  height: 34px;
+  border-radius: var(--radius-md);
+  background: var(--color-accent-soft);
+  color: var(--color-accent);
+  transition: background var(--dur-fast) var(--ease-out),
+    color var(--dur-fast) var(--ease-out);
+}
+
+.item:hover .itemIcon {
+  background: color-mix(in srgb, var(--color-accent) 22%, transparent);
+  color: var(--color-accent-hover);
+}
+
+.itemActive .itemIcon {
+  background: color-mix(in srgb, var(--color-accent) 22%, transparent);
+}
+
+.itemBody {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.itemTitle {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  color: var(--color-text);
+  font-size: var(--text-sm);
+  font-weight: 600;
+}
+
+.itemActive .itemTitle {
+  color: var(--color-accent);
+}
+
+.itemBlurb {
+  color: var(--color-text-muted);
+  font-size: var(--text-xs);
+  line-height: 1.5;
+}
+
+.itemPill {
+  padding: 0 var(--space-2);
+  border-radius: var(--radius-pill);
+  background: var(--color-warn-soft);
+  color: var(--color-warn);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  line-height: 1.7;
+}
+
+@media (max-width: 560px) {
+  .panelInner {
+    width: min(20rem, calc(100vw - var(--space-5)));
+  }
+}

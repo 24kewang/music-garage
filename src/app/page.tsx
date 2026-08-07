@@ -6,10 +6,11 @@ export default function Home() {
   return (
     <>
       <section className={styles.hero}>
+        <p className={styles.eyebrow}>Trumpet Tuck's</p>
         <h1 className={styles.title}>Music Garage</h1>
         <p className={styles.subtitle}>
           A collection of small games for people who like making noise together. Pick
-          one from the tabs above.
+          one and gather round.
         </p>
       </section>
 
@@ -19,8 +20,8 @@ export default function Home() {
           <p className={styles.empty}>No games registered yet.</p>
         ) : (
           <div className={styles.grid}>
-            {GAMES.map((game) => (
-              <GameCard key={game.slug} game={game} />
+            {GAMES.map((game, index) => (
+              <GameCard key={game.slug} game={game} index={index} />
             ))}
           </div>
         )}

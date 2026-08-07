@@ -5,7 +5,7 @@ export const manifest: GameManifest = {
   title: "Musical Wavelength",
   blurb:
     "One player describes where the hidden target is. The other answers by ear — played, sung, or by hand.",
-  icon: "🎯",
+  iconId: "target",
   status: "playable",
   minPlayers: 2,
   maxPlayers: 12,

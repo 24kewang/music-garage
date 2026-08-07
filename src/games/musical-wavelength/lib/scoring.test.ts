@@ -1,36 +1,46 @@
 import { describe, expect, it } from "vitest";
+import { config } from "../config";
+import { WEDGES } from "./geometry";
 import { MAX_SCORE, scoreAt, scoreValue } from "./scoring";
+
+/**
+ * Angles are derived from the configured target rather than written as literals, so
+ * these hold at any `targetHalfWidthDeg` — the whole point of it being one knob.
+ */
+const EDGE = config.targetHalfWidthDeg;
+/** Dead centre of a wedge, by index into WEDGES. */
+const midOf = (index: number) =>
+  (WEDGES[index].startDeg + WEDGES[index].endDeg) / 2;
 
 describe("scoreAt", () => {
   it("scores the centre band highest", () => {
     expect(scoreAt(0, 0)?.score).toBe(4);
-    expect(scoreAt(3, 0)?.score).toBe(4);
-    expect(scoreAt(-3, 0)?.score).toBe(4);
+    expect(scoreAt(midOf(2), 0)?.score).toBe(4);
   });
 
   it("scores the middle bands", () => {
-    expect(scoreAt(5, 0)?.score).toBe(3);
-    expect(scoreAt(-5, 0)?.score).toBe(3);
-    expect(scoreAt(10, 0)?.score).toBe(3);
+    expect(scoreAt(midOf(1), 0)?.score).toBe(3);
+    expect(scoreAt(midOf(3), 0)?.score).toBe(3);
   });
 
   it("scores the outer bands", () => {
-    expect(scoreAt(14, 0)?.score).toBe(2);
-    expect(scoreAt(-14, 0)?.score).toBe(2);
-    expect(scoreAt(17.9, 0)?.score).toBe(2);
+    expect(scoreAt(midOf(0), 0)?.score).toBe(2);
+    expect(scoreAt(midOf(4), 0)?.score).toBe(2);
+    // Just inside the outermost edge still counts.
+    expect(scoreAt(EDGE - 0.1, 0)?.score).toBe(2);
   });
 
   it("misses outside the target zone", () => {
-    expect(scoreAt(18.1, 0)).toBeNull();
-    expect(scoreAt(-30, 0)).toBeNull();
+    expect(scoreAt(EDGE + 0.1, 0)).toBeNull();
+    expect(scoreAt(-(EDGE + 6), 0)).toBeNull();
     expect(scoreAt(88, 0)).toBeNull();
   });
 
   it("follows the wheel as it rotates", () => {
     // Target rotated 40° clockwise: the needle has to follow it to still score.
     expect(scoreAt(40, 40)?.score).toBe(4);
-    expect(scoreAt(0, 40)).toBeNull();
-    expect(scoreAt(45, 40)?.score).toBe(3);
+    expect(scoreAt(40 + EDGE + 0.1, 40)).toBeNull();
+    expect(scoreAt(40 + midOf(3), 40)?.score).toBe(3);
   });
 
   it("scores against the mirrored band group", () => {
@@ -46,19 +56,19 @@ describe("scoreAt", () => {
     // -170 and 190 are the same angle; the needle is dead on the target.
     expect(scoreAt(-170, 190)?.score).toBe(4);
     // Straddling the wrap point without lining up is still a miss.
-    expect(scoreAt(170, -170)).toBeNull();
+    expect(scoreAt(180 - EDGE - 1, -(180 - EDGE - 1))).toBeNull();
   });
 
   it("reports which wedge was hit so the reveal can glow it", () => {
-    expect(scoreAt(-14, 0)?.wedgeIndex).toBe(0);
+    expect(scoreAt(midOf(0), 0)?.wedgeIndex).toBe(0);
     expect(scoreAt(0, 0)?.wedgeIndex).toBe(2);
-    expect(scoreAt(14, 0)?.wedgeIndex).toBe(4);
+    expect(scoreAt(midOf(4), 0)?.wedgeIndex).toBe(4);
   });
 
   it("puts band boundaries in exactly one wedge", () => {
-    // 3.6° is shared between the centre and right-middle wedge; whichever wins, the
-    // result must be deterministic and a real band rather than a miss.
-    const landing = scoreAt(3.6, 0);
+    // The centre band's edge is shared with the right-middle wedge; whichever wins,
+    // the result must be deterministic and a real band rather than a miss.
+    const landing = scoreAt(WEDGES[2].endDeg, 0);
     expect(landing).not.toBeNull();
     expect([3, 4]).toContain(landing!.score);
   });

@@ -119,8 +119,10 @@ export default function Game() {
 
   return (
     <div className={styles.game}>
-      <div className={styles.dial}>
-        <Dial svgRef={svgRef} dial={dial} mode={settings.mode} ticks={ticks} />
+      <div className={styles.stage}>
+        <div className={styles.dial}>
+          <Dial svgRef={svgRef} dial={dial} mode={settings.mode} ticks={ticks} />
+        </div>
       </div>
 
       <Captions

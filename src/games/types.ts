@@ -1,3 +1,5 @@
+import type { IconId } from "@/shared/icons";
+
 /**
  * The contract every game in the garage implements.
  *
@@ -23,8 +25,13 @@ export interface GameManifest {
   title: string;
   /** One-line description shown on the gallery card. */
   blurb: string;
-  /** Emoji shown beside the title. Kept as a string so games stay asset-free here. */
-  icon: string;
+  /**
+   * Icon for the card and the nav menu, by id — see `@/shared/icons`.
+   *
+   * An id rather than a component so manifests stay plain data, and typed so a name
+   * that isn't in the set fails the build.
+   */
+  iconId: IconId;
   status: GameStatus;
   minPlayers?: number;
   maxPlayers?: number;

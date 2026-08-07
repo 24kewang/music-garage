@@ -1,34 +1,45 @@
 /*
  * Design tokens for Music Garage.
  *
- * Every game and shared component styles itself from these custom properties, so
- * games look like they belong together without importing each other's stylesheets.
- * Add a token here rather than hard-coding a value inside a game.
+ * One dark theme, deliberately — there is no light mode. Every game and shared
+ * component styles itself from these custom properties, so the site reads as one
+ * thing. Add a token here rather than hard-coding a value inside a component.
+ *
+ * Every text/background pair below clears WCAG AA (4.5:1); the tightest is
+ * --color-text-faint on --color-surface-raised at 4.89:1.
  */
 
 :root {
-  /* Surfaces, from furthest back to closest */
-  --color-bg: #f7f5f2;
-  --color-surface: #ffffff;
-  --color-surface-raised: #ffffff;
-  --color-border: #e3ded7;
-  --color-border-strong: #cdc5ba;
+  color-scheme: dark;
+
+  /* Surfaces, furthest back to closest. Not pure black — it smears on OLED and
+     crushes the shadows the layering depends on. */
+  --color-bg: #0d0d16;
+  --color-surface: #14141f;
+  --color-surface-raised: #1c1c2b;
+  /* The lit panel the dial is mounted on. */
+  --color-stage: #17172a1f;
+
+  --color-border: #262638;
+  --color-border-strong: #35354c;
 
   /* Text */
-  --color-text: #1c1a17;
-  --color-text-muted: #6b645b;
-  --color-text-faint: #948c81;
+  --color-text: #f2f3f7; /* 17.4:1 on bg */
+  --color-text-muted: #a2a3b4; /* 7.8:1 */
+  --color-text-faint: #85879c; /* 5.5:1 */
 
-  /* Accents */
-  --color-accent: #2f6f4f;
-  --color-accent-hover: #275c42;
-  --color-accent-contrast: #ffffff;
-  --color-accent-soft: #e4efe8;
+  /* Accent — indigo. Used for links, active nav, focus rings and primary actions. */
+  --color-accent: #818cf8; /* 6.5:1 on bg */
+  --color-accent-hover: #a5b4fc;
+  --color-accent-contrast: #0d0d16;
+  --color-accent-soft: rgb(129 140 248 / 0.12);
+  --color-accent-line: rgb(129 140 248 / 0.35);
+  --color-accent-glow: rgb(99 102 241 / 0.18);
 
-  --color-warn: #a86a1f;
-  --color-warn-soft: #fbf0dd;
-  --color-danger: #a83232;
-  --color-danger-soft: #fbe6e6;
+  --color-warn: #fbbf24;
+  --color-warn-soft: rgb(251 191 36 / 0.12);
+  --color-danger: #f87171;
+  --color-danger-soft: rgb(248 113 113 / 0.12);
 
   /* Spacing scale */
   --space-1: 0.25rem;
@@ -44,11 +55,13 @@
   --radius-sm: 6px;
   --radius-md: 10px;
   --radius-lg: 16px;
+  --radius-xl: 24px;
   --radius-pill: 999px;
 
-  /* Type scale */
-  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, -apple-system,
-    "Segoe UI", Roboto, sans-serif;
+  /* Type */
+  --font-display: var(--font-righteous), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-poppins), ui-sans-serif, system-ui, -apple-system, "Segoe UI",
+    Roboto, sans-serif;
   --font-mono: var(--font-geist-mono), ui-monospace, "SFMono-Regular", "Cascadia Mono",
     Menlo, monospace;
 
@@ -59,43 +72,34 @@
   --text-xl: 1.375rem;
   --text-2xl: 1.75rem;
   --text-3xl: 2.25rem;
+  --text-4xl: 3rem;
 
-  /* Elevation */
-  --shadow-sm: 0 1px 2px rgb(28 26 23 / 0.06);
-  --shadow-md: 0 2px 8px rgb(28 26 23 / 0.08);
-  --shadow-lg: 0 8px 24px rgb(28 26 23 / 0.1);
+  /* Elevation — deeper and softer than a light theme needs, so panels separate. */
+  --shadow-sm: 0 1px 2px rgb(0 0 0 / 0.4);
+  --shadow-md: 0 4px 16px rgb(0 0 0 / 0.45);
+  --shadow-lg: 0 16px 48px rgb(0 0 0 / 0.55);
+  --shadow-glow: 0 0 0 1px var(--color-accent-line), 0 12px 40px var(--color-accent-glow);
+
+  /* Motion. One easing and three durations, so timing is consistent everywhere
+     instead of re-invented per component. */
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --dur-fast: 160ms;
+  --dur-base: 240ms;
+  --dur-slow: 420ms;
 
   /* Layout */
   --page-max-width: 68rem;
-  --nav-height: 3.5rem;
-
-  --transition-fast: 120ms ease;
+  --nav-height: 4rem;
+  /* Always-visible sliver of the header, and the strip that reveals it on hover. */
+  --nav-peek: 4px;
+  --nav-hover-zone: 50px;
 }
 
-@media (prefers-color-scheme: dark) {
+@media (prefers-reduced-motion: reduce) {
   :root {
-    --color-bg: #14140f;
-    --color-surface: #1d1d19;
-    --color-surface-raised: #262622;
-    --color-border: #33332d;
-    --color-border-strong: #4a4a42;
-
-    --color-text: #f2efe9;
-    --color-text-muted: #a8a296;
-    --color-text-faint: #77726a;
-
-    --color-accent: #6fbf90;
-    --color-accent-hover: #8bd0a7;
-    --color-accent-contrast: #10251a;
-    --color-accent-soft: #1e3328;
-
-    --color-warn: #e0a95c;
-    --color-warn-soft: #33280f;
-    --color-danger: #e08585;
-    --color-danger-soft: #331a1a;
-
-    --shadow-sm: 0 1px 2px rgb(0 0 0 / 0.4);
-    --shadow-md: 0 2px 8px rgb(0 0 0 / 0.45);
-    --shadow-lg: 0 8px 24px rgb(0 0 0 / 0.5);
+    --dur-fast: 0ms;
+    --dur-base: 0ms;
+    --dur-slow: 0ms;
   }
 }

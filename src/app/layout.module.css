@@ -3,5 +3,20 @@
   width: 100%;
   max-width: var(--page-max-width);
   margin: 0 auto;
-  padding: var(--space-6) var(--space-4) var(--space-8);
+  /* The header floats over the page, so content only clears the peek strip. */
+  padding: calc(var(--space-7) + var(--nav-peek)) var(--space-5) var(--space-8);
+}
+
+@media (hover: none), (pointer: coarse) {
+  /* The header is a real sticky bar here and takes its own space. */
+  .main {
+    padding-top: var(--space-6);
+  }
+}
+
+@media (max-width: 560px) {
+  .main {
+    padding-left: var(--space-4);
+    padding-right: var(--space-4);
+  }
 }
