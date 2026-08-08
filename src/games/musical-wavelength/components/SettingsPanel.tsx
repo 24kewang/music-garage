@@ -1,9 +1,10 @@
 "use client";
 
-import { useEffect, useId, useRef, useState } from "react";
-import { Gear } from "@phosphor-icons/react";
+import { useCallback, useId, useRef, useState } from "react";
+import { GearIcon } from "@phosphor-icons/react";
 import type { LivePitch, Microphone } from "@/shared/audio";
 import PitchReadout from "@/shared/components/PitchReadout";
+import { useDismiss } from "@/shared/hooks/useDismiss";
 import {
   MAX_SPAN_CENTS,
   MIN_SPAN_CENTS,
@@ -61,23 +62,8 @@ export default function SettingsPanel({
   const rangeCheck = validatePitchRange(lowDraft, highDraft);
   const spanCheck = validateSpan(spanDraft);
 
-  useEffect(() => {
-    if (!open) return;
-
-    const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") setOpen(false);
-    };
-    const onPointerDown = (event: PointerEvent) => {
-      if (!rootRef.current?.contains(event.target as Node)) setOpen(false);
-    };
-
-    document.addEventListener("keydown", onKeyDown);
-    document.addEventListener("pointerdown", onPointerDown);
-    return () => {
-      document.removeEventListener("keydown", onKeyDown);
-      document.removeEventListener("pointerdown", onPointerDown);
-    };
-  }, [open]);
+  const close = useCallback(() => setOpen(false), []);
+  useDismiss(open, rootRef, close);
 
   const selectMode = (mode: NeedleMode) => {
     onChange({ ...settings, mode });
@@ -234,7 +220,7 @@ export default function SettingsPanel({
         aria-controls={open ? panelId : undefined}
         aria-label="Game settings"
       >
-        <Gear size={22} weight="bold" />
+        <GearIcon size={22} weight="bold" />
       </button>
     </div>
   );

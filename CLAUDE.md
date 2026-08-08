@@ -34,6 +34,11 @@ src/shared/    Cross-game code: audio, UI chrome, icons, design tokens
   **disabled** because it distorts pitch; the `AudioContext` is created inside `start()`
   because iOS refuses audio outside a user gesture; smoothing takes a **median**, not a
   mean, so one bad frame can't cause an octave jump.
+- `usePitchDetector` is **monophonic** (McLeod Pitch Method, live loop). Anything needing
+  two simultaneous pitches needs its own detector — see `pitch-math/dsp/`.
+- Shared UI worth reusing before writing a fourth copy: `Confetti` (takes its tuning as a
+  prop, plus an optional burst origin) and `useDismiss` (Escape/outside-click, passing
+  the reason so callers can restore focus on Escape only).
 
 ## Styling
 
@@ -51,8 +56,10 @@ src/shared/    Cross-game code: audio, UI chrome, icons, design tokens
   `--font-mono` (Geist Mono) is for readouts that need tabular figures.
 - **Icons are Phosphor, via `@/shared/icons`. No emoji as icons** — they render
   differently on every OS and read as filler. Add new icons to the `ICONS` registry so
-  `IconId` stays typed and a typo is a build error. (The padlock inside the dial's
-  centre button is hand-drawn apparatus and stays that way.)
+  `IconId` stays typed and a typo is a build error. Import the **`*Icon` names**
+  (`GearIcon`, not `Gear`) — the unsuffixed exports are deprecated aliases of the same
+  components. The `Icon` *type* keeps its name. (The padlock inside the dial's centre
+  button is hand-drawn apparatus and stays that way.)
 - **Motion uses the tokens**: `--ease-out` plus `--dur-fast|base|slow`, so timing is
   consistent instead of re-invented per component. `prefers-reduced-motion` zeroes the
   duration tokens globally — behaviour must still work with motion removed.

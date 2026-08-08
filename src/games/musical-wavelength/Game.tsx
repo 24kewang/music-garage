@@ -3,8 +3,8 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { parseNoteName, useMicrophone, usePitchDetector } from "@/shared/audio";
 import { config } from "./config";
+import Confetti from "@/shared/components/Confetti";
 import Captions from "./components/Captions";
-import Confetti from "./components/Confetti";
 import Dial from "./components/Dial";
 import SettingsPanel from "./components/SettingsPanel";
 import {
@@ -141,7 +141,10 @@ export default function Game() {
         pitch={pitch}
       />
 
-      <Confetti burstKey={scoredMax ? dial.revealKey : null} />
+      <Confetti
+        burstKey={scoredMax ? dial.revealKey : null}
+        config={config.confetti}
+      />
     </div>
   );
 }

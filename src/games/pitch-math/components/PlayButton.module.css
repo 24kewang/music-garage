@@ -1,0 +1,74 @@
+.play {
+  position: relative;
+  display: grid;
+  place-items: center;
+  /* 44px minimum touch target. */
+  width: 2.75rem;
+  height: 2.75rem;
+
+  background: var(--color-surface-raised);
+  border: 1px solid var(--color-border-strong);
+  border-radius: 50%;
+  color: var(--color-text-muted);
+
+  transition:
+    background var(--dur-fast) var(--ease-out),
+    border-color var(--dur-fast) var(--ease-out),
+    color var(--dur-fast) var(--ease-out),
+    transform var(--dur-fast) var(--ease-out);
+}
+
+.play:hover {
+  background: var(--color-accent-soft);
+  border-color: var(--color-accent-line);
+  color: var(--color-accent);
+  transform: translateY(-1px);
+}
+
+.play:active {
+  transform: translateY(0);
+}
+
+.playing {
+  border-color: var(--color-accent-line);
+  color: var(--color-accent);
+}
+
+/* Expanding ring, so a press is visible even on a clip barely a second long. */
+.ring {
+  position: absolute;
+  inset: -1px;
+  border: 1px solid var(--color-accent);
+  border-radius: 50%;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.playing .ring {
+  animation: ripple 1s var(--ease-out) infinite;
+}
+
+@keyframes ripple {
+  from {
+    opacity: 0.55;
+    transform: scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: scale(1.5);
+  }
+}
+
+/*
+ * The ring is decoration. Without motion the colour shift alone marks the playing
+ * state, which is enough — the sound itself is the real feedback.
+ */
+@media (prefers-reduced-motion: reduce) {
+  .playing .ring {
+    animation: none;
+  }
+
+  .play:hover {
+    transform: none;
+  }
+}

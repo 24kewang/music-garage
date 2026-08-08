@@ -1,0 +1,97 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-4);
+  text-align: center;
+}
+
+.mic {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 8.5rem;
+  height: 8.5rem;
+
+  background: linear-gradient(
+    160deg,
+    var(--color-surface-raised),
+    var(--color-surface)
+  );
+  border: 1px solid var(--color-accent-line);
+  border-radius: 50%;
+  color: var(--color-accent);
+  box-shadow: var(--shadow-lg);
+
+  transition:
+    transform var(--dur-base) var(--ease-out),
+    color var(--dur-base) var(--ease-out),
+    border-color var(--dur-base) var(--ease-out);
+}
+
+.mic:hover:not(:disabled) {
+  transform: translateY(-2px) scale(1.02);
+  color: var(--color-accent-hover);
+  border-color: var(--color-accent-hover);
+}
+
+.mic:active:not(:disabled) {
+  transform: translateY(0) scale(0.99);
+}
+
+.mic:disabled {
+  opacity: 0.6;
+}
+
+/* Ambient halo, the same light the dial's cabinet sits in. */
+.micGlow {
+  position: absolute;
+  inset: -35%;
+  background: radial-gradient(circle, var(--color-accent-glow), transparent 68%);
+  filter: blur(26px);
+  z-index: -1;
+  pointer-events: none;
+}
+
+.prompt {
+  color: var(--color-text-muted);
+  font-size: var(--text-base);
+}
+
+.modes {
+  display: inline-flex;
+  padding: 3px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-pill);
+}
+
+.mode {
+  min-height: 2.5rem;
+  padding: var(--space-2) var(--space-5);
+  background: transparent;
+  border: none;
+  border-radius: var(--radius-pill);
+  color: var(--color-text-muted);
+  font-size: var(--text-sm);
+  font-weight: 500;
+  transition:
+    background var(--dur-fast) var(--ease-out),
+    color var(--dur-fast) var(--ease-out);
+}
+
+.mode:hover {
+  color: var(--color-text);
+}
+
+.modeActive {
+  background: var(--color-accent);
+  color: var(--color-accent-contrast);
+  font-weight: 600;
+}
+
+.hint {
+  max-width: 26rem;
+  color: var(--color-text-faint);
+  font-size: var(--text-sm);
+}

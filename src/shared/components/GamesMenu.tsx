@@ -3,9 +3,10 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useCallback, useEffect, useId, useRef, useState } from "react";
-import { CaretDown } from "@phosphor-icons/react";
+import { CaretDownIcon } from "@phosphor-icons/react";
 import { GAMES } from "@/games/registry";
 import { gameHref, type GameStatus } from "@/games/types";
+import { useDismiss, type DismissReason } from "@/shared/hooks/useDismiss";
 import { GameIcon } from "@/shared/icons";
 import styles from "./GamesMenu.module.css";
 
@@ -64,26 +65,20 @@ export default function GamesMenu({
 
   useEffect(() => cancelClose, [cancelClose]);
 
-  // Close on Escape and on a click elsewhere.
-  useEffect(() => {
-    if (!open) return;
-
-    const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key !== "Escape") return;
+  /**
+   * Escape returns focus to the trigger, so a keyboard user doesn't lose their place
+   * in the header. An outside click deliberately does not — focus belongs to whatever
+   * they just clicked on.
+   */
+  const dismiss = useCallback(
+    (reason: DismissReason) => {
       setOpenState(false);
-      triggerRef.current?.focus();
-    };
-    const onPointerDown = (event: PointerEvent) => {
-      if (!rootRef.current?.contains(event.target as Node)) setOpenState(false);
-    };
+      if (reason === "escape") triggerRef.current?.focus();
+    },
+    [setOpenState],
+  );
 
-    document.addEventListener("keydown", onKeyDown);
-    document.addEventListener("pointerdown", onPointerDown);
-    return () => {
-      document.removeEventListener("keydown", onKeyDown);
-      document.removeEventListener("pointerdown", onPointerDown);
-    };
-  }, [open, setOpenState]);
+  useDismiss(open, rootRef, dismiss);
 
   /** Arrow keys move between items; the trigger's Down arrow enters the list. */
   const focusItem = (index: number) => {
@@ -142,7 +137,7 @@ export default function GamesMenu({
         }}
       >
         Games
-        <CaretDown
+        <CaretDownIcon
           size={13}
           weight="bold"
           className={styles.caret}

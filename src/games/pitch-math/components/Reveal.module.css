@@ -1,0 +1,68 @@
+.root {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-4);
+  animation: revealIn var(--dur-slow) var(--ease-out) backwards;
+}
+
+/* The payoff line — the one place the display face earns its keep. */
+.notes {
+  font-family: var(--font-display);
+  font-size: var(--text-3xl);
+  letter-spacing: 0.02em;
+  color: var(--color-text);
+}
+
+.retry {
+  display: grid;
+  place-items: center;
+  /* 44px minimum touch target. */
+  width: 2.75rem;
+  height: 2.75rem;
+
+  background: var(--color-surface-raised);
+  border: 1px solid var(--color-border-strong);
+  border-radius: 50%;
+  color: var(--color-text-muted);
+
+  transition:
+    background var(--dur-fast) var(--ease-out),
+    color var(--dur-fast) var(--ease-out),
+    border-color var(--dur-fast) var(--ease-out),
+    transform var(--dur-base) var(--ease-out);
+}
+
+.retry:hover {
+  background: var(--color-accent-soft);
+  border-color: var(--color-accent-line);
+  color: var(--color-accent);
+  transform: rotate(-90deg);
+}
+
+@keyframes revealIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .root {
+    animation: none;
+  }
+
+  .retry:hover {
+    transform: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .notes {
+    font-size: var(--text-2xl);
+  }
+}

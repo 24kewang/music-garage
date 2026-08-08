@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { MusicNotes } from "@phosphor-icons/react";
+import { MusicNotesIcon } from "@phosphor-icons/react";
 import GamesMenu from "./GamesMenu";
 import styles from "./SiteHeader.module.css";
 
@@ -86,7 +86,7 @@ export default function SiteHeader() {
         <div className={styles.inner}>
           <Link href="/" className={styles.brand}>
             <span className={styles.brandMark} aria-hidden="true">
-              <MusicNotes size={20} weight="fill" />
+              <MusicNotesIcon size={20} weight="fill" />
             </span>
             <span className={styles.brandText}>Music Garage</span>
           </Link>

@@ -2,12 +2,14 @@
 
 import { createElement, type ComponentProps } from "react";
 import {
-  CaretDown,
-  Gear,
-  House,
-  Microphone,
-  MusicNotes,
-  Target,
+  ArrowClockwiseIcon,
+  CaretDownIcon,
+  GearIcon,
+  HouseIcon,
+  MicrophoneIcon,
+  MusicNotesIcon,
+  TargetIcon,
+  WaveSineIcon,
   type Icon,
 } from "@phosphor-icons/react";
 
@@ -20,14 +22,19 @@ import {
  *
  * Adding an icon: import it from `@phosphor-icons/react` and add it here. Nothing else
  * needs to change.
+ *
+ * Use the `*Icon` export names (`GearIcon`, not `Gear`) — the unsuffixed ones are
+ * deprecated aliases of the very same components and are slated for removal.
  */
 export const ICONS = {
-  target: Target,
-  musicNotes: MusicNotes,
-  house: House,
-  caretDown: CaretDown,
-  gear: Gear,
-  microphone: Microphone,
+  target: TargetIcon,
+  musicNotes: MusicNotesIcon,
+  house: HouseIcon,
+  caretDown: CaretDownIcon,
+  gear: GearIcon,
+  microphone: MicrophoneIcon,
+  waveSine: WaveSineIcon,
+  arrowClockwise: ArrowClockwiseIcon,
 } as const satisfies Record<string, Icon>;
 
 /** Valid icon names. Typing `iconId` as this makes a typo a build error. */

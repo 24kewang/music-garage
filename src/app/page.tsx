@@ -9,8 +9,7 @@ export default function Home() {
         <p className={styles.eyebrow}>Trumpet Tuck&apos;s</p>
         <h1 className={styles.title}>Music Garage</h1>
         <p className={styles.subtitle}>
-          A collection of small games for people who like making noise together. Pick
-          one and gather round.
+          A collection of small games for people who like making music together. Enjoy :D
         </p>
       </section>
 

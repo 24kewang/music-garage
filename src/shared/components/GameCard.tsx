@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowRight } from "@phosphor-icons/react/dist/ssr";
+import { ArrowRightIcon } from "@phosphor-icons/react/dist/ssr";
 import { gameHref, type GameManifest, type GameStatus } from "@/games/types";
 import { GameIcon } from "@/shared/icons";
 import styles from "./GameCard.module.css";
@@ -45,12 +45,16 @@ export default function GameCard({
       <div className={styles.foot}>
         {game.minPlayers && game.maxPlayers && (
           <span className={styles.meta}>
-            {game.minPlayers}–{game.maxPlayers} players
+            {/* A game for exactly two reads "2 players", not "2–2 players". */}
+            {game.minPlayers === game.maxPlayers
+              ? game.minPlayers
+              : `${game.minPlayers}–${game.maxPlayers}`}{" "}
+            players
           </span>
         )}
         <span className={styles.cta} aria-hidden="true">
           Play
-          <ArrowRight size={14} weight="bold" className={styles.ctaArrow} />
+          <ArrowRightIcon size={14} weight="bold" className={styles.ctaArrow} />
         </span>
       </div>
     </Link>

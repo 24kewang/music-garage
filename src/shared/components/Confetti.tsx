@@ -1,10 +1,37 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { config } from "../config";
 import styles from "./Confetti.module.css";
 
-const { confetti } = config;
+/**
+ * Everything about the look of a burst. Passed in rather than imported so each game
+ * can match its own palette — the dial's confetti is cream and teal, Pitch Math's is
+ * indigo.
+ */
+export interface ConfettiConfig {
+  pieceCount: number;
+  /** Fallback origin, as a fraction of the viewport, when no `origin` is given. */
+  originX: number;
+  originY: number;
+  /** Initial speed range, px/s. */
+  minSpeed: number;
+  maxSpeed: number;
+  /** Half-angle of the upward burst cone, in degrees. */
+  spreadDeg: number;
+  /** Downward acceleration, px/s². */
+  gravity: number;
+  /** Per-second velocity retention. Lower = more air resistance. */
+  drag: number;
+  /** Piece lifetime range, seconds. */
+  minLifetime: number;
+  maxLifetime: number;
+  minSize: number;
+  maxSize: number;
+  /** Spin rate range, revolutions/s. */
+  minSpin: number;
+  maxSpin: number;
+  colors: readonly string[];
+}
 
 interface Piece {
   x: number;
@@ -26,15 +53,35 @@ function between(min: number, max: number): number {
 /**
  * A one-shot celebratory burst, drawn on a full-screen overlay canvas.
  *
- * Hand-rolled rather than pulled from a library so every part of the look — colours,
- * count, spread, gravity, drag, lifetime — is tunable from `config.confetti` and can
- * be matched to the dial's palette.
+ * Hand-rolled rather than pulled from a library so every part of the look is tunable
+ * from the game's own config.
  *
- * Fires whenever `burstKey` changes to a new non-null value, so a repeat maximum
- * score sets it off again.
+ * Fires whenever `burstKey` changes to a new non-null value, so repeating the same
+ * result sets it off again.
  */
-export default function Confetti({ burstKey }: { burstKey: number | null }) {
+export default function Confetti({
+  burstKey,
+  config,
+  origin,
+}: {
+  burstKey: number | null;
+  config: ConfettiConfig;
+  /**
+   * Where to burst from, in viewport pixels. Given when the celebration belongs to a
+   * particular element — a button that was just pressed — rather than to the screen.
+   */
+  origin?: { x: number; y: number } | null;
+}) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
+
+  /**
+   * Read inside the effect but deliberately not a dependency: only `burstKey` should
+   * fire a burst. A new config object on a re-render must not launch confetti.
+   */
+  const settingsRef = useRef({ config, origin });
+  useEffect(() => {
+    settingsRef.current = { config, origin };
+  });
 
   useEffect(() => {
     if (burstKey === null) return;
@@ -47,6 +94,8 @@ export default function Confetti({ burstKey }: { burstKey: number | null }) {
     const context = canvas.getContext("2d");
     if (!context) return;
 
+    const { config: settings, origin: from } = settingsRef.current;
+
     const ratio = window.devicePixelRatio || 1;
     const width = window.innerWidth;
     const height = window.innerHeight;
@@ -54,27 +103,28 @@ export default function Confetti({ burstKey }: { burstKey: number | null }) {
     canvas.height = height * ratio;
     context.scale(ratio, ratio);
 
-    const originX = width * confetti.originX;
-    const originY = height * confetti.originY;
+    const originX = from ? from.x : width * settings.originX;
+    const originY = from ? from.y : height * settings.originY;
 
-    const pieces: Piece[] = Array.from({ length: confetti.pieceCount }, () => {
+    const pieces: Piece[] = Array.from({ length: settings.pieceCount }, () => {
       // Upward cone, spread either side of straight up.
       const angle =
         -Math.PI / 2 +
-        ((Math.random() * 2 - 1) * confetti.spreadDeg * Math.PI) / 180;
-      const speed = between(confetti.minSpeed, confetti.maxSpeed);
+        ((Math.random() * 2 - 1) * settings.spreadDeg * Math.PI) / 180;
+      const speed = between(settings.minSpeed, settings.maxSpeed);
 
       return {
         x: originX,
         y: originY,
         vx: Math.cos(angle) * speed,
         vy: Math.sin(angle) * speed,
-        size: between(confetti.minSize, confetti.maxSize),
-        color: confetti.colors[Math.floor(Math.random() * confetti.colors.length)],
+        size: between(settings.minSize, settings.maxSize),
+        color: settings.colors[Math.floor(Math.random() * settings.colors.length)],
         rotation: Math.random() * Math.PI * 2,
-        spin: between(confetti.minSpin, confetti.maxSpin) * (Math.random() < 0.5 ? -1 : 1),
+        spin:
+          between(settings.minSpin, settings.maxSpin) * (Math.random() < 0.5 ? -1 : 1),
         age: 0,
-        lifetime: between(confetti.minLifetime, confetti.maxLifetime),
+        lifetime: between(settings.minLifetime, settings.maxLifetime),
       };
     });
 
@@ -94,8 +144,8 @@ export default function Confetti({ burstKey }: { burstKey: number | null }) {
         if (piece.age >= piece.lifetime) continue;
         alive = true;
 
-        piece.vy += confetti.gravity * dt;
-        const damping = Math.pow(confetti.drag, dt);
+        piece.vy += settings.gravity * dt;
+        const damping = Math.pow(settings.drag, dt);
         piece.vx *= damping;
         piece.vy *= damping;
 
@@ -112,12 +162,7 @@ export default function Confetti({ burstKey }: { burstKey: number | null }) {
         context.rotate(piece.rotation);
         context.fillStyle = piece.color;
         // Squashed vertically as it spins, so pieces read as flakes rather than blocks.
-        context.fillRect(
-          -piece.size / 2,
-          -piece.size / 4,
-          piece.size,
-          piece.size / 2,
-        );
+        context.fillRect(-piece.size / 2, -piece.size / 4, piece.size, piece.size / 2);
         context.restore();
       }
 
