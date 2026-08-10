@@ -1,0 +1,143 @@
+/*
+ * The camera feed fills the viewport underneath everything: the site header (fixed,
+ * higher z), the settings gear (z 45) and the SPIN button (z 40) float above it.
+ * MindAR injects its own video and canvas into the container and sizes them itself —
+ * the container just has to have real dimensions before start().
+ */
+
+.screen {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  background: var(--color-bg);
+}
+
+.camera {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+
+/* Set only while the pointer is actually over the landed excerpt, so the one clickable
+ * thing on an otherwise inert camera view advertises itself. */
+.cameraOverImage {
+  cursor: zoom-in;
+}
+
+.status {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  color: var(--color-text-muted);
+  font-size: var(--text-base);
+  pointer-events: none;
+}
+
+.errorCard {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: min(24rem, calc(100vw - var(--space-6)));
+  padding: var(--space-5);
+
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+
+  background: color-mix(in srgb, var(--color-surface-raised) 94%, transparent);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  color: var(--color-text);
+  font-size: var(--text-sm);
+  line-height: 1.6;
+  text-align: center;
+}
+
+.retry {
+  align-self: center;
+  min-height: 2.5rem;
+  padding: var(--space-2) var(--space-5);
+  background: var(--color-accent);
+  border: 1px solid transparent;
+  border-radius: var(--radius-pill);
+  color: var(--color-accent-contrast);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  cursor: pointer;
+  transition: background var(--dur-fast) var(--ease-out);
+}
+
+.retry:hover {
+  background: var(--color-accent-hover);
+}
+
+.spin {
+  position: fixed;
+  bottom: var(--space-5);
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 40;
+
+  min-width: 9rem;
+  min-height: 3.25rem;
+  padding: var(--space-3) var(--space-6);
+
+  background: var(--color-accent);
+  border: 1px solid transparent;
+  border-radius: var(--radius-pill);
+  color: var(--color-accent-contrast);
+  font-family: var(--font-sans);
+  font-size: var(--text-lg);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  cursor: pointer;
+  box-shadow: var(--shadow-lg);
+  transition:
+    background var(--dur-fast) var(--ease-out),
+    box-shadow var(--dur-fast) var(--ease-out);
+}
+
+.spin:hover:not(:disabled) {
+  background: var(--color-accent-hover);
+  box-shadow: var(--shadow-glow);
+}
+
+.spin:disabled {
+  opacity: 0.65;
+  cursor: default;
+}
+
+.spinShake {
+  animation: shake var(--dur-base) var(--ease-out);
+}
+
+@keyframes shake {
+  0%,
+  100% {
+    transform: translateX(-50%);
+  }
+  20% {
+    transform: translateX(calc(-50% - 8px));
+  }
+  40% {
+    transform: translateX(calc(-50% + 8px));
+  }
+  60% {
+    transform: translateX(calc(-50% - 5px));
+  }
+  80% {
+    transform: translateX(calc(-50% + 5px));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .spinShake {
+    animation: none;
+  }
+}

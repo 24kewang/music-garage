@@ -1,0 +1,84 @@
+.tree,
+.branch {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.branch {
+  /* Indent one caret-width so files line up under their folder's name. */
+  padding-left: var(--space-5);
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: 2rem;
+  color: var(--color-text);
+  font-size: var(--text-sm);
+  cursor: pointer;
+}
+
+.folderLabel {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  cursor: pointer;
+}
+
+.checkbox {
+  flex: none;
+  width: 1rem;
+  height: 1rem;
+  accent-color: var(--color-accent);
+  cursor: pointer;
+}
+
+.name,
+.folderName {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.folderName {
+  font-weight: 600;
+}
+
+.caret {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 1.25rem;
+  height: 1.25rem;
+  padding: 0;
+  background: transparent;
+  border: none;
+  border-radius: var(--radius-sm);
+  color: var(--color-text-faint);
+  cursor: pointer;
+  transition: transform var(--dur-fast) var(--ease-out);
+}
+
+.caretCollapsed {
+  transform: rotate(-90deg);
+}
+
+.caret:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+/* File rows start after where a folder's caret sits, keeping checkboxes in a column. */
+.row > .checkbox:first-child {
+  margin-left: calc(1.25rem + var(--space-2));
+}
+
+.empty {
+  padding: var(--space-3) 0;
+  color: var(--color-text-faint);
+  font-size: var(--text-sm);
+}

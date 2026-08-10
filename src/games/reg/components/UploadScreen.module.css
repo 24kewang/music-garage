@@ -1,0 +1,132 @@
+/*
+ * The empty-library screen. Same full-height, centred-column treatment as the other
+ * games' stages; the drop zone doubles as the visual anchor so the page reads as
+ * "put your excerpts here" even before the buttons are noticed.
+ */
+
+.screen {
+  /* Break out of the app's centred column, like the other games. */
+  margin: calc(var(--space-7) * -1) calc(50% - 50vw) calc(var(--space-8) * -1);
+  min-height: 100dvh;
+  padding: var(--space-8) var(--space-5);
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+}
+
+.stage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-5);
+  width: 100%;
+  max-width: 34rem;
+  animation: stageIn var(--dur-slow) var(--ease-out) backwards;
+}
+
+@keyframes stageIn {
+  from {
+    opacity: 0;
+    transform: translateY(16px) scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.title {
+  font-family: var(--font-display);
+  font-size: var(--text-2xl);
+  color: var(--color-text);
+  text-align: center;
+}
+
+.tagline {
+  color: var(--color-text-muted);
+  font-size: var(--text-sm);
+  line-height: 1.6;
+  text-align: center;
+}
+
+.dropZone {
+  width: 100%;
+  padding: var(--space-7) var(--space-5);
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-5);
+
+  background: color-mix(in srgb, var(--color-surface) 80%, transparent);
+  border: 2px dashed var(--color-border-strong);
+  border-radius: var(--radius-xl);
+  transition:
+    border-color var(--dur-fast) var(--ease-out),
+    background var(--dur-fast) var(--ease-out);
+}
+
+.dropZoneActive {
+  border-color: var(--color-accent);
+  background: var(--color-accent-soft);
+}
+
+.dropHint {
+  color: var(--color-text-faint);
+  font-size: var(--text-sm);
+}
+
+.buttons {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-3);
+}
+
+.pick {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: 2.75rem;
+  padding: var(--space-2) var(--space-5);
+
+  background: var(--color-accent);
+  border: 1px solid transparent;
+  border-radius: var(--radius-pill);
+  color: var(--color-accent-contrast);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    background var(--dur-fast) var(--ease-out),
+    box-shadow var(--dur-fast) var(--ease-out);
+}
+
+.pick:hover:not(:disabled) {
+  background: var(--color-accent-hover);
+  box-shadow: var(--shadow-glow);
+}
+
+.pick:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.notice {
+  padding: var(--space-2) var(--space-4);
+  background: var(--color-warn-soft);
+  border: 1px solid var(--color-warn);
+  border-radius: var(--radius-md);
+  color: var(--color-text);
+  font-size: var(--text-sm);
+  text-align: center;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .stage {
+    animation: none;
+  }
+}

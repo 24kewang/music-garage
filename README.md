@@ -21,8 +21,9 @@ npm run dev        # http://localhost:3000
 | `npm run test:watch` | Tests in watch mode |
 | `npm run lint` | ESLint |
 
-**Microphone access needs a secure origin.** `localhost` counts, so `npm run dev`
-works; if you open the dev server from another device on your network it needs HTTPS.
+**Microphone and camera access need a secure origin.** `localhost` counts, so
+`npm run dev` works; if you open the dev server from another device on your network it
+needs HTTPS.
 
 ## Architecture
 
@@ -231,3 +232,39 @@ players, uneven volumes, different timbres and added noise — so it can be veri
 without a microphone. See
 [`ARCHITECTURE.md`](src/games/pitch-math/ARCHITECTURE.md) for the full reasoning and the
 measured thresholds.
+
+### 🔀 Random Excerpt Generator
+
+One player, a webcam, and their own practice library. Upload images of musical
+excerpts — loose files or whole nested folders — and they're kept in the browser's
+private file storage (OPFS), so the library survives reloads and nothing ever leaves
+the tab.
+
+The camera feed becomes a face filter: a box floats above your head, tracked in 3D as
+you move. Press **SPIN** and it riffles through your checked excerpts slot-machine
+style, slowing until it lands on a random one, captioned with a name built from the
+file's path (`orchestral/mahler/Symphony 5.png` → *orchestral - mahler - Symphony 5*).
+Practise what fate hands you, then spin again.
+
+The excerpt floats at head size, which is enough to recognise a piece but not to play
+it — so **clicking the excerpt itself opens it full-screen**, and the x, a click
+outside, or Escape closes it again. SPIN and the gear stay locked while it's open.
+
+The gear in the bottom-right has two tabs. **Files** is the library: a search bar, a
+collapsible checkbox tree mirroring your folder structure (folder checkboxes cascade),
+select/deselect-all, expand/collapse-all, ways to add more files, and a
+delete-everything escape hatch behind a confirmation. At least one excerpt must stay
+checked — SPIN buzzes and shakes otherwise. **Filter** is where the box lives: sliders
+for its left/right, up/down and near/far offset, overall size as a percentage, and
+whether the excerpt's name is shown at all. The filter follows the sliders live while
+you watch yourself, and your tuning is remembered.
+
+Offsets are measured in *face widths*, so the box holds its position as you move toward
+or away from the camera.
+
+Face tracking is [MindAR](https://github.com/hiukim/mind-ar-js) + three.js, loaded only
+on this page. The spin's cadence, the slider bounds, and the caption length budget are
+all tunable in [`config.ts`](src/games/reg/config.ts). See
+[`ARCHITECTURE.md`](src/games/reg/ARCHITECTURE.md) for the decisions — including why
+`imageOrientation: "flipY"` is load-bearing, how the render buffer is supersampled to
+make notation legible, and the two stubs (`canvas`, `fs`) that mind-ar needs to build.

@@ -8,6 +8,7 @@ import {
   HouseIcon,
   MicrophoneIcon,
   MusicNotesIcon,
+  ShuffleIcon,
   TargetIcon,
   WaveSineIcon,
   type Icon,
@@ -35,6 +36,7 @@ export const ICONS = {
   microphone: MicrophoneIcon,
   waveSine: WaveSineIcon,
   arrowClockwise: ArrowClockwiseIcon,
+  shuffle: ShuffleIcon,
 } as const satisfies Record<string, Icon>;
 
 /** Valid icon names. Typing `iconId` as this makes a typo a build error. */

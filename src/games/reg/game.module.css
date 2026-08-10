@@ -1,0 +1,35 @@
+/*
+ * Only the transitional states live here — the real screens (upload, filter) carry
+ * their own module CSS. These fill the viewport the same way the filter does so the
+ * page doesn't jump when the library scan resolves.
+ */
+
+.placeholder {
+  margin: calc(var(--space-7) * -1) calc(50% - 50vw) calc(var(--space-8) * -1);
+  min-height: 100dvh;
+  padding: var(--space-8) var(--space-5);
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-4);
+  box-sizing: border-box;
+
+  color: var(--color-text-muted);
+  font-size: var(--text-base);
+  text-align: center;
+}
+
+.unsupportedTitle {
+  font-family: var(--font-display);
+  font-size: var(--text-2xl);
+  color: var(--color-text);
+}
+
+.unsupportedBody {
+  max-width: 30rem;
+  color: var(--color-text-muted);
+  font-size: var(--text-sm);
+  line-height: 1.6;
+}
