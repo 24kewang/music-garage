@@ -21,6 +21,10 @@ export interface Settings {
   showCaption: boolean;
 }
 
+// Camera mode is deliberately *not* here. It is session state in Game.tsx: every visit
+// starts camera-free so the 3D stack is only fetched once a player asks for it, and a
+// stored preference would undo that on the very next load.
+
 export const DEFAULT_SETTINGS: Settings = {
   offsetX: config.scene.boxOffset.x,
   offsetY: config.scene.boxOffset.y,

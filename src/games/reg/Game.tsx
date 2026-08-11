@@ -26,6 +26,7 @@ import {
 import { partitionImages, type Incoming } from "./lib/upload";
 import FilterScreen from "./components/FilterScreen";
 import SettingsPanel from "./components/SettingsPanel";
+import StageScreen from "./components/StageScreen";
 import UploadScreen, { type UploadResult } from "./components/UploadScreen";
 import styles from "./game.module.css";
 
@@ -44,6 +45,19 @@ export default function Game() {
   const [settings, setSettings] = useState<Settings>(DEFAULT_SETTINGS);
   const [spinning, setSpinning] = useState(false);
   const [overlayOpen, setOverlayOpen] = useState(false);
+  // Camera mode is session state on purpose: every visit starts camera-free so the 3D
+  // stack is only fetched once a player asks for it. Persisting it would undo that on
+  // the next load. See lib/settings.ts.
+  const [useCamera, setUseCamera] = useState(false);
+  const [cameraBusy, setCameraBusy] = useState(false);
+
+  const changeUseCamera = useCallback((next: boolean) => {
+    setUseCamera(next);
+    // Locked optimistically, so there is no window between this click and
+    // FilterScreen's first report in which the switch is still live. FilterScreen
+    // clears it once the camera settles, either way.
+    if (next) setCameraBusy(true);
+  }, []);
   const saveTimerRef = useRef(0);
   const unsavedRef = useRef<Settings | null>(null);
 
@@ -165,20 +179,41 @@ export default function Game() {
 
   return (
     <>
-      <FilterScreen
-        checked={checkedList}
-        placement={placement}
-        showCaption={settings.showCaption}
-        spinning={spinning}
-        onSpinningChange={setSpinning}
-        onOverlayChange={setOverlayOpen}
-      />
+      {/*
+       * Conditional, never mounted-and-hidden. Hiding the filter would leave the camera
+       * running with its light on, and — worse — MindAR never removes the canvas it
+       * appends to the container, so a hidden screen would stack a dead canvas on every
+       * toggle. Unmounting makes React discard the subtree, orphaned canvas and all.
+       */}
+      {useCamera ? (
+        <FilterScreen
+          checked={checkedList}
+          placement={placement}
+          showCaption={settings.showCaption}
+          spinning={spinning}
+          onSpinningChange={setSpinning}
+          onOverlayChange={setOverlayOpen}
+          onBusyChange={setCameraBusy}
+        />
+      ) : (
+        <StageScreen
+          checked={checkedList}
+          scalePercent={settings.scalePercent}
+          showCaption={settings.showCaption}
+          spinning={spinning}
+          onSpinningChange={setSpinning}
+          onOverlayChange={setOverlayOpen}
+        />
+      )}
       <SettingsPanel
         root={tree}
         checked={checked}
         disabled={spinning || overlayOpen}
         settings={settings}
         onSettingsChange={updateSettings}
+        useCamera={useCamera}
+        cameraBusy={cameraBusy}
+        onUseCameraChange={changeUseCamera}
         onToggle={handleToggle}
         onToggleFiles={handleToggleFiles}
         onUpload={handleUpload}

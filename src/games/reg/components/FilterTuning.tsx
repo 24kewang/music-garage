@@ -14,11 +14,20 @@ import styles from "./FilterTuning.module.css";
 export default function FilterTuning({
   settings,
   onChange,
+  useCamera,
+  cameraBusy,
+  onUseCameraChange,
 }: {
   settings: Settings;
   onChange: (settings: Settings) => void;
+  /** Session state, not a stored setting — see lib/settings.ts. */
+  useCamera: boolean;
+  /** The camera is starting; switching back now would tear down a half-built scene. */
+  cameraBusy: boolean;
+  onUseCameraChange: (useCamera: boolean) => void;
 }) {
   const captionId = useId();
+  const cameraLabelId = useId();
   const isDefault =
     settings.offsetX === DEFAULT_SETTINGS.offsetX &&
     settings.offsetY === DEFAULT_SETTINGS.offsetY &&
@@ -26,13 +35,37 @@ export default function FilterTuning({
     settings.scalePercent === DEFAULT_SETTINGS.scalePercent &&
     settings.showCaption === DEFAULT_SETTINGS.showCaption;
 
+  // Nothing to position against without a head to track, so the offsets go quiet —
+  // greyed rather than hidden, so the tab keeps its shape as the mode flips.
+  const positional = !useCamera;
+
   return (
     <div className={styles.root}>
+      <div className={styles.switchField}>
+        <span className={styles.label} id={cameraLabelId}>
+          Camera mode
+        </span>
+        <button
+          type="button"
+          role="switch"
+          aria-checked={useCamera}
+          aria-labelledby={cameraLabelId}
+          className={styles.switch}
+          disabled={cameraBusy}
+          onClick={() => onUseCameraChange(!useCamera)}
+        >
+          <span className={styles.switchThumb} />
+        </button>
+      </div>
+
+      <div className={styles.divider} />
+
       <Slider
         label="Left / right"
         bounds={config.tuning.offsetX}
         value={settings.offsetX}
         format={formatOffset}
+        disabled={positional}
         onChange={(offsetX) => onChange({ ...settings, offsetX })}
       />
       <Slider
@@ -40,6 +73,7 @@ export default function FilterTuning({
         bounds={config.tuning.offsetY}
         value={settings.offsetY}
         format={formatOffset}
+        disabled={positional}
         onChange={(offsetY) => onChange({ ...settings, offsetY })}
       />
       <Slider
@@ -47,6 +81,7 @@ export default function FilterTuning({
         bounds={config.tuning.offsetZ}
         value={settings.offsetZ}
         format={formatOffset}
+        disabled={positional}
         onChange={(offsetZ) => onChange({ ...settings, offsetZ })}
       />
       <Slider
@@ -58,8 +93,9 @@ export default function FilterTuning({
       />
 
       <p className={styles.hint}>
-        Position is measured in face widths, so the box keeps its place as you move
-        closer or further away.
+        {positional
+          ? "Position only applies to the camera filter. Size scales the excerpt and its name."
+          : "Position is measured in face widths, so the box keeps its place as you move closer or further away."}
       </p>
 
       <div className={styles.field}>
@@ -96,18 +132,20 @@ function Slider({
   bounds,
   value,
   format,
+  disabled = false,
   onChange,
 }: {
   label: string;
   bounds: { min: number; max: number; step: number };
   value: number;
   format: (value: number) => string;
+  disabled?: boolean;
   onChange: (value: number) => void;
 }) {
   const id = useId();
 
   return (
-    <div className={styles.field}>
+    <div className={`${styles.field} ${disabled ? styles.fieldDisabled : ""}`}>
       <div className={styles.header}>
         <label className={styles.label} htmlFor={id}>
           {label}
@@ -124,6 +162,7 @@ function Slider({
         max={bounds.max}
         step={bounds.step}
         value={value}
+        disabled={disabled}
         onChange={(event) => onChange(event.target.valueAsNumber)}
       />
     </div>

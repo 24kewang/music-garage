@@ -256,10 +256,17 @@ expand/collapse-all, an "only show selected" filter that composes with the searc
 to add more files, and a delete-everything escape hatch behind a confirmation.
 Select/deselect-all applies to whatever the tree is currently showing, so during a search
 it only touches the files that search surfaced. At least one excerpt must stay checked —
-SPIN buzzes and shakes otherwise. **Filter** is where the box lives: sliders
-for its left/right, up/down and near/far offset, overall size as a percentage, and
-whether the excerpt's name is shown at all. The filter follows the sliders live while
-you watch yourself, and your tuning is remembered.
+SPIN buzzes and shakes otherwise. **Filter** is where the box lives: a
+**Camera mode** switch, sliders for the box's left/right, up/down and near/far offset,
+overall size as a percentage, and whether the excerpt's name is shown at all. The filter
+follows the sliders live while you watch yourself, and your tuning is remembered.
+
+**Camera mode starts off.** Without it the same slot machine runs as an ordinary picker —
+the excerpt centred on screen with its name underneath, still clickable to enlarge — asking
+for no camera permission and loading none of the 3D stack, so a visit that never turns the
+camera on never fetches it. The position sliders grey out there, since there's no head to
+track. The switch is session-only: reload and you're back to camera-free. It also locks
+while the camera is starting, so a half-built scene can't be torn down under itself.
 
 Offsets are measured in *face widths*, so the box holds its position as you move toward
 or away from the camera.

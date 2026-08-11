@@ -50,6 +50,10 @@ describe("coerceSettings", () => {
     }
   });
 
+  it("ignores a stored camera mode — it is session state, not a setting", () => {
+    expect("useCamera" in coerceSettings({ useCamera: true })).toBe(false);
+  });
+
   it("defaults each bad field individually, keeping its siblings", () => {
     const result = coerceSettings({
       offsetX: 0.4,

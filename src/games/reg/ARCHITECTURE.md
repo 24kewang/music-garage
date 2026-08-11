@@ -10,7 +10,19 @@ box above their head in the webcam feed, tracked in 3D. SPIN cycles the *checked
 images slot-machine style — fast, then slower — and lands on a random one, captioned
 with a name derived from its file path. A settings gear opens two tabs: **Files** (a
 searchable checkbox tree with select-all, add-more and delete-everything) and
-**Filter** (sliders for where the box sits above the head, and how big it is).
+**Filter** (the camera on/off switch, where the box sits above the head, and how big).
+
+**Two modes, and camera-free is the default.** With the camera off the same slot machine
+runs as plain DOM — the excerpt centred on screen with its name underneath, no feed and no
+3D. It is not a lesser mode: it needs no camera permission and loads none of the 3D stack
+(§"Face tracking is *not* fully local"), so it is the offline, permission-free path
+through the game, and starting there is what keeps a first visit from fetching ~2 MB of
+tracking code and hitting two CDNs for a player who may never turn the camera on.
+
+Camera mode is therefore **session state in `Game.tsx`, not a stored setting**. Persisting
+it would undo the whole point on the next load, so a reload always returns to camera-free.
+Stored settings from before this rule are harmless: `coerceSettings` only reads fields it
+knows, so a leftover `useCamera` key is ignored.
 
 Two screens only: **upload** (library empty) and **filter** (library has images).
 Which one shows follows from a single async fact — what `listImagePaths()` finds.
@@ -23,12 +35,16 @@ config.ts             every tunable — spin feel, box placement, caption budget
 game.module.css       only the loading/unsupported placeholders
 components/
   UploadScreen        file picker + folder picker + drag-drop, busy/skipped notices
-  FilterScreen        camera lifecycle, SPIN button, intro→spinning→result FSM
+  FilterScreen        camera mode: MindAR lifecycle, hit test, derived caption
+  StageScreen         camera-free mode: the same reel as DOM, no 3D imported
+  SpinButton          the one SPIN pill, shared by both modes
   SettingsPanel       gear + panel: the Files/Filter tabs, and collapse state
   FileTree            recursive checkbox tree; derived folder state; filtered rows
-  FilterTuning        the Filter tab: x/y/z + size sliders, caption toggle, reset
+  FilterTuning        the Filter tab: camera switch, x/y/z + size, caption, reset
   ExcerptOverlay      the enlarged still of the landed excerpt
 lib/
+  useSpinReel.ts      intro→spinning→result, shared by both modes    (browser)
+  images.ts           blob → decoded <img> + pool, for the flat mode (browser)
   paths.ts            normalise / split / extension allowlist          (pure, tested)
   tree.ts             build, cascade, derived check state, search      (pure, tested)
   names.ts            path → caption, budgeted truncation              (pure, tested)
@@ -153,6 +169,81 @@ MindAR's anchor group has `matrixAutoUpdate = false` and its matrix is overwritt
 every tracked frame, so never touch its transform; the child `box` is the only safe
 place. That matrix is a uniform positive scale (1 unit ≈ one face width) with no
 mirroring, so a child scale of 2.5 introduces no flipped normals or reversed text.
+
+### The camera switch is a lifecycle boundary, not a visibility toggle
+
+`Game.tsx` **conditionally renders** `FilterScreen` or `StageScreen`. Never hide a mounted
+`FilterScreen` instead: the camera would keep running with its light on, and — the subtler
+half — **MindAR never removes the canvas it appended to the container**, the same fact
+that makes `forceContextLoss()` unusable (§`stop()`). A hidden-but-mounted screen would
+stack one dead canvas per toggle. Unmounting makes React discard the container subtree,
+orphaned canvas included, and runs the existing cleanup: pending swaps cancelled,
+`scene.stop()`, `pool.disposeAll()`.
+
+Switching back on builds a fresh scene. `getUserMedia` does not re-prompt because the
+permission persists, and re-setting `Texture.DEFAULT_ANISOTROPY` is harmless. The stress
+case is **rapid toggling**, since `createRegScene` is async and the cleanup can fire while
+it is still pending; the `cancelled` branch plus the idempotent `stop()` cover it, and the
+thing to check by hand is that the webcam light ends up off.
+
+### MindAR's own UI is switched off, and why that was a bug
+
+`uiLoading` / `uiScanning` / `uiError` are all passed `"no"`. Not cosmetic: `UI._loadHTML`
+(`mind-ar/src/ui/ui.js:65`) appends those overlays to **`document.body`**, not to our
+container, and `mindar.stop()` never hides them. So any teardown during `start()` unmounted
+our screen and left MindAR's 120px loader spinning in the body forever — reachable from the
+camera-mode switch, from navigating away mid-load, and from Strict Mode's double mount.
+With `"no"`, `UI` builds no elements and every `show*`/`hide*` call is a no-op. We render
+"Starting camera…" and our own error card, which is why these overlays were only ever
+visible as that bug.
+
+(Its `<style>` block is appended to `<head>` unconditionally, so one duplicate style
+element per camera entry remains. Identical CSS, no visual effect, not worth patching.)
+
+### Teardown during `start()` is its own hazard
+
+`started` only becomes true *after* `await mindar.start()` resolves, so a `stop()` in that
+window used to skip `mindar.stop()` entirely and **leave the webcam running**. Two rules
+keep it safe:
+
+- `stop()` calls `mindar.stop()` when `started`, and otherwise releases by hand
+  (`releaseCamera`) — `mindar.stop()` reads `video.srcObject.getTracks()` and would throw
+  on a null `srcObject`.
+- `mindar.video = null` only happens once nothing is pending. Nulling it mid-start is
+  actively worse than leaving it: `_startVideo`'s `getUserMedia` callback then runs
+  `this.video.srcObject = stream` against null, throwing inside the promise and stranding
+  a live MediaStream that nothing references and nothing can switch off.
+- `start()` therefore re-checks `stopped` after its await and, if teardown already
+  happened, calls `mindar.stop()` (safe now that `srcObject` exists), nulls `video`, and
+  returns without installing the render loop or the resize listener.
+
+The switch being locked while `cameraState === "starting"` is the UI half of the same
+concern; these rules are what make the underlying path safe regardless.
+
+### One reel, two media
+
+`useSpinReel` owns the cadence, the phase machine and the vibrate-reject; the medium
+arrives as `preload` / `onSpinStart` / `show` callbacks. Both modes therefore spin
+identically by construction rather than by two implementations agreeing. It keeps its
+options in a ref **synced in an effect, not written during render** — the
+`react-hooks/refs` rule forbids render-time ref writes, and `spin()` only runs from a
+click, by which point effects have flushed.
+
+`cancel()` exists for one specific hazard: `FilterScreen` retries the camera by rebuilding
+the scene without remounting, and a queued swap would otherwise call `setImage` on a
+disposed scene.
+
+`StageScreen` renders from a `frameSrc` **state** value rather than reaching into its pool
+during render (same lint rule, and the honest reason: what paints must be state). `show`
+does the pool lookup, and it runs from a timeout, not a render.
+
+### The flat mode's images need URL lifetimes; the textures don't
+
+`images.ts` is the DOM counterpart of `textures.ts`, and the asymmetry is deliberate. An
+`ImageBitmap` needs no object URL, so `textures.ts` has nothing to revoke; an `<img>` does,
+so `images.ts` is the one place in the game managing URL lifetimes. `loadImage` also
+**awaits `img.decode()`** — a loaded-but-undecoded image still costs a decode on first
+paint, and at a 70 ms step that shows as a blank frame.
 
 ### Clicking the excerpt is a ray cast, not a rectangle
 
@@ -387,3 +478,14 @@ and `build` without a murmur, because the symptom lives in what the compositor p
 over a canvas MindAR forgot to remove. Anything touching `stop()` needs a real reload —
 and in development, where Strict Mode mounts twice, that is the case that actually
 exercises it.
+
+**And the camera switch.** Flipping it exercises exactly that teardown path. Toggle it a
+few times and confirm the webcam light ends off and the container holds one canvas, not a
+stack of them. The nastier case is interrupting a *start* — flip on and navigate away while
+"Starting camera…" is up, then check the light is off and no spinner is left in `<body>`.
+
+**Known gap.** `_startVideo` calls `reject()` with **no argument** (`three.js:143`), so
+`isPermissionDenied(error)` always receives `undefined` and the "permission was denied"
+branch of the error card is unreachable — a denied camera currently reports the generic
+"couldn't be started" message. Telling them apart needs another signal
+(`navigator.permissions.query({ name: "camera" })`, which Safari lacks).

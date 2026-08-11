@@ -1,0 +1,73 @@
+/*
+ * Fixed bottom-centre, above the camera feed (z 0) and below the settings gear (z 45).
+ *
+ * The shake keyframes are written against `translateX(-50%)` because that is what
+ * centres the button — the centring and the animation have to stay together or the
+ * shake flings it sideways.
+ */
+
+.spin {
+  position: fixed;
+  bottom: var(--space-5);
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 40;
+
+  min-width: 9rem;
+  min-height: 3.25rem;
+  padding: var(--space-3) var(--space-6);
+
+  background: var(--color-accent);
+  border: 1px solid transparent;
+  border-radius: var(--radius-pill);
+  color: var(--color-accent-contrast);
+  font-family: var(--font-sans);
+  font-size: var(--text-lg);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  cursor: pointer;
+  box-shadow: var(--shadow-lg);
+  transition:
+    background var(--dur-fast) var(--ease-out),
+    box-shadow var(--dur-fast) var(--ease-out);
+}
+
+.spin:hover:not(:disabled) {
+  background: var(--color-accent-hover);
+  box-shadow: var(--shadow-glow);
+}
+
+.spin:disabled {
+  opacity: 0.65;
+  cursor: default;
+}
+
+.spinShake {
+  animation: shake var(--dur-base) var(--ease-out);
+}
+
+@keyframes shake {
+  0%,
+  100% {
+    transform: translateX(-50%);
+  }
+  20% {
+    transform: translateX(calc(-50% - 8px));
+  }
+  40% {
+    transform: translateX(calc(-50% + 8px));
+  }
+  60% {
+    transform: translateX(calc(-50% - 5px));
+  }
+  80% {
+    transform: translateX(calc(-50% + 5px));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .spinShake {
+    animation: none;
+  }
+}

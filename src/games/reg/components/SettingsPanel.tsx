@@ -53,6 +53,9 @@ export default function SettingsPanel({
   disabled,
   settings,
   onSettingsChange,
+  useCamera,
+  cameraBusy,
+  onUseCameraChange,
   onToggle,
   onToggleFiles,
   onUpload,
@@ -64,6 +67,10 @@ export default function SettingsPanel({
   disabled: boolean;
   settings: Settings;
   onSettingsChange: (settings: Settings) => void;
+  /** Camera mode is session state, not a stored setting — see lib/settings.ts. */
+  useCamera: boolean;
+  cameraBusy: boolean;
+  onUseCameraChange: (useCamera: boolean) => void;
   onToggle: (node: TreeNode, value: boolean) => void;
   /** Check or uncheck exactly these files — the ones the tree is showing. */
   onToggleFiles: (files: readonly string[], value: boolean) => void;
@@ -330,7 +337,13 @@ export default function SettingsPanel({
               role="tabpanel"
               aria-labelledby={tabId("filter")}
             >
-              <FilterTuning settings={settings} onChange={onSettingsChange} />
+              <FilterTuning
+                settings={settings}
+                onChange={onSettingsChange}
+                useCamera={useCamera}
+                cameraBusy={cameraBusy}
+                onUseCameraChange={onUseCameraChange}
+              />
             </div>
           )}
         </div>

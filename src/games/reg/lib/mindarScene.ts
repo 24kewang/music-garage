@@ -56,6 +56,14 @@ export async function createRegScene(
 
   const mindar = new MindARThree({
     container,
+    // MindAR's own chrome is off because it appends its overlays to `document.body`,
+    // not to our container, and `mindar.stop()` never hides them. Any teardown during
+    // start() therefore left its 120px loader spinning in the body forever, over a page
+    // whose camera screen had already unmounted. We render "Starting camera…" and our
+    // own error card anyway, so these were only ever visible as that bug.
+    uiLoading: "no",
+    uiScanning: "no",
+    uiError: "no",
     filterMinCF: cfg.filter.minCF ?? null,
     filterBeta: cfg.filter.beta ?? null,
   });
@@ -171,9 +179,35 @@ export async function createRegScene(
   // awaiting the camera, and the resolved start() then tears down again. Disposal must
   // not run twice.
   let stopped = false;
+
+  /** Release the camera by hand, for the window where mindar.stop() would throw. */
+  const releaseCamera = () => {
+    const source = mindar.video?.srcObject;
+    if (source instanceof MediaStream) {
+      for (const track of source.getTracks()) track.stop();
+    }
+    mindar.video?.remove();
+  };
+
   return {
     async start() {
-      await mindar.start();
+      try {
+        await mindar.start();
+      } catch (error) {
+        // Nothing was acquired, but the leaked resize listener still needs neutering.
+        if (stopped) mindar.video = null;
+        throw error;
+      }
+
+      if (stopped) {
+        // Torn down while the camera was starting. stop() skipped mindar.stop() because
+        // `started` was still false, so the tracks it has just acquired are live and
+        // nothing else will ever release them — the webcam light would stay on.
+        mindar.stop();
+        mindar.video = null;
+        return;
+      }
+
       started = true;
       applyPixelRatio();
       window.addEventListener("resize", onResize);
@@ -186,13 +220,23 @@ export async function createRegScene(
       renderer.setAnimationLoop(null);
       window.removeEventListener("resize", onResize);
       window.cancelAnimationFrame(resizeFrame);
-      if (started) mindar.stop();
+      if (started) {
+        mindar.stop();
+        // MindAR binds its own resize listener inline, so it can never be removed, and
+        // its guard only bails when `video` is falsy — stop() merely detaches the
+        // element. Without this, a later resize runs setSize(0, 0) on the dead instance
+        // and keeps this whole scene graph alive.
+        mindar.video = null;
+      } else {
+        // Mid-start: mindar.stop() would throw reading tracks off a null srcObject, so
+        // release whatever exists by hand. `video` is deliberately left in place —
+        // _startVideo may still be awaiting getUserMedia, and nulling it makes its
+        // `this.video.srcObject = stream` throw, stranding a live stream that nothing
+        // holds a reference to and nothing can switch off. start() nulls it instead,
+        // once the stream has actually been released.
+        releaseCamera();
+      }
       started = false;
-      // MindAR binds its own resize listener inline, so it can never be removed, and
-      // its guard only bails when `video` is falsy — stop() merely detaches the
-      // element. Without this, a later resize runs setSize(0, 0) on the dead instance
-      // and keeps this whole scene graph alive.
-      mindar.video = null;
 
       // Our own geometry, materials and text textures. The excerpt textures belong to
       // the TexturePool, which disposes them itself — never `imageMaterial.map` here.

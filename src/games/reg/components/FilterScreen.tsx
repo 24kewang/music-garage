@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { config } from "../config";
 import { excerptName } from "../lib/names";
 import {
@@ -8,13 +8,13 @@ import {
   type BoxPlacement,
   type RegScene,
 } from "../lib/mindarScene";
-import { buildSpinPlan, pickTargetIndex } from "../lib/spin";
 import { TexturePool } from "../lib/textures";
+import { useSpinReel } from "../lib/useSpinReel";
 import ExcerptOverlay from "./ExcerptOverlay";
+import SpinButton from "./SpinButton";
 import styles from "./FilterScreen.module.css";
 
 type CameraState = "starting" | "ready" | "denied" | "failed";
-type Phase = "intro" | "spinning" | "result";
 
 /**
  * The filter itself: MindAR's camera feed filling the viewport, the SPIN button,
@@ -28,6 +28,7 @@ export default function FilterScreen({
   spinning,
   onSpinningChange,
   onOverlayChange,
+  onBusyChange,
 }: {
   /** Checked excerpt paths, in stable library order. */
   checked: readonly string[];
@@ -39,20 +40,17 @@ export default function FilterScreen({
   onSpinningChange: (spinning: boolean) => void;
   /** Lets the shell lock the settings gear while the enlarged view is open. */
   onOverlayChange: (open: boolean) => void;
+  /** Lets the shell lock the camera-mode switch while the camera is starting. */
+  onBusyChange: (busy: boolean) => void;
 }) {
   const [cameraState, setCameraState] = useState<CameraState>("starting");
-  const [phase, setPhase] = useState<Phase>("intro");
-  const [shaking, setShaking] = useState(false);
   const [retryKey, setRetryKey] = useState(0);
-  /** The excerpt the last spin landed on — the caption and overlay both need it. */
-  const [landed, setLanded] = useState<string | null>(null);
   const [overlayPath, setOverlayPath] = useState<string | null>(null);
   const [overImage, setOverImage] = useState(false);
 
   const containerRef = useRef<HTMLDivElement | null>(null);
   const sceneRef = useRef<RegScene | null>(null);
   const poolRef = useRef<TexturePool | null>(null);
-  const timeoutsRef = useRef<number[]>([]);
   // Mirrors the latest placement so scene creation can read it without the camera
   // effect depending on it — a dependency there would restart the webcam on every
   // slider tick. Seeded with the first value, then kept current by the effect below,
@@ -65,6 +63,31 @@ export default function FilterScreen({
     placementRef.current = placement;
     sceneRef.current?.setPlacement(placement);
   }, [placement]);
+
+  const preload = useCallback(async (paths: readonly string[]) => {
+    await poolRef.current?.ensure(paths);
+  }, []);
+
+  const onSpinStart = useCallback(() => {
+    sceneRef.current?.setCaption(null);
+    sceneRef.current?.setMode("image");
+  }, []);
+
+  const show = useCallback((path: string) => {
+    const loaded = poolRef.current?.get(path);
+    if (loaded) sceneRef.current?.setImage(loaded);
+  }, []);
+
+  const reel = useSpinReel({
+    checked,
+    ready: cameraState === "ready",
+    spinning,
+    onSpinningChange,
+    preload,
+    onSpinStart,
+    show,
+  });
+  const { phase, landed, shaking, cancel } = reel;
 
   useEffect(() => {
     const container = containerRef.current;
@@ -97,14 +120,14 @@ export default function FilterScreen({
 
     return () => {
       cancelled = true;
-      for (const id of timeoutsRef.current) window.clearTimeout(id);
-      timeoutsRef.current = [];
+      // Without this a queued swap would call setImage on a disposed scene.
+      cancel();
       sceneRef.current?.stop();
       sceneRef.current = null;
       pool.disposeAll();
       poolRef.current = null;
     };
-  }, [retryKey]);
+  }, [retryKey, cancel]);
 
   // Keep the texture cache tracking the selection so SPIN starts instantly. Above
   // the preload cap, spins load just their own plan's textures instead.
@@ -134,52 +157,12 @@ export default function FilterScreen({
     onOverlayChange(overlayPath !== null);
   }, [overlayPath, onOverlayChange]);
 
-  const spin = async () => {
-    const scene = sceneRef.current;
-    const pool = poolRef.current;
-    if (spinning || cameraState !== "ready" || !scene || !pool) return;
-
-    if (checked.length === 0) {
-      navigator.vibrate?.([...config.reject.vibratePattern]);
-      setShaking(true);
-      window.setTimeout(() => setShaking(false), config.reject.shakeMs);
-      return;
-    }
-
-    onSpinningChange(true);
-    setPhase("spinning");
-    setLanded(null);
-    setOverImage(false);
-    try {
-      const target = pickTargetIndex(checked.length, Math.random);
-      const plan = buildSpinPlan(checked.length, target, config.spin, Math.random);
-      await pool.ensure([...new Set(plan.map((step) => checked[step.pathIndex]))]);
-
-      scene.setCaption(null);
-      scene.setMode("image");
-
-      let elapsed = 0;
-      plan.forEach((step, index) => {
-        elapsed += step.delayMs;
-        const path = checked[step.pathIndex];
-        const isLast = index === plan.length - 1;
-        const id = window.setTimeout(() => {
-          const loaded = pool.get(path);
-          if (loaded) scene.setImage(loaded);
-          if (isLast) {
-            // The caption follows from `landed` in the effect above.
-            setLanded(path);
-            setPhase("result");
-            onSpinningChange(false);
-          }
-        }, elapsed);
-        timeoutsRef.current.push(id);
-      });
-    } catch {
-      setPhase("intro");
-      onSpinningChange(false);
-    }
-  };
+  // And to lock the camera-mode switch until the camera has settled either way. Both
+  // "denied" and "failed" release it, so a refused camera doesn't trap the player here.
+  useEffect(() => {
+    onBusyChange(cameraState === "starting");
+    return () => onBusyChange(false);
+  }, [cameraState, onBusyChange]);
 
   /** Only the landed excerpt is clickable, and only where it actually is. */
   const canOpen =
@@ -234,16 +217,18 @@ export default function FilterScreen({
         </div>
       )}
 
-      <button
-        type="button"
-        className={`${styles.spin} ${shaking ? styles.spinShake : ""}`}
+      <SpinButton
+        phase={phase}
+        spinning={spinning}
+        shaking={shaking}
         // The overlay's backdrop covers this too; disabling keeps it off the tab order
         // as well.
         disabled={spinning || cameraState !== "ready" || overlayPath !== null}
-        onClick={() => void spin()}
-      >
-        {spinning ? "Spinning…" : phase === "result" ? "Spin again" : "Spin"}
-      </button>
+        onClick={() => {
+          setOverImage(false);
+          reel.spin();
+        }}
+      />
 
       {overlayPath !== null && (
         <ExcerptOverlay

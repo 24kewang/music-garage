@@ -14,6 +14,12 @@ declare module "mind-ar/dist/mindar-face-three.prod.js" {
   export class MindARThree {
     constructor(options: {
       container: HTMLElement;
+      /** "yes" (default) builds MindAR's own overlay, "no" builds none, anything else
+       *  is treated as a selector for an existing element. We pass "no" — see the
+       *  comment at the construction site. */
+      uiLoading?: "yes" | "no" | string;
+      uiScanning?: "yes" | "no" | string;
+      uiError?: "yes" | "no" | string;
       filterMinCF?: number | null;
       filterBeta?: number | null;
       userDeviceId?: string | null;
