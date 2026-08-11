@@ -97,55 +97,85 @@ export function folderCheckState(
   return "mixed";
 }
 
-/** Check or uncheck a node — folders cascade to every descendant file. Returns a new Set. */
-export function toggleNode(
-  node: TreeNode,
+/** Check or uncheck an explicit list of files. Returns a new Set. */
+export function togglePaths(
+  paths: readonly string[],
   checked: ReadonlySet<string>,
   value: boolean,
 ): Set<string> {
   const next = new Set(checked);
-  for (const path of fileDescendants(node)) {
+  for (const path of paths) {
     if (value) next.add(path);
     else next.delete(path);
   }
   return next;
 }
 
+
+/** The two filters the panel can apply to the tree, in one place. */
+export interface VisibilityFilter {
+  /** Case-insensitive name match; blank means no search. */
+  query: string;
+  /** Show only checked files. */
+  selectedOnly: boolean;
+  checked: ReadonlySet<string>;
+}
+
 /**
- * Search-mode visibility.
+ * Which nodes the tree should render.
  *
- * Returns null for a blank query (normal mode). Otherwise returns the set of node
- * paths to render: every node whose name matches the query case-insensitively, plus
- * each match's ancestor chain (so it has a place to hang) and all of its descendants
- * (so a matched folder shows what's inside it).
+ * Returns null when neither filter is active, meaning "show everything".
+ *
+ * Derived **file-first**: a file survives when it passes every active filter, and the
+ * visible folders are then exactly the ancestors of surviving files. Composing two
+ * ready-made visibility sets by intersection looks equivalent and isn't — a folder that
+ * is an ancestor of a matched-but-unchecked file *and* of a checked-but-unmatched file
+ * would survive with no visible children, leaving an empty folder in the tree. Deriving
+ * folders from the surviving files makes that structurally impossible.
+ *
+ * The search half keeps its original meaning: a file matches if its own name does, or if
+ * any folder above it does, so a matched folder still shows everything inside it.
  */
-export function searchVisiblePaths(
+export function visiblePaths(
   root: TreeNode,
-  query: string,
+  filter: VisibilityFilter,
 ): Set<string> | null {
-  const needle = query.trim().toLowerCase();
-  if (needle === "") return null;
+  const needle = filter.query.trim().toLowerCase();
+  if (needle === "" && !filter.selectedOnly) return null;
 
   const visible = new Set<string>();
 
-  const walk = (node: TreeNode, ancestors: readonly string[]): void => {
-    const matches =
-      node.path !== "" && node.name.toLowerCase().includes(needle);
-    if (matches) {
+  const walk = (
+    node: TreeNode,
+    ancestors: readonly string[],
+    ancestorMatched: boolean,
+  ): void => {
+    const matched =
+      ancestorMatched ||
+      (node.path !== "" && node.name.toLowerCase().includes(needle));
+
+    if (node.kind === "file") {
+      if (needle !== "" && !matched) return;
+      if (filter.selectedOnly && !filter.checked.has(node.path)) return;
+      visible.add(node.path);
       for (const ancestor of ancestors) visible.add(ancestor);
-      markSubtree(node, visible);
-    } else {
-      const nextAncestors =
-        node.path === "" ? ancestors : [...ancestors, node.path];
-      for (const child of node.children) walk(child, nextAncestors);
+      return;
     }
+
+    const nextAncestors =
+      node.path === "" ? ancestors : [...ancestors, node.path];
+    for (const child of node.children) walk(child, nextAncestors, matched);
   };
 
-  walk(root, []);
+  walk(root, [], false);
   return visible;
 }
 
-function markSubtree(node: TreeNode, visible: Set<string>): void {
-  if (node.path !== "") visible.add(node.path);
-  for (const child of node.children) markSubtree(child, visible);
+/** The files the tree is currently showing — all of them when unfiltered. */
+export function shownFiles(
+  root: TreeNode,
+  visible: ReadonlySet<string> | null,
+): string[] {
+  const files = fileDescendants(root);
+  return visible === null ? files : files.filter((path) => visible.has(path));
 }

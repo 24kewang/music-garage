@@ -252,9 +252,11 @@ outside, or Escape closes it again. SPIN and the gear stay locked while it's ope
 
 The gear in the bottom-right has two tabs. **Files** is the library: a search bar, a
 collapsible checkbox tree mirroring your folder structure (folder checkboxes cascade),
-select/deselect-all, expand/collapse-all, ways to add more files, and a
-delete-everything escape hatch behind a confirmation. At least one excerpt must stay
-checked — SPIN buzzes and shakes otherwise. **Filter** is where the box lives: sliders
+expand/collapse-all, an "only show selected" filter that composes with the search, ways
+to add more files, and a delete-everything escape hatch behind a confirmation.
+Select/deselect-all applies to whatever the tree is currently showing, so during a search
+it only touches the files that search surfaced. At least one excerpt must stay checked —
+SPIN buzzes and shakes otherwise. **Filter** is where the box lives: sliders
 for its left/right, up/down and near/far offset, overall size as a percentage, and
 whether the excerpt's name is shown at all. The filter follows the sliders live while
 you watch yourself, and your tuning is remembered.

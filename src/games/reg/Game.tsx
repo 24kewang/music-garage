@@ -17,7 +17,12 @@ import {
   saveSettings,
   type Settings,
 } from "./lib/settings";
-import { buildTree, toggleNode, type TreeNode } from "./lib/tree";
+import {
+  buildTree,
+  fileDescendants,
+  togglePaths,
+  type TreeNode,
+} from "./lib/tree";
 import { partitionImages, type Incoming } from "./lib/upload";
 import FilterScreen from "./components/FilterScreen";
 import SettingsPanel from "./components/SettingsPanel";
@@ -101,21 +106,20 @@ export default function Game() {
     [],
   );
 
-  const handleToggle = useCallback(
-    (node: TreeNode, value: boolean) => {
+  const handleToggleFiles = useCallback(
+    (files: readonly string[], value: boolean) => {
       const all = paths ?? [];
-      const nextChecked = toggleNode(node, checked, value);
+      const nextChecked = togglePaths(files, checked, value);
       applyExcluded(new Set(all.filter((p) => !nextChecked.has(p))), all);
     },
     [paths, checked, applyExcluded],
   );
 
-  const handleToggleAll = useCallback(
-    (value: boolean) => {
-      const all = paths ?? [];
-      applyExcluded(value ? new Set() : new Set(all), all);
+  const handleToggle = useCallback(
+    (node: TreeNode, value: boolean) => {
+      handleToggleFiles(fileDescendants(node), value);
     },
-    [paths, applyExcluded],
+    [handleToggleFiles],
   );
 
   const handleUpload = useCallback(
@@ -176,7 +180,7 @@ export default function Game() {
         settings={settings}
         onSettingsChange={updateSettings}
         onToggle={handleToggle}
-        onToggleAll={handleToggleAll}
+        onToggleFiles={handleToggleFiles}
         onUpload={handleUpload}
         onDeleteAll={handleDeleteAll}
       />

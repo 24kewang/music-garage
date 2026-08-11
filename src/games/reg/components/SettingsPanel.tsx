@@ -16,7 +16,12 @@ import {
 } from "@phosphor-icons/react";
 import { useDismiss } from "@/shared/hooks/useDismiss";
 import type { Settings } from "../lib/settings";
-import { folderPaths, searchVisiblePaths, type TreeNode } from "../lib/tree";
+import {
+  folderPaths,
+  shownFiles,
+  visiblePaths,
+  type TreeNode,
+} from "../lib/tree";
 import {
   fromDirectoryInput,
   fromFileList,
@@ -49,7 +54,7 @@ export default function SettingsPanel({
   settings,
   onSettingsChange,
   onToggle,
-  onToggleAll,
+  onToggleFiles,
   onUpload,
   onDeleteAll,
 }: {
@@ -60,7 +65,8 @@ export default function SettingsPanel({
   settings: Settings;
   onSettingsChange: (settings: Settings) => void;
   onToggle: (node: TreeNode, value: boolean) => void;
-  onToggleAll: (value: boolean) => void;
+  /** Check or uncheck exactly these files — the ones the tree is showing. */
+  onToggleFiles: (files: readonly string[], value: boolean) => void;
   onUpload: (incoming: Incoming[]) => Promise<UploadResult>;
   onDeleteAll: () => Promise<void>;
 }) {
@@ -69,6 +75,9 @@ export default function SettingsPanel({
   // over and over, and landing back on Files every time would be a nuisance.
   const [tab, setTab] = useState<TabId>("files");
   const [query, setQuery] = useState("");
+  // A browsing aid, like the query and the collapse state: session-only, and left alone
+  // by close() so it survives reopening the panel.
+  const [selectedOnly, setSelectedOnly] = useState(false);
   // Lives here rather than in FileTree so Expand/Collapse all can drive it, and so it
   // isn't forgotten every time the panel closes.
   const [collapsed, setCollapsed] = useState<ReadonlySet<string>>(new Set());
@@ -80,6 +89,7 @@ export default function SettingsPanel({
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const folderInputRef = useRef<HTMLInputElement | null>(null);
   const panelId = useId();
+  const selectedOnlyId = useId();
   const tabId = (id: TabId) => `${panelId}-tab-${id}`;
 
   const close = useCallback(() => {
@@ -89,9 +99,16 @@ export default function SettingsPanel({
   }, []);
   useDismiss(open, rootRef, close);
 
-  const visible = useMemo(() => searchVisiblePaths(root, query), [root, query]);
-  const totalFiles = useMemo(() => countFiles(root), [root]);
-  const allChecked = totalFiles > 0 && checked.size === totalFiles;
+  const searching = query.trim() !== "";
+  const visible = useMemo(
+    () => visiblePaths(root, { query, selectedOnly, checked }),
+    [root, query, selectedOnly, checked],
+  );
+  // Select/Deselect all acts on exactly what the tree is showing, so during a search it
+  // leaves the rest of the library alone.
+  const shown = useMemo(() => shownFiles(root, visible), [root, visible]);
+  const allShownChecked =
+    shown.length > 0 && shown.every((path) => checked.has(path));
 
   const folders = useMemo(() => folderPaths(root), [root]);
   const allCollapsed =
@@ -229,16 +246,17 @@ export default function SettingsPanel({
                   <button
                     type="button"
                     className={styles.action}
-                    onClick={() => onToggleAll(!allChecked)}
+                    disabled={shown.length === 0}
+                    onClick={() => onToggleFiles(shown, !allShownChecked)}
                   >
-                    {allChecked ? "Deselect all" : "Select all"}
+                    {allShownChecked ? "Deselect all" : "Select all"}
                   </button>
                   <button
                     type="button"
                     className={styles.action}
                     // Search force-expands every visible node, so collapsing would
                     // have no visible effect while one is active.
-                    disabled={folders.length === 0 || visible !== null}
+                    disabled={folders.length === 0 || searching}
                     onClick={() =>
                       setCollapsed(allCollapsed ? new Set() : new Set(folders))
                     }
@@ -275,6 +293,16 @@ export default function SettingsPanel({
                 </div>
               )}
 
+              <div className={styles.checkbox}>
+                <input
+                  id={selectedOnlyId}
+                  type="checkbox"
+                  checked={selectedOnly}
+                  onChange={(event) => setSelectedOnly(event.target.checked)}
+                />
+                <label htmlFor={selectedOnlyId}>Only show selected</label>
+              </div>
+
               {notice && <p className={styles.notice}>{notice}</p>}
               {checked.size === 0 && (
                 <p className={styles.warning} role="alert">
@@ -287,7 +315,9 @@ export default function SettingsPanel({
                   root={root}
                   checked={checked}
                   visible={visible}
+                  searching={searching}
                   collapsed={collapsed}
+                  emptyMessage={emptyMessage(selectedOnly, searching)}
                   onToggle={onToggle}
                   onToggleCollapsed={toggleCollapsed}
                 />
@@ -344,7 +374,13 @@ export default function SettingsPanel({
   );
 }
 
-function countFiles(node: TreeNode): number {
-  if (node.kind === "file") return 1;
-  return node.children.reduce((sum, child) => sum + countFiles(child), 0);
+/**
+ * Why the tree is empty. "No excerpts yet" would be alarming and wrong when the library
+ * is full and the filter is simply hiding all of it.
+ */
+function emptyMessage(selectedOnly: boolean, searching: boolean): string {
+  if (selectedOnly && searching) return "No selected excerpts match that search.";
+  if (selectedOnly) return "Nothing is selected.";
+  if (searching) return "Nothing matches that search.";
+  return "No excerpts yet.";
 }

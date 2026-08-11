@@ -167,6 +167,10 @@ export async function createRegScene(
   };
 
   let started = false;
+  // Teardown is reachable twice: the effect's cleanup can fire while start() is still
+  // awaiting the camera, and the resolved start() then tears down again. Disposal must
+  // not run twice.
+  let stopped = false;
   return {
     async start() {
       await mindar.start();
@@ -177,6 +181,8 @@ export async function createRegScene(
     },
 
     stop() {
+      if (stopped) return;
+      stopped = true;
       renderer.setAnimationLoop(null);
       window.removeEventListener("resize", onResize);
       window.cancelAnimationFrame(resizeFrame);
@@ -187,9 +193,25 @@ export async function createRegScene(
       // element. Without this, a later resize runs setSize(0, 0) on the dead instance
       // and keeps this whole scene graph alive.
       mindar.video = null;
-      (introPlane.material.map as CanvasTexture | null)?.dispose();
-      (captionPlane.material.map as CanvasTexture | null)?.dispose();
-      // Image textures belong to the TexturePool; not disposed here.
+
+      // Our own geometry, materials and text textures. The excerpt textures belong to
+      // the TexturePool, which disposes them itself — never `imageMaterial.map` here.
+      imagePlane.geometry.dispose();
+      imageMaterial.dispose();
+      for (const plane of [introPlane, captionPlane]) {
+        (plane.material.map as CanvasTexture | null)?.dispose();
+        plane.geometry.dispose();
+        plane.material.dispose();
+      }
+
+      // Frees three's caches and its canvas listeners. Deliberately NOT followed by
+      // `forceContextLoss()`: MindAR never removes the canvas it appended to the
+      // container, so a torn-down instance's canvas is still in the DOM, still
+      // absolutely positioned over the feed. Killing its context makes it paint as a
+      // blank white sheet instead of staying transparent — which is a white screen
+      // where the camera should be, every time in development, where Strict Mode
+      // mounts twice. The context here is left to be collected with the canvas.
+      renderer.dispose();
     },
 
     setPlacement: applyPlacement,

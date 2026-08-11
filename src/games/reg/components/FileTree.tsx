@@ -11,9 +11,14 @@ import styles from "./FileTree.module.css";
  * The library as a collapsible checkbox tree.
  *
  * Folder checkboxes are derived from their descendant files every render (mixed →
- * `indeterminate`), and cascade downward on toggle. In search mode every visible
- * node is auto-expanded and only *files* keep their checkboxes — a folder toggle
- * over a partially-shown subtree would be ambiguous.
+ * `indeterminate`), and cascade downward on toggle.
+ *
+ * `visible` and `searching` are separate on purpose. `visible` only decides which rows
+ * appear, and any filter can narrow it. `searching` changes how the tree *behaves* —
+ * auto-expanding and dropping folder checkboxes — and only a search query does that,
+ * because only a search hides files that a folder toggle would still reach. The
+ * selected-only filter hides files by the very property the checkbox sets, so its
+ * consequences are always on screen and the checkboxes stay.
  *
  * Collapse state is owned by the panel, not here, so the Expand/Collapse all button
  * can drive it — and so it survives the panel closing.
@@ -22,27 +27,30 @@ export default function FileTree({
   root,
   checked,
   visible,
+  searching,
   collapsed,
+  emptyMessage,
   onToggle,
   onToggleCollapsed,
 }: {
   root: TreeNode;
   checked: ReadonlySet<string>;
-  /** Paths to render in search mode; null = no search, render everything. */
+  /** Paths to render; null = unfiltered, render everything. */
   visible: ReadonlySet<string> | null;
+  /** A search query is active: auto-expand and hide folder checkboxes. */
+  searching: boolean;
   collapsed: ReadonlySet<string>;
+  /** Why the tree is empty — the panel knows which filter emptied it. */
+  emptyMessage: string;
   onToggle: (node: TreeNode, value: boolean) => void;
   onToggleCollapsed: (path: string) => void;
 }) {
-  const searching = visible !== null;
-  const rows = root.children.filter((child) => !searching || visible.has(child.path));
+  const rows = root.children.filter(
+    (child) => visible === null || visible.has(child.path),
+  );
 
   if (rows.length === 0) {
-    return (
-      <p className={styles.empty}>
-        {searching ? "Nothing matches that search." : "No excerpts yet."}
-      </p>
-    );
+    return <p className={styles.empty}>{emptyMessage}</p>;
   }
 
   return (
@@ -53,6 +61,7 @@ export default function FileTree({
           node={child}
           checked={checked}
           visible={visible}
+          searching={searching}
           collapsed={collapsed}
           onToggle={onToggle}
           onToggleCollapsed={onToggleCollapsed}
@@ -66,6 +75,7 @@ function Row({
   node,
   checked,
   visible,
+  searching,
   collapsed,
   onToggle,
   onToggleCollapsed,
@@ -73,12 +83,11 @@ function Row({
   node: TreeNode;
   checked: ReadonlySet<string>;
   visible: ReadonlySet<string> | null;
+  searching: boolean;
   collapsed: ReadonlySet<string>;
   onToggle: (node: TreeNode, value: boolean) => void;
   onToggleCollapsed: (path: string) => void;
 }) {
-  const searching = visible !== null;
-
   if (node.kind === "file") {
     return (
       <li role="treeitem" aria-selected={checked.has(node.path)}>
@@ -95,11 +104,11 @@ function Row({
     );
   }
 
-  // Search mode ignores manual collapse so every match's context stays visible.
+  // Search ignores manual collapse so every match's context stays visible.
   const isCollapsed = !searching && collapsed.has(node.path);
   const state = folderCheckState(node, checked);
   const children = node.children.filter(
-    (child) => !searching || visible.has(child.path),
+    (child) => visible === null || visible.has(child.path),
   );
 
   return (
@@ -139,6 +148,7 @@ function Row({
               node={child}
               checked={checked}
               visible={visible}
+              searching={searching}
               collapsed={collapsed}
               onToggle={onToggle}
               onToggleCollapsed={onToggleCollapsed}

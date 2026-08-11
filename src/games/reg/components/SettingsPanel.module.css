@@ -227,6 +227,29 @@
   font-weight: 600;
 }
 
+/* Same treatment as the Filter tab's caption checkbox. */
+.checkbox {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  /* Keeps the row itself a comfortable target, not just the box. */
+  min-height: 2.75rem;
+  color: var(--color-text);
+  font-size: var(--text-sm);
+  font-weight: 600;
+}
+
+.checkbox input {
+  width: 1.1rem;
+  height: 1.1rem;
+  accent-color: var(--color-accent);
+  cursor: pointer;
+}
+
+.checkbox label {
+  cursor: pointer;
+}
+
 .notice {
   color: var(--color-text-faint);
   font-size: var(--text-xs);
