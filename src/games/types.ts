@@ -1,38 +1,17 @@
-import type { IconId } from "@/shared/icons";
+import type { CatalogEntry, CatalogStatus } from "@/shared/catalog";
 
 /**
  * The contract every game in the garage implements.
  *
  * A game's manifest is the only thing the app shell knows about it. The shell uses
  * it to build the Games menu and the home gallery; it never imports game internals.
+ * The shared fields live in `@/shared/catalog` so tools can be listed by the same
+ * components.
  */
 
-export type GameStatus =
-  /** Finished enough to play. */
-  | "playable"
-  /** Being built — reachable, but not finished. */
-  | "in-progress"
-  /** Registered so it shows up, but there's nothing behind it yet. */
-  | "planned";
+export type GameStatus = CatalogStatus;
 
-export interface GameManifest {
-  /**
-   * URL segment for the game. Must match BOTH the folder name under `src/games/`
-   * and the route folder under `src/app/games/`. Enforced by `registry.test.ts`.
-   */
-  slug: string;
-  /** Display name, used in the Games menu and the gallery card. */
-  title: string;
-  /** One-line description shown on the gallery card. */
-  blurb: string;
-  /**
-   * Icon for the card and the nav menu, by id — see `@/shared/icons`.
-   *
-   * An id rather than a component so manifests stay plain data, and typed so a name
-   * that isn't in the set fails the build.
-   */
-  iconId: IconId;
-  status: GameStatus;
+export interface GameManifest extends CatalogEntry {
   minPlayers?: number;
   maxPlayers?: number;
 }

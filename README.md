@@ -27,13 +27,14 @@ needs HTTPS.
 
 ## Architecture
 
-The organising rule: **games are self-contained, the shell knows nothing about them
-beyond their manifest.**
+The organising rule: **games and tools are self-contained, the shell knows nothing
+about them beyond their manifest.**
 
 ```
 src/
 ├── app/          Routing and shell only — no game logic lives here
 ├── games/        One folder per game, plus the registry
+├── tools/        One folder per tool, plus its own registry
 └── shared/       Cross-game dependencies (audio, UI chrome, design tokens)
 ```
 
@@ -78,6 +79,14 @@ Three steps:
 
 `src/games/registry.test.ts` fails the build if these three drift apart — a registered
 game with no route 404s, and a route with no registry entry never shows up in the tabs.
+
+### Adding a tool
+
+Tools are the utilities alongside the games — the Loop Station is the first. Same
+three steps with `tools` in place of `games`: create `src/tools/<slug>/` (manifest
+type is `src/tools/types.ts`), add the route adapter at `src/app/tools/<slug>/page.tsx`,
+register it in `src/tools/registry.ts`. `src/tools/registry.test.ts` guards the same
+three-way contract, and the Tools menu and gallery section render from the registry.
 
 ### Styling
 

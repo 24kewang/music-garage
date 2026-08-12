@@ -4,7 +4,11 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { MusicNotesIcon } from "@phosphor-icons/react";
-import GamesMenu from "./GamesMenu";
+import { GAMES } from "@/games/registry";
+import { gameHref } from "@/games/types";
+import { TOOLS } from "@/tools/registry";
+import { toolHref } from "@/tools/types";
+import NavMenu from "./NavMenu";
 import styles from "./SiteHeader.module.css";
 
 /** How long the header waits before collapsing, so a brief overshoot doesn't hide it. */
@@ -26,8 +30,14 @@ const HIDE_DELAY_MS = 220;
 export default function SiteHeader() {
   const pathname = usePathname();
   const [revealed, setRevealed] = useState(false);
-  /** Held open by keyboard focus or an open menu, regardless of the pointer. */
-  const [pinned, setPinned] = useState(false);
+  /** Held open by keyboard focus, regardless of the pointer. */
+  const [focusPinned, setFocusPinned] = useState(false);
+  /**
+   * Which dropdown is open, if any. Tracked by name rather than as a boolean so two
+   * menus can't fight — with a shared boolean, menu A closing would unpin the header
+   * while menu B is still open.
+   */
+  const [openMenu, setOpenMenu] = useState<string | null>(null);
 
   const hideTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -51,7 +61,14 @@ export default function SiteHeader() {
   // No collapse-on-navigation: the menu releases its pin when an item is clicked, and
   // if the pointer is still over the header it *should* stay put. Forcing it shut
   // would yank it away from under the cursor.
-  const open = revealed || pinned;
+  const open = revealed || focusPinned || openMenu !== null;
+
+  /** Pin the header while `name`'s dropdown is open; release it when that one closes. */
+  const menuPin = useCallback(
+    (name: string) => (isOpen: boolean) =>
+      setOpenMenu((current) => (isOpen ? name : current === name ? null : current)),
+    [],
+  );
 
   return (
     <>
@@ -76,10 +93,10 @@ export default function SiteHeader() {
           if (event.pointerType !== "touch") scheduleHide();
         }}
         // Tabbing in holds it open; tabbing out lets it go.
-        onFocus={() => setPinned(true)}
+        onFocus={() => setFocusPinned(true)}
         onBlur={(event) => {
           if (!event.currentTarget.contains(event.relatedTarget as Node | null)) {
-            setPinned(false);
+            setFocusPinned(false);
           }
         }}
       >
@@ -100,7 +117,21 @@ export default function SiteHeader() {
               Home
             </Link>
 
-            <GamesMenu onOpenChange={setPinned} />
+            <NavMenu
+              label="Games"
+              items={GAMES}
+              hrefFor={gameHref}
+              pathPrefix="/games/"
+              onOpenChange={menuPin("games")}
+            />
+
+            <NavMenu
+              label="Tools"
+              items={TOOLS}
+              hrefFor={toolHref}
+              pathPrefix="/tools/"
+              onOpenChange={menuPin("tools")}
+            />
           </nav>
         </div>
       </header>

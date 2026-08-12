@@ -10,6 +10,7 @@ import {
   MusicNotesIcon,
   ShuffleIcon,
   TargetIcon,
+  WaveformIcon,
   WaveSineIcon,
   type Icon,
 } from "@phosphor-icons/react";
@@ -35,6 +36,7 @@ export const ICONS = {
   gear: GearIcon,
   microphone: MicrophoneIcon,
   waveSine: WaveSineIcon,
+  waveform: WaveformIcon,
   arrowClockwise: ArrowClockwiseIcon,
   shuffle: ShuffleIcon,
 } as const satisfies Record<string, Icon>;

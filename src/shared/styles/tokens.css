@@ -41,6 +41,18 @@
   --color-danger: #f87171;
   --color-danger-soft: rgb(248 113 113 / 0.12);
 
+  /* Waveform bars (graphics, not text — no contrast ratio owed). */
+  --color-wave: #7f83a0;
+  --color-wave-muted: #3a3d52;
+
+  /* Bus identity hues. Used only to label which bus a track belongs to — never
+     as a general accent, so the one-accent rule still holds everywhere else.
+     Chosen to sit clear of --color-warn (solo) and --color-danger (delete).
+     Ratios are on --color-surface, the darkest thing they label. */
+  --color-bus-1: #818cf8; /* indigo, 5.9:1 */
+  --color-bus-2: #5eead4; /* teal, 11.6:1 */
+  --color-bus-3: #f0abfc; /* fuchsia, 9.4:1 */
+
   /* Spacing scale */
   --space-1: 0.25rem;
   --space-2: 0.5rem;

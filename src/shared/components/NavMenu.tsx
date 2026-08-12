@@ -4,30 +4,39 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useCallback, useEffect, useId, useRef, useState } from "react";
 import { CaretDownIcon } from "@phosphor-icons/react";
-import { GAMES } from "@/games/registry";
-import { gameHref, type GameStatus } from "@/games/types";
+import type { CatalogEntry, CatalogStatus } from "@/shared/catalog";
 import { useDismiss, type DismissReason } from "@/shared/hooks/useDismiss";
 import { GameIcon } from "@/shared/icons";
-import styles from "./GamesMenu.module.css";
+import styles from "./NavMenu.module.css";
 
 const CLOSE_DELAY_MS = 180;
 
-const STATUS_LABEL: Record<GameStatus, string> = {
+const STATUS_LABEL: Record<CatalogStatus, string> = {
   playable: "Ready",
   "in-progress": "In progress",
   planned: "Planned",
 };
 
 /**
- * The Games dropdown.
+ * A catalog dropdown — the Games menu, the Tools menu.
  *
  * Opens on hover for pointers that have one, and on click or Enter for everyone else —
  * a hover-only menu is simply unusable on a phone. Arrow keys walk the items and
  * Escape closes it, returning focus to the trigger.
  */
-export default function GamesMenu({
+export default function NavMenu({
+  label,
+  items,
+  hrefFor,
+  pathPrefix,
   onOpenChange,
 }: {
+  /** Trigger text and the menu's accessible name. */
+  label: string;
+  items: readonly CatalogEntry[];
+  hrefFor: (entry: CatalogEntry) => string;
+  /** Marks the trigger active when the current route lives under this prefix. */
+  pathPrefix: string;
   /** Lets the header stay revealed while the menu is open. */
   onOpenChange?: (open: boolean) => void;
 }) {
@@ -82,10 +91,10 @@ export default function GamesMenu({
 
   /** Arrow keys move between items; the trigger's Down arrow enters the list. */
   const focusItem = (index: number) => {
-    const items = itemRefs.current.filter(Boolean);
-    if (items.length === 0) return;
-    const wrapped = (index + items.length) % items.length;
-    items[wrapped]?.focus();
+    const focusable = itemRefs.current.filter(Boolean);
+    if (focusable.length === 0) return;
+    const wrapped = (index + focusable.length) % focusable.length;
+    focusable[wrapped]?.focus();
   };
 
   const onItemKeyDown = (event: React.KeyboardEvent, index: number) => {
@@ -100,11 +109,11 @@ export default function GamesMenu({
       focusItem(0);
     } else if (event.key === "End") {
       event.preventDefault();
-      focusItem(GAMES.length - 1);
+      focusItem(items.length - 1);
     }
   };
 
-  const menuIsCurrent = pathname.startsWith("/games/");
+  const menuIsCurrent = pathname.startsWith(pathPrefix);
 
   return (
     <div
@@ -136,7 +145,7 @@ export default function GamesMenu({
           }
         }}
       >
-        Games
+        {label}
         <CaretDownIcon
           size={13}
           weight="bold"
@@ -152,18 +161,18 @@ export default function GamesMenu({
       <div
         id={menuId}
         role="menu"
-        aria-label="Games"
+        aria-label={label}
         className={`${styles.panel} ${open ? styles.panelOpen : ""}`}
         inert={!open}
       >
         <div className={styles.panelInner}>
-          {GAMES.map((game, index) => {
-            const href = gameHref(game);
+          {items.map((entry, index) => {
+            const href = hrefFor(entry);
             const active = pathname === href;
 
             return (
               <Link
-                key={game.slug}
+                key={entry.slug}
                 href={href}
                 role="menuitem"
                 ref={(node) => {
@@ -176,16 +185,16 @@ export default function GamesMenu({
                 tabIndex={open ? 0 : -1}
               >
                 <span className={styles.itemIcon} aria-hidden="true">
-                  <GameIcon id={game.iconId} size={18} weight="duotone" />
+                  <GameIcon id={entry.iconId} size={18} weight="duotone" />
                 </span>
                 <span className={styles.itemBody}>
                   <span className={styles.itemTitle}>
-                    {game.title}
-                    {game.status !== "playable" && (
-                      <span className={styles.itemPill}>{STATUS_LABEL[game.status]}</span>
+                    {entry.title}
+                    {entry.status !== "playable" && (
+                      <span className={styles.itemPill}>{STATUS_LABEL[entry.status]}</span>
                     )}
                   </span>
-                  <span className={styles.itemBlurb}>{game.blurb}</span>
+                  <span className={styles.itemBlurb}>{entry.blurb}</span>
                 </span>
               </Link>
             );
