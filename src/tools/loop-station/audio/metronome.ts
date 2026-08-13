@@ -9,6 +9,12 @@ import { config } from "../config";
  * around the master chain — a muted master must not silence the count-in — but
  * into whatever output node the caller passes, so they share the master's final
  * stage and therefore its latency.
+ *
+ * Everything already scheduled is remembered, because a grid change has to be
+ * able to take it back: the lookahead runs 100ms ahead, so at the count-in →
+ * recording handover the first beat would otherwise already be booked under the
+ * old grid and get booked again under the new one — an audible flam on the most
+ * important click in the interaction.
  */
 export class Metronome {
   private readonly context: BaseAudioContext;
@@ -16,13 +22,10 @@ export class Metronome {
   private readonly accentClick: AudioBuffer;
   private readonly beatClick: AudioBuffer;
 
-  private grid: {
-    anchor: number;
-    beatSeconds: number;
-    beatsPerBar: number;
-    accented: boolean;
-  } | null = null;
+  private grid: { anchor: number; beatSeconds: number; beatsPerBar: number } | null = null;
   private scheduledUntil = 0;
+  /** Clicks booked but not yet played, so a grid change can cancel them. */
+  private booked: { time: number; source: AudioBufferSourceNode }[] = [];
 
   constructor(context: AudioContext, output: AudioNode) {
     this.context = context;
@@ -34,50 +37,63 @@ export class Metronome {
   }
 
   /**
-   * Set (or change) the click grid. A changed grid starts scheduling afresh.
+   * Set (or change) the click grid. A changed grid takes back anything it has
+   * already booked and starts scheduling afresh.
    *
-   * `accented` false makes every click the plain voice — the count-in uses it,
-   * so a downbeat can't imply the loop has already started. The grid *position*
-   * is untouched, so accents resume exactly in step when recording begins.
+   * Beat 1 of every bar is accented, always. The count-in needs no special case:
+   * it is snapped to a bar line of this same grid and lasts exactly one bar, so
+   * ordinary accenting puts an accent on its first click, none on the rest, and
+   * resumes in step the moment recording starts.
    */
-  setGrid(anchor: number, tempo: number, beatsPerBar: number, accented = true): void {
+  setGrid(anchor: number, tempo: number, beatsPerBar: number): void {
     const beatSeconds = 60 / tempo;
     const g = this.grid;
-    if (
-      g &&
-      g.anchor === anchor &&
-      g.beatSeconds === beatSeconds &&
-      g.beatsPerBar === beatsPerBar &&
-      g.accented === accented
-    ) {
+    if (g && g.anchor === anchor && g.beatSeconds === beatSeconds && g.beatsPerBar === beatsPerBar) {
       return;
     }
-    this.grid = { anchor, beatSeconds, beatsPerBar, accented };
+    this.grid = { anchor, beatSeconds, beatsPerBar };
+    this.cancelBooked();
     this.scheduledUntil = this.context.currentTime;
   }
 
-  /** Silence. Clicks already scheduled inside the lookahead window still play. */
+  /** Silence, including clicks already booked inside the lookahead window. */
   clear(): void {
     this.grid = null;
+    this.cancelBooked();
   }
 
   /** Schedule every click in (scheduledUntil, until]. Called each scheduler tick. */
   scheduleWindow(until: number): void {
     if (!this.grid) return;
-    const { anchor, beatSeconds, beatsPerBar, accented } = this.grid;
+    const { anchor, beatSeconds, beatsPerBar } = this.grid;
     const from = Math.max(this.context.currentTime, this.scheduledUntil);
     let k = Math.ceil((from - anchor) / beatSeconds - 1e-9);
     for (; anchor + k * beatSeconds <= until; k++) {
       const time = anchor + k * beatSeconds;
       if (time < from) continue;
       // Beats before the anchor (k < 0) only occur pre-loop; accent normally.
-      const accent = accented && ((k % beatsPerBar) + beatsPerBar) % beatsPerBar === 0;
+      const accent = ((k % beatsPerBar) + beatsPerBar) % beatsPerBar === 0;
       const source = this.context.createBufferSource();
       source.buffer = accent ? this.accentClick : this.beatClick;
       source.connect(this.gain);
       source.start(time);
+      this.booked.push({ time, source });
     }
     this.scheduledUntil = until;
+  }
+
+  /** Stop anything booked that hasn't sounded yet, and forget what has. */
+  private cancelBooked(): void {
+    const now = this.context.currentTime;
+    for (const { time, source } of this.booked) {
+      if (time <= now) continue;
+      try {
+        source.stop();
+      } catch {
+        // Already stopped or never started; nothing to take back.
+      }
+    }
+    this.booked = [];
   }
 }
 

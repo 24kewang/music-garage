@@ -26,6 +26,7 @@ export default function TransportBar({
   const playable = session.tracks.length > 0 || rec.kind !== "off";
   const recordState =
     rec.kind === "off" ? (overwriteArmed ? "overwriteReady" : "idle") : rec.kind;
+  const gestureRunning = rec.kind === "detecting" || rec.kind === "overdub";
 
   const recordLabel =
     rec.kind === "off"
@@ -36,9 +37,11 @@ export default function TransportBar({
         ? "Cancel the count-in"
         : rec.kind === "free"
           ? "Close the free loop"
-          : rec.kind === "overdub"
-            ? "End the overwrite"
-            : "Stop recording";
+          : rec.kind === "detecting"
+            ? "Stop listening"
+            : rec.kind === "overdub"
+              ? "End the overwrite"
+              : "Stop recording";
 
   return (
     <div className={styles.bar}>
@@ -88,12 +91,38 @@ export default function TransportBar({
         )}
         {overwriteArmed && (
           <p className={styles.overwriteHint}>
-            {rec.kind === "overdub"
-              ? "Overwriting — press again or let the loop end"
-              : "Record overwrites the selected track"}
+            {rec.kind === "detecting"
+              ? "Listening — play to start the overwrite"
+              : rec.kind === "overdub"
+                ? "Overwriting — press again or let the loop end"
+                : "Record overwrites the selected track"}
           </p>
         )}
       </div>
+
+      {overwriteArmed && (
+        <div className={styles.autoDetect}>
+          <span id="loop-station-autodetect" className={styles.autoDetectLabel}>
+            Auto-detect
+          </span>
+          <button
+            type="button"
+            role="switch"
+            aria-checked={session.autoDetect}
+            aria-labelledby="loop-station-autodetect"
+            className={styles.switch}
+            // Locked mid-gesture so the mode can't change beneath it.
+            disabled={gestureRunning}
+            onClick={() => dispatch({ type: "toggleAutoDetect" })}
+          >
+            <span className={styles.thumb} aria-hidden="true" />
+          </button>
+          <p className={styles.autoDetectHint}>
+            Wait for your first note, so the silence before it isn&apos;t overwritten.
+            Wearing earbuds is advised.
+          </p>
+        </div>
+      )}
     </div>
   );
 }

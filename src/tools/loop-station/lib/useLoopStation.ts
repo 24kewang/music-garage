@@ -11,7 +11,15 @@ import {
 } from "../dsp/calibration";
 import { createOnsetDetector, type OnsetDetector } from "../dsp/onset";
 import { peaks } from "../dsp/level";
+import { resample } from "../dsp/resample";
 import { bakeTrack } from "../dsp/tile";
+import {
+  EMPTY_SIGNATURE,
+  loopSignature,
+  referencedSegments,
+  toSnapshot,
+} from "./snapshot";
+import { deleteLoop, loadLoop, saveLoop } from "./storage";
 import {
   createSession,
   reduce,
@@ -35,6 +43,8 @@ export type StationStatus =
   | "ready"
   | "error";
 
+export type SaveStatus = "idle" | "saving" | "saved" | "deleted" | "error";
+
 export interface CalibrationView {
   running: boolean;
   /** Best current estimate of round-trip latency, ms. */
@@ -56,6 +66,7 @@ interface CalibrationRun {
   anchor: number;
   detector: OnsetDetector;
   offsets: number[];
+  unsubscribe: (() => void) | null;
 }
 
 export function useLoopStation() {
@@ -69,6 +80,14 @@ export function useLoopStation() {
     estimateMs: null,
     count: 0,
   });
+  const [saveStatus, setSaveStatus] = useState<SaveStatus>("idle");
+  /**
+   * The loop as it was last written to storage. State rather than a ref because
+   * `dirty` is derived from it during render.
+   */
+  const [savedSignature, setSavedSignature] = useState(EMPTY_SIGNATURE);
+  /** Whether storage currently holds anything — drives hold-to-delete. */
+  const [hasSave, setHasSave] = useState(false);
 
   const engineRef = useRef<LoopEngine | null>(null);
   /** Authoritative state; `setSession` mirrors it for rendering. Effects must
@@ -80,6 +99,7 @@ export function useLoopStation() {
   const wantedRef = useRef(new Set<number>());
   const rebakeTimersRef = useRef(new Map<number, ReturnType<typeof setTimeout>>());
   const calibrationRef = useRef<CalibrationRun | null>(null);
+  const savedFlash = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // -------------------------------------------------------------------------
   // Baking: padded segment + track state → one loop-length buffer, swapped live.
@@ -286,11 +306,7 @@ export function useLoopStation() {
         s.metronomeOn && (s.playing || (s.anchorTime === null && s.tracks.length === 0));
       if (audible) {
         const anchor = s.anchorTime ?? s.metroAnchor ?? engine.now();
-        // The count-in bar drops its accent so a downbeat can't read as "the
-        // loop has started". The grid position is unchanged, so accents come
-        // back exactly in step when recording begins.
-        const accented = s.recording.kind !== "countIn";
-        engine.metronome.setGrid(anchor, s.tempo, s.beats, accented);
+        engine.metronome.setGrid(anchor, s.tempo, s.beats);
         engine.metronome.scheduleWindow(horizon);
       } else {
         engine.metronome.clear();
@@ -306,11 +322,8 @@ export function useLoopStation() {
     const engine = engineRef.current;
     const run = calibrationRef.current;
     calibrationRef.current = null;
-    if (engine) {
-      engine.capture.setCalibrating(false);
-      engine.capture.onLevel = null;
-      engine.metronome.clear();
-    }
+    run?.unsubscribe?.();
+    if (engine) engine.metronome.clear();
     if (run) {
       const estimate = estimateRtl(run.offsets, {
         trimFraction: config.calibration.trimFraction,
@@ -336,12 +349,12 @@ export function useLoopStation() {
         refractorySeconds: config.calibration.refractoryMs / 1000,
       }),
       offsets: [],
+      unsubscribe: null,
     };
     calibrationRef.current = run;
     setCalibration({ running: true, estimateMs: null, count: 0 });
-    engine.capture.setCalibrating(true);
     const beatSeconds = 60 / config.calibration.tempo;
-    engine.capture.onLevel = (time, rms) => {
+    run.unsubscribe = engine.capture.addLevelListener((time, rms) => {
       if (!run.detector.update(time, rms)) return;
       if (time < run.anchor) return; // noise before the first click
       const offset = clickOffset(time, run.anchor, beatSeconds);
@@ -356,8 +369,26 @@ export function useLoopStation() {
         estimateMs: estimate.rtlSeconds === null ? null : Math.round(estimate.rtlSeconds * 1000),
         count: estimate.count,
       });
-    };
+    });
   }, []);
+
+  // -------------------------------------------------------------------------
+  // Overwrite auto-detect: listen for the player's first note.
+
+  useEffect(() => {
+    const engine = engineRef.current;
+    if (status !== "ready" || !engine) return;
+    if (session.recording.kind !== "detecting") return;
+
+    const detector = createOnsetDetector({
+      threshold: config.autoDetect.threshold,
+      riseRatio: config.autoDetect.riseRatio,
+      refractorySeconds: config.autoDetect.refractoryMs / 1000,
+    });
+    return engine.capture.addLevelListener((time, rms) => {
+      if (detector.update(time, rms)) dispatch({ type: "overwriteDetected", at: time });
+    });
+  }, [status, session.recording.kind, dispatch]);
 
   // -------------------------------------------------------------------------
   // The new-recording defaults are the only things that persist. Recorded audio
@@ -388,6 +419,96 @@ export function useLoopStation() {
   }, [session.defaultDelayMs, session.defaultTrackVolume, session.defaultTrackReverb]);
 
   // -------------------------------------------------------------------------
+
+  // -------------------------------------------------------------------------
+  // Saving and restoring
+
+  /** Show a status for a moment, then settle back to "Save". */
+  const flashStatus = useCallback((status: SaveStatus) => {
+    setSaveStatus(status);
+    if (savedFlash.current) clearTimeout(savedFlash.current);
+    savedFlash.current = setTimeout(() => setSaveStatus("idle"), config.save.savedFlashMs);
+  }, []);
+
+  const save = useCallback(async () => {
+    const engine = engineRef.current;
+    // Saving an empty station would write nothing over a real save.
+    if (!engine || stateRef.current.tracks.length === 0) return;
+    setSaveStatus("saving");
+    const state = stateRef.current;
+    try {
+      const segments = new Map<number, Float32Array>();
+      for (const id of referencedSegments(state)) {
+        const samples = segmentsRef.current.get(id);
+        if (samples) segments.set(id, samples);
+      }
+      await saveLoop(toSnapshot(state, engine.context.sampleRate), segments);
+      setSavedSignature(loopSignature(state));
+      setHasSave(true);
+      flashStatus("saved");
+    } catch {
+      setSaveStatus("error");
+    }
+  }, [flashStatus]);
+
+  const deleteSave = useCallback(async () => {
+    try {
+      await deleteLoop();
+      setHasSave(false);
+      // Nothing is stored any more, so a station with tracks is unsaved again.
+      setSavedSignature(EMPTY_SIGNATURE);
+      flashStatus("deleted");
+    } catch {
+      setSaveStatus("error");
+    }
+  }, [flashStatus]);
+
+  useEffect(() => () => {
+    if (savedFlash.current) clearTimeout(savedFlash.current);
+  }, []);
+
+  /**
+   * Restore once, as soon as the engine exists. The transport stays stopped —
+   * pressing play then sounds as the loop was left.
+   */
+  const restored = useRef(false);
+  useEffect(() => {
+    const engine = engineRef.current;
+    if (status !== "ready" || !engine || restored.current) return;
+    restored.current = true;
+
+    let cancelled = false;
+    (async () => {
+      const stored = await loadLoop();
+      if (cancelled || !stored) return;
+      setHasSave(true);
+      if (stored.snapshot.state.tracks.length === 0) return;
+      const rate = engine.context.sampleRate;
+      for (const [id, samples] of stored.segments) {
+        // A save made at another device's rate would bake at the wrong frame
+        // counts; convert once here so everything downstream stays honest.
+        segmentsRef.current.set(id, resample(samples, stored.snapshot.sampleRate, rate));
+        wantedRef.current.add(id);
+      }
+      setSavedSignature(loopSignature(stored.snapshot.state));
+      dispatch({ type: "restore", state: stored.snapshot.state });
+      for (const track of stored.snapshot.state.tracks) bakeAndSwap(track.id);
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [status, dispatch, bakeAndSwap]);
+
+  const dirty = loopSignature(session) !== savedSignature;
+
+  /** Native dialog on a real unload. Client-side nav is guarded separately. */
+  useEffect(() => {
+    if (!dirty) return;
+    const warn = (event: BeforeUnloadEvent) => event.preventDefault();
+    window.addEventListener("beforeunload", warn);
+    return () => window.removeEventListener("beforeunload", warn);
+  }, [dirty]);
 
   /** Snapshot for the rAF paint loop — pixels only, never scheduling. */
   const readVisuals = useCallback((): Visuals => {
@@ -420,6 +541,11 @@ export function useLoopStation() {
     stopCalibration,
     resumeAudio,
     readVisuals,
+    save,
+    deleteSave,
+    saveStatus,
+    hasSave,
+    dirty,
   };
 }
 

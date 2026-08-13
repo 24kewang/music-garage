@@ -17,9 +17,10 @@
  *       → replies { type: "segment", id, samples } (transferred) once endFrame
  *         has been written; queued until then. Frames the ring no longer holds
  *         (or that precede the stream) come back as silence.
- *   { type: "calibrate", on }
+ *   { type: "detail", on }
  *       → switches level posts from every `levelEveryBlocks` blocks to every
  *         block, so main-thread onset detection gets ~2.7ms resolution.
+ *         Used by both latency calibration and overwrite auto-detect.
  *
  * Messages out:
  *   { type: "start", frame, time }        — once; maps currentTime ↔ frame.
@@ -36,7 +37,7 @@ class LoopCaptureProcessor extends AudioWorkletProcessor {
     this.startFrame = -1;
     this.writeFrame = 0;
     this.blockCount = 0;
-    this.calibrating = false;
+    this.detailed = false;
     this.pending = [];
 
     this.port.onmessage = (event) => {
@@ -44,8 +45,8 @@ class LoopCaptureProcessor extends AudioWorkletProcessor {
       if (msg.type === "extract") {
         this.pending.push(msg);
         this.flushPending();
-      } else if (msg.type === "calibrate") {
-        this.calibrating = !!msg.on;
+      } else if (msg.type === "detail") {
+        this.detailed = !!msg.on;
       }
     };
   }
@@ -105,7 +106,7 @@ class LoopCaptureProcessor extends AudioWorkletProcessor {
     }
 
     this.blockCount++;
-    const every = this.calibrating ? 1 : this.levelEveryBlocks;
+    const every = this.detailed ? 1 : this.levelEveryBlocks;
     if (this.blockCount % every === 0) {
       const rms = channel ? Math.sqrt(sumSquares / channel.length) : 0;
       this.port.postMessage({ type: "level", time: blockTime, rms, peak });

@@ -12,8 +12,13 @@ export class CaptureBus {
 
   /** Latest input peak from the worklet, for the meter. */
   peak = 0;
-  /** Set during calibration to receive every ~2.7ms block's RMS. */
-  onLevel: ((time: number, rms: number) => void) | null = null;
+  /**
+   * Subscribers to the per-block RMS. Two features want it — calibration and
+   * auto-detect — so the detailed-level mode is reference-counted rather than
+   * flag-based; otherwise whichever finished last would switch it off under
+   * the other.
+   */
+  private readonly levelListeners = new Set<(time: number, rms: number) => void>();
 
   constructor(node: AudioWorkletNode, sampleRate: number) {
     this.node = node;
@@ -25,7 +30,7 @@ export class CaptureBus {
       } else if (msg.type === "level") {
         this.peak = msg.peak;
         // Onset detection wants RMS — a peak is too twitchy to threshold on.
-        this.onLevel?.(msg.time, msg.rms);
+        for (const listener of this.levelListeners) listener(msg.time, msg.rms);
       } else if (msg.type === "segment") {
         const resolve = this.pending.get(msg.id);
         this.pending.delete(msg.id);
@@ -54,12 +59,27 @@ export class CaptureBus {
     });
   }
 
-  setCalibrating(on: boolean): void {
-    this.node.port.postMessage({ type: "calibrate", on });
+  /**
+   * Receive every ~2.7ms block's RMS for as long as the returned unsubscribe
+   * hasn't been called. The worklet only posts at that rate while somebody is
+   * listening.
+   */
+  addLevelListener(listener: (time: number, rms: number) => void): () => void {
+    this.levelListeners.add(listener);
+    if (this.levelListeners.size === 1) this.setDetailedLevel(true);
+    return () => {
+      this.levelListeners.delete(listener);
+      if (this.levelListeners.size === 0) this.setDetailedLevel(false);
+    };
+  }
+
+  private setDetailedLevel(on: boolean): void {
+    this.node.port.postMessage({ type: "detail", on });
   }
 
   dispose(): void {
     this.node.port.onmessage = null;
+    this.levelListeners.clear();
     this.pending.clear();
   }
 }

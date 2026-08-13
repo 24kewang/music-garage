@@ -27,7 +27,6 @@ export default function TrackRow({
   dragOffset,
   draggable,
   onDragPointerDown,
-  onReorderKey,
   dispatch,
 }: {
   track: TrackState;
@@ -45,7 +44,6 @@ export default function TrackRow({
   /** False at or below an in-progress track, which pins everything under it. */
   draggable: boolean;
   onDragPointerDown: (index: number, id: number, event: React.PointerEvent) => void;
-  onReorderKey: (id: number, delta: number) => void;
   dispatch: (event: SessionEvent) => void;
 }) {
   const [hovered, setHovered] = useState(false);
@@ -129,14 +127,9 @@ export default function TrackRow({
       tabIndex={inProgress ? -1 : 0}
       onKeyDown={(event) => {
         if (inProgress) return;
-        // Alt+Arrow reorders, so the feature isn't pointer-only. Plain arrows
-        // stay free for scrolling the list.
-        if (event.altKey && (event.key === "ArrowUp" || event.key === "ArrowDown")) {
-          if (!draggable) return;
-          event.preventDefault();
-          onReorderKey(track.id, event.key === "ArrowUp" ? -1 : 1);
-          return;
-        }
+        // Alt+Arrow reordering is a global shortcut keyed off the *selected*
+        // track, not handled here: a row keeps DOM focus while the selection
+        // arrows past it, so a row-local handler latched onto the wrong track.
         if (event.key === "Enter" && event.target === event.currentTarget) {
           dispatch({ type: "selectTrack", id: track.id });
         }
@@ -145,7 +138,7 @@ export default function TrackRow({
       aria-label={`${track.name}, ${index + 1} of ${session.tracks.length}${
         selected ? ", selected" : ""
       }${inProgress ? ", still recording" : ""}${
-        draggable ? ". Alt with up or down arrow to reorder." : ""
+        selected && draggable ? ". Alt with up or down arrow to reorder." : ""
       }`}
     >
       <div className={styles.main}>
@@ -339,18 +332,33 @@ export default function TrackRow({
               S
             </button>
           </div>
-          <VerticalSlider
-            label={`${track.name} volume`}
-            caption="V"
-            value={track.volume}
-            onChange={(value) => dispatch({ type: "setTrackVolume", id: track.id, value })}
-          />
-          <VerticalSlider
-            label={`${track.name} reverb`}
-            caption="R"
-            value={track.reverb}
-            onChange={(value) => dispatch({ type: "setTrackReverb", id: track.id, value })}
-          />
+          <div className={styles.levels}>
+            <div className={styles.levelFaders}>
+              <VerticalSlider
+                label={`${track.name} volume`}
+                caption="V"
+                value={track.volume}
+                onChange={(value) => dispatch({ type: "setTrackVolume", id: track.id, value })}
+              />
+              <VerticalSlider
+                label={`${track.name} reverb`}
+                caption="R"
+                value={track.reverb}
+                onChange={(value) => dispatch({ type: "setTrackReverb", id: track.id, value })}
+              />
+            </div>
+            <button
+              type="button"
+              className={styles.setDefault}
+              title="Use this track's volume and reverb for new recordings"
+              onClick={(event) => {
+                event.stopPropagation();
+                dispatch({ type: "adoptTrackDefaults", id: track.id });
+              }}
+            >
+              Set as default
+            </button>
+          </div>
           <button
             type="button"
             className={styles.deleteTrack}

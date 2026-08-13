@@ -28,7 +28,7 @@ export const metadata: Metadata = {
     default: "Music Garage",
     template: "%s · Music Garage",
   },
-  description: "A collection of small games for people who like making music together.",
+  description: "A collection of games and tools for people who like making music and having fun together.",
 };
 
 export default function RootLayout({

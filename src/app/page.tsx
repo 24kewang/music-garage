@@ -18,7 +18,7 @@ export default function Home() {
         <p className={styles.eyebrow}>Trumpet Tuck&apos;s</p>
         <h1 className={styles.title}>Music Garage</h1>
         <p className={styles.subtitle}>
-          A collection of small games for people who like making music together. Enjoy :D
+          A collection of games and tools for people who like making music and having fun together. Enjoy :D
         </p>
       </section>
 

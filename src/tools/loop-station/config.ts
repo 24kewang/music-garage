@@ -101,6 +101,45 @@ export const config = {
     refractoryMs: 250,
   },
 
+  /**
+   * Listening for the player's first note instead of punching in the instant
+   * the overwrite button is pressed. Separate thresholds from calibration's:
+   * this listens over a playing loop, not a silent room.
+   */
+  autoDetect: {
+    /** RMS a block must reach to count as playing. */
+    threshold: 0.04,
+    /** How much louder than the recent floor the rise must be. */
+    riseRatio: 3.5,
+    /** Dead time after a hit, ms — one note can't arm twice. */
+    refractoryMs: 200,
+    /**
+     * A level threshold fires a block or two after the actual attack, so the
+     * punch starts this much earlier than the detection. Clamped to the loop
+     * iteration's start so it can never wrap into the previous one.
+     */
+    onsetBackoffMs: 25,
+  },
+
+  save: {
+    /** How long "Saved!" / "Deleted!" shows before settling back to "Save". */
+    savedFlashMs: 1600,
+    /**
+     * Hold before the Save button turns into Delete Saved. A press shorter than
+     * this is an ordinary click, so saving never flashes red on the way.
+     */
+    deleteArmMs: 350,
+    /** How long the armed button must be held to actually delete, ms. */
+    deleteHoldMs: 2000,
+    /** IndexedDB database and store names. */
+    dbName: "loop-station",
+    dbVersion: 1,
+    manifestStore: "manifest",
+    segmentStore: "segments",
+    /** Single-slot save; a second Save overwrites it. */
+    slotKey: "current",
+  },
+
   metronome: {
     /** Click length, seconds. */
     clickSeconds: 0.03,

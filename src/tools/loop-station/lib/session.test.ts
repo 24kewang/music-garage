@@ -661,6 +661,147 @@ describe("overwrite", () => {
   });
 });
 
+describe("overwrite auto-detect", () => {
+  function armed() {
+    const base = withOneTrack();
+    const state = run(base.state, [
+      [{ type: "toggleAutoDetect" }, base.anchor],
+      [{ type: "selectTrack", id: base.state.tracks[0].id }, base.anchor + 0.1],
+    ]).state;
+    return { ...base, state };
+  }
+
+  it("listens instead of punching in straight away", () => {
+    const base = armed();
+    const { state } = run(base.state, [[{ type: "record" }, base.anchor + LOOP + 1]]);
+    expect(state.recording.kind).toBe("detecting");
+    if (state.recording.kind !== "detecting") return;
+    expect(state.recording.trackId).toBe(base.state.tracks[0].id);
+  });
+
+  it("punches in where the note was played, backed off a little", () => {
+    const base = armed();
+    const heard = base.anchor + LOOP + 2;
+    const { state } = run(base.state, [
+      [{ type: "record" }, base.anchor + LOOP + 1],
+      [{ type: "overwriteDetected", at: heard }, heard],
+    ]);
+    expect(state.recording.kind).toBe("overdub");
+    if (state.recording.kind !== "overdub") return;
+    expect(state.recording.startTime).toBeCloseTo(
+      heard - config.autoDetect.onsetBackoffMs / 1000,
+    );
+    // Still ends at the end of the loop the note landed in.
+    expect(state.recording.endBound).toBeCloseTo(base.anchor + 2 * LOOP);
+  });
+
+  it("never backs off past the start of the loop it heard the note in", () => {
+    const base = armed();
+    // A note right on the loop boundary: backing off would wrap the phase to
+    // the far end and punch at the wrong place entirely.
+    const heard = base.anchor + LOOP + 0.001;
+    const { state } = run(base.state, [
+      [{ type: "record" }, base.anchor + LOOP - 1],
+      [{ type: "overwriteDetected", at: heard }, heard],
+    ]);
+    if (state.recording.kind !== "overdub") throw new Error("expected overdub");
+    expect(state.recording.startTime).toBeCloseTo(base.anchor + LOOP);
+  });
+
+  it("keeps listening across a loop boundary", () => {
+    const base = armed();
+    const { state } = run(base.state, [
+      [{ type: "record" }, base.anchor + LOOP + 1],
+      [{ type: "clock" }, base.anchor + 3 * LOOP],
+    ]);
+    expect(state.recording.kind).toBe("detecting");
+  });
+
+  it("cancels on a second press before anything is heard", () => {
+    const base = armed();
+    const { state } = run(base.state, [
+      [{ type: "record" }, base.anchor + LOOP + 1],
+      [{ type: "record" }, base.anchor + LOOP + 2],
+    ]);
+    expect(state.recording.kind).toBe("off");
+    expect(state.tracks[0].overwrite).toBeNull();
+  });
+
+  it("cancels on play/stop, leaving the loop intact", () => {
+    const base = armed();
+    const { state } = run(base.state, [
+      [{ type: "record" }, base.anchor + LOOP + 1],
+      [{ type: "playStop" }, base.anchor + LOOP + 2],
+    ]);
+    expect(state.recording.kind).toBe("off");
+    expect(state.tracks).toHaveLength(1);
+    expect(state.playing).toBe(false);
+  });
+
+  it("locks the toggle once the gesture is under way", () => {
+    const base = armed();
+    const detecting = run(base.state, [[{ type: "record" }, base.anchor + LOOP + 1]]).state;
+    expect(reduce(detecting, { type: "toggleAutoDetect" }, 0).state).toBe(detecting);
+
+    const heard = base.anchor + LOOP + 2;
+    const overdubbing = reduce(detecting, { type: "overwriteDetected", at: heard }, heard).state;
+    expect(reduce(overdubbing, { type: "toggleAutoDetect" }, 0).state).toBe(overdubbing);
+  });
+
+  it("ignores a detection when nothing is listening", () => {
+    const base = withOneTrack();
+    expect(reduce(base.state, { type: "overwriteDetected", at: 100 }, 100).state).toBe(
+      base.state,
+    );
+  });
+
+  it("punches in immediately when the toggle is off", () => {
+    const base = withOneTrack();
+    const { state } = run(base.state, [
+      [{ type: "selectTrack", id: base.state.tracks[0].id }, base.anchor + 0.1],
+      [{ type: "record" }, base.anchor + LOOP + 1],
+    ]);
+    expect(state.recording.kind).toBe("overdub");
+  });
+});
+
+describe("adoptTrackDefaults", () => {
+  it("copies a track's volume and reverb into the defaults", () => {
+    const base = withOneTrack();
+    const id = base.state.tracks[0].id;
+    const tuned = run(base.state, [
+      [{ type: "setTrackVolume", id, value: 44 }, 100],
+      [{ type: "setTrackReverb", id, value: 77 }, 100],
+      [{ type: "adoptTrackDefaults", id }, 100],
+    ]);
+    expect(tuned.state.defaultTrackVolume).toBe(44);
+    expect(tuned.state.defaultTrackReverb).toBe(77);
+  });
+
+  it("leaves the delay alone — that is alignment, not taste", () => {
+    const base = withOneTrack();
+    const id = base.state.tracks[0].id;
+    const tuned = run(base.state, [
+      [{ type: "setTrackDelay", id, ms: -300 }, 100],
+      [{ type: "adoptTrackDefaults", id }, 100],
+    ]);
+    expect(tuned.state.defaultDelayMs).toBe(base.state.defaultDelayMs);
+  });
+
+  it("refuses an in-progress or unknown track", () => {
+    const free = run(createSession(), [
+      [{ type: "setMultiplier", value: 2 }, 0],
+      [{ type: "record" }, 0],
+      [{ type: "record" }, 2],
+    ]);
+    const id = free.state.tracks[0].id;
+    expect(reduce(free.state, { type: "adoptTrackDefaults", id }, 2.5).state).toBe(free.state);
+    expect(reduce(free.state, { type: "adoptTrackDefaults", id: 999 }, 2.5).state).toBe(
+      free.state,
+    );
+  });
+});
+
 describe("buses", () => {
   it("attaches new tracks to the selected bus", () => {
     const withBus = run(createSession(), [[{ type: "addBus" }, 0]]);

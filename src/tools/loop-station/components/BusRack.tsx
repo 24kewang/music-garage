@@ -34,7 +34,7 @@ export default function BusRack({
         </button>
       </div>
       <p className={styles.hint}>
-        New recordings land on the selected bus. Each bus&apos; colour tags its tracks.
+        New recordings land on the selected bus. Each bus&apos; color tags its tracks.
       </p>
       <div className={styles.cards}>
         {session.buses.map((bus, index) => (

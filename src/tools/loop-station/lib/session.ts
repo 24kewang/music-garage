@@ -95,6 +95,11 @@ export type Recording =
       segEnd: number;
       reps: number;
     }
+  /**
+   * Auto-detect armed: listening for the player's first note. Has no due
+   * transition, so it survives loop boundaries until something cancels it.
+   */
+  | { kind: "detecting"; trackId: number }
   | { kind: "overdub"; trackId: number; startTime: number; endBound: number };
 
 export interface SessionState {
@@ -110,6 +115,8 @@ export interface SessionState {
   /** Grid for the free-running metronome before the first loop exists. */
   metroAnchor: number | null;
   multiplier: number;
+  /** Overwrite waits for the first note played instead of punching in at once. */
+  autoDetect: boolean;
   recording: Recording;
   tracks: TrackState[];
   buses: BusState[];
@@ -163,6 +170,10 @@ export type SessionEvent =
   | { type: "setDefaultDelay"; ms: number }
   | { type: "setDefaultTrackVolume"; value: number }
   | { type: "setDefaultTrackReverb"; value: number }
+  | { type: "adoptTrackDefaults"; id: number }
+  | { type: "toggleAutoDetect" }
+  | { type: "overwriteDetected"; at: number }
+  | { type: "restore"; state: SessionState }
   | { type: "clearNotice" };
 
 /** Side effects for the audio layer, in order. */
@@ -213,6 +224,7 @@ export function createSession(defaultDelayMs = 0): SessionState {
     metronomeOn: false,
     metroAnchor: null,
     multiplier: 1,
+    autoDetect: false,
     recording: { kind: "off" },
     tracks: [],
     buses: [
@@ -459,6 +471,27 @@ export function reduce(s: SessionState, event: SessionEvent, now: number): Resul
       return done({ ...s, defaultTrackVolume: clamp(event.value, 0, 100) });
     case "setDefaultTrackReverb":
       return done({ ...s, defaultTrackReverb: clamp(event.value, 0, 100) });
+    case "adoptTrackDefaults": {
+      // Volume and reverb only: a track's delay is per-recording alignment,
+      // not a taste worth carrying to the next take.
+      const track = editableTrack(s, event.id);
+      if (!track) return unchanged(s);
+      return done({
+        ...s,
+        defaultTrackVolume: track.volume,
+        defaultTrackReverb: track.reverb,
+      });
+    }
+    case "toggleAutoDetect":
+      // Locked once the gesture is under way, so the mode can't change beneath it.
+      if (s.recording.kind === "detecting" || s.recording.kind === "overdub") {
+        return unchanged(s);
+      }
+      return done({ ...s, autoDetect: !s.autoDetect });
+    case "overwriteDetected":
+      return reduceOverwriteDetected(s, event.at);
+    case "restore":
+      return done(event.state);
     case "clearNotice":
       return s.notice === null ? unchanged(s) : done({ ...s, notice: null });
   }
@@ -479,6 +512,9 @@ function reduceRecord(s: SessionState, now: number): Result {
     case "armed":
     case "capturing":
       return endRecordSession(s, s.recording.session);
+    case "detecting":
+      // Pressed again before anything was heard: give up listening.
+      return done({ ...s, recording: { kind: "off" } });
     case "overdub":
       return completeOverdub(s, s.recording, now);
   }
@@ -615,6 +651,13 @@ function startOverdub(s: SessionState, trackId: number, now: number): Result {
     next = { ...s, playing: true, anchorTime: now };
     effects.push({ type: "startTransport" });
   }
+
+  // Auto-detect punches in at the first note played instead of at the press,
+  // so the silence before it doesn't overwrite the original with nothing.
+  if (s.autoDetect) {
+    return { state: { ...next, recording: { kind: "detecting", trackId } }, effects };
+  }
+
   // The overwrite ends at the second press or when the loop reaches its end.
   const iteration = Math.floor((now - anchor) / loop + 1e-9);
   const endBound = anchor + (iteration + 1) * loop;
@@ -622,6 +665,30 @@ function startOverdub(s: SessionState, trackId: number, now: number): Result {
     state: { ...next, recording: { kind: "overdub", trackId, startTime: now, endBound } },
     effects,
   };
+}
+
+/** The player started playing: promote the listening state into a real punch. */
+function reduceOverwriteDetected(s: SessionState, at: number): Result {
+  if (s.recording.kind !== "detecting") return unchanged(s);
+  const anchor = s.anchorTime;
+  const loop = s.loopSeconds;
+  if (anchor === null || loop === null) return unchanged(s);
+
+  const iteration = Math.floor((at - anchor) / loop + 1e-9);
+  const iterationStart = anchor + iteration * loop;
+  // A level threshold fires a block or two after the attack, so start earlier
+  // than the detection — but never before this iteration began, or the phase
+  // would wrap and punch at the wrong end of the loop.
+  const startTime = Math.max(iterationStart, at - config.autoDetect.onsetBackoffMs / 1000);
+  return done({
+    ...s,
+    recording: {
+      kind: "overdub",
+      trackId: s.recording.trackId,
+      startTime,
+      endBound: iterationStart + loop,
+    },
+  });
 }
 
 function completeOverdub(

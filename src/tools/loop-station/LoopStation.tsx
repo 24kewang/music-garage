@@ -1,13 +1,17 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
 import { config } from "./config";
 import { meterFraction } from "./dsp/level";
-import { lockedFromIndex } from "./lib/session";
+import { lockedFromIndex, type SessionEvent } from "./lib/session";
+import { SHORTCUT_HINTS } from "./lib/shortcuts";
 import { useLoopStation } from "./lib/useLoopStation";
+import { useShortcuts } from "./lib/useShortcuts";
 import { useTrackDrag } from "./lib/useTrackDrag";
 import BusRack from "./components/BusRack";
 import ConfirmDialog from "./components/ConfirmDialog";
+import SaveButton from "./components/SaveButton";
 import MasterPanel from "./components/MasterPanel";
 import MicGate from "./components/MicGate";
 import SettingsPanel from "./components/SettingsPanel";
@@ -27,6 +31,9 @@ export default function LoopStation() {
   const rootRef = useRef<HTMLDivElement | null>(null);
   const clearButtonRef = useRef<HTMLButtonElement | null>(null);
   const [confirmingClear, setConfirmingClear] = useState(false);
+  /** An in-app link click held back until the unsaved-work question is answered. */
+  const [pendingHref, setPendingHref] = useState<string | null>(null);
+  const router = useRouter();
   /** Smoothed meter fills, so transients read instead of flickering. */
   const meterLevels = useRef(new Map<string, number>());
   /** Announces a reorder, which is otherwise silent to a screen reader. */
@@ -63,6 +70,47 @@ export default function LoopStation() {
     lockedFrom,
     onMove: moveTrack,
   });
+
+  /**
+   * Reorders routed through `moveTrack` so a keyboard move is announced the
+   * same way a dragged one is; everything else goes straight to the reducer.
+   */
+  const handleShortcut = useCallback(
+    (event: SessionEvent) => {
+      if (event.type === "moveTrack") moveTrack(event.id, event.toIndex);
+      else dispatch(event);
+    },
+    [dispatch, moveTrack],
+  );
+
+  // Shortcuts stand down while a modal owns the screen.
+  useShortcuts({
+    session,
+    dispatch: handleShortcut,
+    enabled: status === "ready" && !confirmingClear && pendingHref === null,
+  });
+
+  /**
+   * `beforeunload` covers tab close and reload, but never fires for a Next.js
+   * client-side navigation — so nav clicks are caught in the capture phase,
+   * before the router sees them, and held against the same question.
+   */
+  useEffect(() => {
+    if (!station.dirty) return;
+    const onClick = (event: MouseEvent) => {
+      if (event.defaultPrevented || event.button !== 0) return;
+      if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+      const anchor = (event.target as HTMLElement | null)?.closest?.("a[href]");
+      if (!(anchor instanceof HTMLAnchorElement)) return;
+      if (anchor.target && anchor.target !== "_self") return;
+      if (anchor.origin !== window.location.origin) return;
+      if (anchor.pathname === window.location.pathname) return;
+      event.preventDefault();
+      setPendingHref(anchor.pathname + anchor.search + anchor.hash);
+    };
+    document.addEventListener("click", onClick, true);
+    return () => document.removeEventListener("click", onClick, true);
+  }, [station.dirty]);
 
   useEffect(() => {
     if (status !== "ready") return;
@@ -136,6 +184,14 @@ export default function LoopStation() {
               </button>
             )}
             <span className={styles.trackHeaderSpacer} />
+            <SaveButton
+              status={station.saveStatus}
+              dirty={station.dirty}
+              hasSave={station.hasSave}
+              trackCount={session.tracks.length}
+              onSave={station.save}
+              onDelete={station.deleteSave}
+            />
             <button
               ref={clearButtonRef}
               type="button"
@@ -170,7 +226,6 @@ export default function LoopStation() {
                 dragOffset={dragOffsets[index] ?? 0}
                 draggable={index < lockedFrom}
                 onDragPointerDown={onRowPointerDown}
-                onReorderKey={(id, delta) => moveTrack(id, index + delta)}
                 dispatch={dispatch}
               />
             ))}
@@ -190,7 +245,17 @@ export default function LoopStation() {
           </div>
         </div>
 
-        <TransportBar session={session} dispatch={dispatch} overwriteArmed={overwriteArmed} />
+        <div className={styles.transport}>
+          <TransportBar session={session} dispatch={dispatch} overwriteArmed={overwriteArmed} />
+          <p className={styles.shortcuts}>
+            {SHORTCUT_HINTS.map((hint, index) => (
+              <span key={hint.keys}>
+                {index > 0 && <span className={styles.shortcutDot}>·</span>}
+                <kbd className={styles.key}>{hint.keys}</kbd> {hint.label}
+              </span>
+            ))}
+          </p>
+        </div>
       </div>
 
       {/* A reorder is otherwise completely silent to a screen reader. */}
@@ -231,6 +296,20 @@ export default function LoopStation() {
             setConfirmingClear(false);
             if (reason === "escape") clearButtonRef.current?.focus();
           }}
+        />
+      )}
+
+      {pendingHref !== null && (
+        <ConfirmDialog
+          title="Leave with unsaved changes?"
+          body="This loop hasn't been saved. Leaving now loses it — nothing is kept between sessions until you press Save."
+          confirmLabel="Leave"
+          onConfirm={() => {
+            const href = pendingHref;
+            setPendingHref(null);
+            router.push(href);
+          }}
+          onCancel={() => setPendingHref(null)}
         />
       )}
     </div>

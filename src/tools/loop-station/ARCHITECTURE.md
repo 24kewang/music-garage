@@ -111,14 +111,138 @@ would spawn a spurious track instead of replacing one. And a transition is **due
 within that tolerance too: exact comparison silently deferred a transition landing on
 `now` by a whole scheduler tick.
 
-### The count-in waits for the next accent
+### The count-in waits for the next accent, and needs no accent rule of its own
 
 Pressing record snaps the count-in to the next *bar line* of the click grid, not the
 next beat, so the count begins where the player hears the bar begin. Because the
 count-in is exactly one bar, the loop anchor then also lands on a bar line and the
-accent grid never shifts — the count-in bar simply plays unaccented
-(`Metronome.setGrid(..., accented: false)`) so a downbeat can't imply the loop has
-already started, and accents resume exactly in step when recording begins.
+accent grid never shifts.
+
+That is why the metronome has **no special case for the count-in**. Ordinary
+`k % beatsPerBar === 0` accenting already puts an accent on the count-in's first click,
+none on the rest, and resumes in step the instant recording starts. An earlier
+`accented` flag that silenced the count-in was removed: it was suppressing exactly the
+accent that was wanted.
+
+**A grid change must take back what it has already booked.** `setGrid` resets
+`scheduledUntil`, but the lookahead runs 100ms ahead, so at the count-in → recording
+handover the first beat had already been booked under the old grid and was booked again
+under the new one — a flam on the most important click in the interaction, with the
+first copy unaccented. `Metronome` therefore remembers every source it schedules and
+stops the unplayed ones whenever the grid changes or `clear()` is called.
+
+### Auto-detect punches in at the note, not at the press
+
+With auto-detect on, the overwrite button starts a `detecting` state rather than a
+punch: the reducer waits for `overwriteDetected`, which the hook fires from the same
+onset detector calibration uses. The punch then starts where the note was, so the
+silence between pressing and playing never overwrites the original with nothing.
+
+Three details are load-bearing. The start is **backed off** by
+`config.autoDetect.onsetBackoffMs`, because a level threshold fires a block or two after
+the attack — and clamped to the iteration's start, or the phase would wrap and punch at
+the far end of the loop. `detecting` has **no due transition**, so it survives loop
+boundaries and keeps listening until the player cancels. And the toggle is refused while
+detecting or overdubbing, so the mode cannot change underneath a running gesture.
+
+`CaptureBus.onLevel` became `addLevelListener` with a **reference-counted** detailed
+mode, because calibration and auto-detect are now two consumers of the same stream and
+whichever stopped last would otherwise switch the worklet's fine-grained level posting
+off under the other.
+
+The honest caveat: on speakers the loop's own output trips the detector. This wants
+earbuds, like the rest of the tool — the UI hint says so.
+
+### Saving is a snapshot plus its recordings
+
+`snapshot.ts` (pure, tested) owns the shape and its `version`; `storage.ts` is thin
+IndexedDB plumbing. IndexedDB rather than OPFS: it stores `ArrayBuffer`s through
+structured clone with no file naming or sync-access-handle worker dance, and puts the
+manifest and the audio under one transaction so a save is never half-written.
+
+A snapshot is stored **resting** — stopped, unselected, nothing recording, in-progress
+tracks graduated — because none of that is meaningful after a reload. `parseSnapshot`
+returns `null` rather than throwing on anything it doesn't recognise, and merges over
+`createSession()` so a field an older save omitted can't leave the reducer holding an
+undefined it never checks.
+
+**Sample rate is stored with the audio.** Every frame calculation downstream — padding,
+tiling, punch bounds — uses the *current* context's rate, so a save made at 48kHz opened
+at 44.1kHz would bake at the wrong length. Restore resamples once through
+`dsp/resample.ts` and everything after it stays honest.
+
+`loopSignature` is what makes the exit warning trustworthy: a pure string over exactly
+what a save captures. A "something changed" boolean would collect false positives from
+selection, notices, the metronome and drag state, and the station would read as unsaved
+forever. A test pins that a save/restore round trip leaves the signature unchanged —
+otherwise a freshly restored loop would immediately claim to be dirty.
+
+`beforeunload` covers tab close and reload. It does **not** fire for a Next.js
+client-side navigation, so nav clicks are intercepted in the capture phase and held
+against the in-app confirm dialog. Known gap, not hidden: the **back button** after a
+client-side navigation is not covered.
+
+### Hold-to-delete paints its own progress
+
+Holding the Save button past `deleteArmMs` turns it red and runs a two-second fill; a
+shorter press is an ordinary save, which is why the arm delay exists at all — without it
+every save would flash red on the way past.
+
+**The fill is a rAF loop, not a CSS transition.** `globals.css` clamps every transition
+and animation to `0.01ms !important` under `prefers-reduced-motion`, which would erase
+the gesture's only feedback — and this bar is not decoration, it *is* the timer. Painting
+`transform: scaleX(p)` per frame keeps it alive under reduced motion and keeps one clock
+rather than two that can drift apart, since the same loop is what fires the delete.
+
+Delete clears the IndexedDB save only. Calibration and the new-recording defaults live in
+localStorage and survive deliberately: they're settings, not part of the loop, and
+recalibrating latency is tedious. Afterwards `savedSignature` resets to `EMPTY_SIGNATURE`
+so a station that still has tracks correctly reads as unsaved again.
+
+The button stays enabled while a save exists even with no tracks, or clearing the station
+would strand a save with no way to reach it. In that state a *click* is guarded to do
+nothing — saving an empty station would write nothing over a real save.
+
+**A real gap, not an oversight:** press-and-hold has no keyboard equivalent, so deleting
+the save is pointer-only. It isn't solved with a second confirm dialog because the action
+is recoverable — save again — but it is a hole.
+
+### Shortcuts decline rather than force
+
+`shortcuts.ts` maps a key to a session event, purely, so every "not possible right now"
+rule is a unit test. Most of it falls out of the reducer already refusing impossible
+events; where a key has no meaningful target at all — a bus that doesn't exist, nothing
+left to delete — it returns `null` and the browser's own behaviour is left alone.
+
+The delete rule is the one with real logic: the selected track if there is one,
+otherwise the bottom-most **unlocked** track, and its overwrite before the track itself.
+An in-progress track is never a target, including via a stale selection.
+
+The arrows carry one trap worth knowing. `selectTrack` **toggles**, so dispatching it
+with the currently-selected id deselects instead of doing nothing — which is why ↑/↓
+clamp at the ends of the list and return `null` whenever the computed target is already
+selected. ←/→ cycle the *selected bus* and wrap (a rack of at most three); ↑/↓ walk the
+selectable tracks and deliberately don't, because a vertical list that jumps from bottom
+to top is disorienting.
+
+**Alt+↑/↓ reordering is keyed off the selection, not focus.** It began life as a
+`TrackRow` key handler, which latched onto whichever row was clicked first: arrowing the
+selection never moves DOM focus, so the keys kept moving the old track. `resolveAltShortcut`
+reads `selectedTrackId` instead, declines when nothing is selected, and respects the
+in-progress floor exactly as dragging does. Alt is therefore the one modifier
+`useShortcuts` lets through, and only for that pair. Escape defers to any open
+`[role="dialog"]` so closing the settings panel doesn't also drop the selection, and the
+form-field check leaves every slider's native arrow behaviour intact.
+
+Reorders from the keyboard route through `LoopStation`'s `moveTrack` rather than straight
+to the reducer, so a keyboard move is announced to screen readers the same way a dragged
+one is.
+
+Guarding lives in `useShortcuts`: `event.repeat` for hold-to-repeat, a target check for
+`input`/`textarea`/`select`/contenteditable — which is also what stops the Enter that
+commits a rename from starting the loop, since the keydown's target is still the field —
+and `preventDefault` on handled keys, which stops Space both scrolling the page and
+firing twice when the record button holds focus.
 
 ### One convolver, fed by sends
 
@@ -272,7 +396,10 @@ on the beat plays on the beat.
 | `../registry.test.ts` | slug ↔ folder ↔ route contract for every tool |
 | `lib/transport.test.ts` | boundary/phase/divisor/free-tempo arithmetic, float-drift immunity |
 | `lib/reorder.test.ts` | which slot a drag is over across variable row heights, capping at the in-progress floor, sibling shift direction and range, gap derivation |
-| `lib/session.test.ts` | every recording rule in the spec: count-in bar-line snap and cancels, free mode incl. derived-tempo limits, replacement, graduation (incl. on stop), multiplier discards, overwrite lifecycle, locking, delete-all, take-name reuse, bus colour slots, track/bus caps, reordering and its in-progress floor, new-recording defaults, idle-tick bailout |
+| `lib/shortcuts.test.ts` | every key mapping, multiplier and bus wrap-around at both ends, arrow track-stepping (clamped, locked tracks skipped, the selectTrack-toggle trap), and the delete rule — selection, bottom-most, stale selections ignored |
+| `lib/snapshot.test.ts` | snapshot lands resting, JSON round-trip, junk/version/shape rejection, missing fields filled, and what `loopSignature` does and does not react to |
+| `dsp/resample.test.ts` | duration held across a rate change, endpoints kept, ramp shape preserved |
+| `lib/session.test.ts` | every recording rule in the spec: count-in bar-line snap and cancels, free mode incl. derived-tempo limits, replacement, graduation (incl. on stop), multiplier discards, overwrite lifecycle, locking, delete-all, take-name reuse, bus colour slots, track/bus caps, reordering and its in-progress floor, new-recording defaults, auto-detect (backoff clamp, surviving a loop boundary, cancels, toggle lock), idle-tick bailout |
 | `dsp/tile.test.ts` | tiling positions, seam and wrap crossfades, delay windows, silence past padding, punch-in replace semantics |
 | `dsp/level.test.ts` | normalised envelopes never exceed 1, quiet takes lift, near-silence stays flat; the meter's dB curve is monotonic and clears the floor |
 | `dsp/calibration.test.ts` | offset wrapping, RTL recovery under noise + outliers, onset edge/refractory behaviour |
@@ -291,6 +418,13 @@ the limiter stays transparent at sane levels, how the vertical range inputs rend
 across browsers, and the whole touch layout. The Bluetooth warning fires on a device-label
 heuristic (`/bluetooth|airpods|…/i`) and will miss devices with unhelpful labels — it is
 a warning, not a gate, on purpose.
+
+So is everything with a microphone or a database in it: whether auto-detect fires on
+your first note rather than on loop bleed and whether the backoff keeps the attack
+intact (`config.autoDetect` is the knob), whether a save/reload round trip actually
+sounds identical, and whether the count-in's first click is accented with **no flam** at
+the handover into recording. IndexedDB has no coverage at all — `storage.ts` is
+deliberately decision-free so that everything worth pinning lives in `snapshot.ts`.
 
 The drag gesture is entirely untestable here: whether the 5px threshold separates "click
 to select" from "pick up", whether 400ms is the right touch hold, whether the sibling
