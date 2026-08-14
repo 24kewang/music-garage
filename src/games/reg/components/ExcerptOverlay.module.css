@@ -10,9 +10,12 @@
   inset: 0;
   z-index: 60;
 
-  display: grid;
-  place-items: center;
+  display: flex;
   padding: var(--space-5);
+  /* The scroll owner, for the cases the card can't be made to fit: a very tall excerpt
+     (see .cardTall) or a window too short for even the caption. */
+  overflow: auto;
+  overscroll-behavior: contain;
 
   background: color-mix(in srgb, var(--color-bg) 82%, transparent);
   backdrop-filter: blur(10px);
@@ -32,13 +35,23 @@
 .card {
   position: relative;
   max-width: 100%;
+  /* Resolves against the backdrop, which has a definite height — that is what makes the
+     percentage on .image below meaningful. `margin: auto` does the centring rather than
+     `align-items`, because a flex item centred that way is unreachable by scrolling once
+     it overflows: the top gets clipped with no way to reach it. */
   max-height: 100%;
+  margin: auto;
+  min-height: 0;
   padding: var(--space-5);
 
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: var(--space-4);
+  /* Only bites in a window so short that the caption can't fit even after the image has
+     shrunk away — then it scrolls rather than clipping. Nothing overflows in the normal
+     case, so no scrollbar appears. */
+  overflow: auto;
 
   background: color-mix(in srgb, var(--color-surface-raised) 94%, transparent);
   border: 1px solid var(--color-border);
@@ -85,16 +98,48 @@
   border-color: var(--color-text-faint);
 }
 
-.image {
-  /* Fit inside the card without ever scrolling the page. */
-  max-width: 100%;
+/*
+ * Takes whatever height is left once the close button and caption have had theirs, and
+ * `min-height: 0` is the line that lets it actually shrink. Without this wrapper the
+ * image's intrinsic height won, the card grew past the viewport, and the bottom of the
+ * excerpt was clipped off the screen.
+ */
+.figure {
+  flex: 1 1 auto;
   min-height: 0;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.image {
+  /* Both percentages resolve now: .figure has a height the flex layout assigned it. */
+  max-width: 100%;
   max-height: 100%;
   object-fit: contain;
   border-radius: var(--radius-sm);
   /* Excerpt scans are usually white paper — a light mat reads as intentional against
    * the dark panel instead of looking like a rendering artefact. */
   background: var(--color-text);
+}
+
+/*
+ * A very tall excerpt — a strip of stacked systems — is unreadable once fitted to the
+ * height, so it renders at full width and the backdrop scrolls instead of shrinking it
+ * to a few centimetres wide.
+ */
+.cardTall {
+  max-height: none;
+}
+
+.cardTall .figure {
+  flex: none;
+}
+
+.cardTall .image {
+  max-height: none;
+  width: 100%;
 }
 
 .status {

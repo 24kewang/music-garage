@@ -32,6 +32,8 @@ export default function ExcerptOverlay({
   onClose: () => void;
 }) {
   const [load, setLoad] = useState<Load>({ state: "loading" });
+  /** Too tall to be worth fitting to the screen — scroll it at full width instead. */
+  const [tall, setTall] = useState(false);
   const cardRef = useRef<HTMLDivElement | null>(null);
   const closeRef = useRef<HTMLButtonElement | null>(null);
 
@@ -73,7 +75,7 @@ export default function ExcerptOverlay({
   return (
     <div className={styles.backdrop}>
       <div
-        className={styles.card}
+        className={`${styles.card} ${tall ? styles.cardTall : ""}`}
         ref={cardRef}
         role="dialog"
         aria-modal="true"
@@ -90,11 +92,24 @@ export default function ExcerptOverlay({
         </button>
 
         {load.state === "ready" ? (
-          // next/image has nothing to offer here: the source is a runtime blob: URL
-          // from the browser's own file storage, with dimensions known only once
-          // decoded, and there is no server in the loop to optimise through.
-          // eslint-disable-next-line @next/next/no-img-element
-          <img className={styles.image} src={load.url} alt={fullName} />
+          <div className={styles.figure}>
+            {/* next/image has nothing to offer here: the source is a runtime blob: URL
+                from the browser's own file storage, with dimensions known only once
+                decoded, and there is no server in the loop to optimise through. */}
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              className={styles.image}
+              src={load.url}
+              alt={fullName}
+              onLoad={(event) => {
+                const { naturalWidth, naturalHeight } = event.currentTarget;
+                setTall(
+                  naturalWidth > 0 &&
+                    naturalHeight / naturalWidth > config.overlay.scrollAboveRatio,
+                );
+              }}
+            />
+          </div>
         ) : (
           <p className={styles.status}>
             {load.state === "loading"

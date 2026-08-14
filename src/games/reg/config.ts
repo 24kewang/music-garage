@@ -104,6 +104,13 @@ export const config = {
     separator: " - ",
   },
 
+  overlay: {
+    /** Height-to-width ratio above which the enlarged excerpt stops being fitted to the
+     *  screen and scrolls at full width instead. Fitting a tall strip of systems to the
+     *  viewport height leaves it a few centimetres wide and unreadable. */
+    scrollAboveRatio: 2,
+  },
+
   reject: {
     /** navigator.vibrate pattern when SPIN is pressed with nothing checked. */
     vibratePattern: [60, 40, 60],
