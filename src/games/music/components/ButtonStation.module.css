@@ -1,0 +1,181 @@
+/*
+ * The transport. One prominent circle with everything else arranged around it, so
+ * where to press is never a question — this gets used from across a room, by
+ * somebody holding an instrument.
+ */
+
+.station {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.row {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: var(--space-5);
+}
+
+.record {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 72px;
+  height: 72px;
+  border: none;
+  border-radius: var(--radius-pill);
+  background: var(--color-accent);
+  color: var(--color-accent-contrast);
+  cursor: pointer;
+  transition:
+    background-color var(--dur-fast) var(--ease-out),
+    transform var(--dur-fast) var(--ease-out);
+}
+
+.record:hover:not(:disabled) {
+  background: var(--color-accent-hover);
+}
+
+.record:active:not(:disabled) {
+  transform: scale(0.96);
+}
+
+.record:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+/* Recording. Red rather than accent — this is the state you want to get out of. */
+.record[data-live] {
+  background: var(--color-danger);
+}
+
+/*
+ * Armed but not yet counting. The pulse says "listening" where a timer would
+ * wrongly say "your ten seconds have started".
+ */
+.record[data-armed] {
+  animation: breathe 1.6s var(--ease-in-out) infinite;
+}
+
+@keyframes breathe {
+  50% {
+    box-shadow: 0 0 0 10px var(--color-accent-glow);
+  }
+}
+
+/* The level ring. Sits behind the button and is scaled from the input level. */
+.level {
+  position: absolute;
+  inset: -6px;
+  border: 2px solid var(--color-accent-line);
+  border-radius: var(--radius-pill);
+  pointer-events: none;
+  transition: transform var(--dur-fast) linear;
+}
+
+.record[data-live] .level {
+  border-color: var(--color-danger-soft);
+}
+
+.badge {
+  position: absolute;
+  right: -4px;
+  bottom: -4px;
+  min-width: 1.5rem;
+  padding: 0.1rem 0.35rem;
+  border: 2px solid var(--color-bg);
+  border-radius: var(--radius-pill);
+  background: var(--color-surface-raised);
+  color: var(--color-text);
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.secondary {
+  display: grid;
+  place-items: center;
+  width: 52px;
+  height: 52px;
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-pill);
+  background: var(--color-surface-raised);
+  color: var(--color-text);
+  cursor: pointer;
+  transition:
+    border-color var(--dur-fast) var(--ease-out),
+    color var(--dur-fast) var(--ease-out);
+}
+
+.secondary:hover:not(:disabled) {
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+}
+
+.secondary:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.clock {
+  position: absolute;
+  left: calc(100% + var(--space-4));
+  display: flex;
+  align-items: baseline;
+  gap: 1px;
+  color: var(--color-text-muted);
+  font-family: var(--font-mono);
+  font-size: var(--text-2xl);
+  font-variant-numeric: tabular-nums;
+}
+
+/* The last few seconds. Colour plus size, so it is not colour alone. */
+.clock[data-urgent] {
+  color: var(--color-warn);
+  font-size: var(--text-3xl);
+  font-weight: 700;
+}
+
+.unit {
+  font-size: var(--text-sm);
+}
+
+.caption {
+  margin: 0;
+  min-height: 1.4em;
+  max-width: 26rem;
+  color: var(--color-text-muted);
+  font-size: var(--text-sm);
+  text-align: center;
+}
+
+.reset {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-5);
+  border: none;
+  border-radius: var(--radius-pill);
+  background: var(--color-accent);
+  color: var(--color-accent-contrast);
+  font-family: inherit;
+  font-size: var(--text-base);
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color var(--dur-fast) var(--ease-out);
+}
+
+.reset:hover {
+  background: var(--color-accent-hover);
+}
+
+/* The clock would sit off the edge of a phone; put it under the button instead. */
+@media (max-width: 30rem) {
+  .clock {
+    position: static;
+  }
+}

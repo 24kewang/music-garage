@@ -1,4 +1,5 @@
 import type { GameManifest } from "@/games/types";
+import { manifest as music } from "@/games/music/manifest";
 import { manifest as musicalWavelength } from "@/games/musical-wavelength/manifest";
 import { manifest as pitchMath } from "@/games/pitch-math/manifest";
 import { manifest as reg } from "@/games/reg/manifest";
@@ -10,7 +11,7 @@ import { manifest as reg } from "@/games/reg/manifest";
  * is: create `src/games/<slug>/`, add a route adapter at
  * `src/app/games/<slug>/page.tsx`, then add its manifest to this array.
  */
-export const GAMES: readonly GameManifest[] = [musicalWavelength, pitchMath, reg];
+export const GAMES: readonly GameManifest[] = [musicalWavelength, pitchMath, reg, music];
 
 export function getGame(slug: string): GameManifest | undefined {
   return GAMES.find((game) => game.slug === slug);

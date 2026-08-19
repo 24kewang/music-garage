@@ -1,5 +1,5 @@
 import { config } from "../config";
-import { moveItem } from "./reorder";
+import { moveItem } from "@/shared/lib/reorder";
 import {
   divisorsOf,
   freeModeTempo,
@@ -30,7 +30,7 @@ import {
 
 export interface OverwriteState {
   segmentId: number;
-  /** Loop phase where the punch-in starts/ends, seconds. `endPhase` may equal the loop length. */
+  /** Loop phase where the punch-in starts/ends, seconds. `endPhase` may equal the loop length.  */
   startPhase: number;
   endPhase: number;
   /** Alignment nudge for the overwrite content only, independent of the track's. */

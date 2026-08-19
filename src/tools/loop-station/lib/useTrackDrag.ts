@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { config } from "../config";
-import { gapBetween, shiftFor, targetIndex, type RowBox } from "./reorder";
+import { gapBetween, shiftFor, targetIndex, type RowBox } from "@/shared/lib/reorder";
 
 /**
  * Drag-to-reorder for the track list.

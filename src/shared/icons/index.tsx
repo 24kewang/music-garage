@@ -3,6 +3,7 @@
 import { createElement, type ComponentProps } from "react";
 import {
   ArrowClockwiseIcon,
+  BasketballIcon,
   CaretDownIcon,
   GearIcon,
   HouseIcon,
@@ -39,6 +40,7 @@ export const ICONS = {
   waveform: WaveformIcon,
   arrowClockwise: ArrowClockwiseIcon,
   shuffle: ShuffleIcon,
+  basketball: BasketballIcon,
 } as const satisfies Record<string, Icon>;
 
 /** Valid icon names. Typing `iconId` as this makes a typo a build error. */

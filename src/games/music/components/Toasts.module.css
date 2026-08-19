@@ -1,0 +1,94 @@
+/*
+ * Bottom centre. Above the nav menu (50) so a notice is never buried, below the
+ * dialog backdrop (60) so it never floats over a modal.
+ *
+ * Kept clear of the settings gear, which owns the bottom right.
+ */
+
+.stack {
+  position: fixed;
+  bottom: var(--space-5);
+  left: 50%;
+  z-index: 55;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+  width: min(28rem, calc(100vw - var(--space-5) * 2));
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+
+.toast {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  width: 100%;
+  padding: var(--space-3) var(--space-3) var(--space-3) var(--space-4);
+  border: 1px solid var(--color-border-strong);
+  border-left-width: 3px;
+  border-radius: var(--radius-md);
+  background: color-mix(in srgb, var(--color-surface-raised) 96%, transparent);
+  box-shadow: var(--shadow-md);
+  pointer-events: auto;
+  animation: toastIn var(--dur-base) var(--ease-out) backwards;
+}
+
+/*
+ * Tone is carried by the left edge only. The message already says what happened in
+ * words, so the colour is a glance-level echo rather than the information itself.
+ */
+.toast[data-tone="success"] {
+  border-left-color: var(--color-success);
+}
+
+.toast[data-tone="failure"] {
+  border-left-color: var(--color-danger);
+}
+
+.toast[data-tone="neutral"] {
+  border-left-color: var(--color-accent);
+}
+
+.message {
+  flex: 1;
+  margin: 0;
+  color: var(--color-text);
+  font-size: var(--text-sm);
+  line-height: 1.45;
+}
+
+.close {
+  display: grid;
+  place-items: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  flex-shrink: 0;
+  border: none;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--color-text-faint);
+  cursor: pointer;
+  transition: color var(--dur-fast) var(--ease-out);
+}
+
+.close:hover {
+  color: var(--color-text);
+}
+
+@keyframes toastIn {
+  from {
+    opacity: 0;
+    transform: translateY(var(--space-3));
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .toast {
+    animation: none;
+  }
+}

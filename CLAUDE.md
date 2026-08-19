@@ -39,6 +39,10 @@ src/shared/    Cross-game code: audio, UI chrome, icons, design tokens
 - Shared UI worth reusing before writing a fourth copy: `Confetti` (takes its tuning as a
   prop, plus an optional burst origin) and `useDismiss` (Escape/outside-click, passing
   the reason so callers can restore focus on Escape only).
+- `@/shared/lib/` is for pure cross-feature helpers. `reorder.ts` is the drag-to-reorder
+  geometry (`moveItem`, `targetIndex`, `shiftFor`, `gapBetween`), used by both the loop
+  station and MUSIC. The pointer gesture stays per-feature — the two have genuinely
+  different needs.
 
 ## Styling
 

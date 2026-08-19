@@ -1,9 +1,11 @@
 /**
- * Geometry for dragging a track into a new slot.
+ * Geometry for dragging a row of a vertical list into a new slot.
  *
- * Kept pure and free of the DOM so the fiddly parts — which slot the pointer is
- * over, how far each sibling has to move to open it — are Node-testable rather
- * than only discoverable by dragging things in a browser.
+ * Shared because two features reorder lists this way — the Loop Station's tracks
+ * and MUSIC's player order — and the fiddly parts are identical in both. Kept pure
+ * and free of the DOM so which slot the pointer is over, and how far each sibling
+ * has to move to open it, are Node-testable rather than only discoverable by
+ * dragging things in a browser.
  *
  * All coordinates are **list-content** coordinates (`offsetTop`/`offsetHeight`
  * inside the scrolling list), never viewport ones, so auto-scrolling mid-drag
@@ -38,8 +40,9 @@ const centre = (row: RowBox) => row.top + row.height / 2;
  * accumulating means variable row heights need no special handling and the
  * result never drifts over a long drag.
  *
- * `maxIndex` is the floor: an in-progress track and everything below it are
- * pinned, so the slot is capped just above them.
+ * `maxIndex` is the floor, for lists with pinned rows at the bottom — the Loop
+ * Station pins an in-progress track and everything below it — so the slot is
+ * capped just above them. Lists with nothing pinned can leave it at its default.
  */
 export function targetIndex(
   rows: readonly RowBox[],

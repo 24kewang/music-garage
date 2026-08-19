@@ -1,0 +1,54 @@
+/*
+ * Two step functions, one over the other. No axes and no grid — the shapes are the
+ * whole point, and a pitch scale would be a lie next to an attempt that has been
+ * transposed to wherever it scored best.
+ */
+
+.graph {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: 40vh;
+  overflow: visible;
+}
+
+/* The melody being copied. Quiet: it is the reference, not the news. */
+.target line {
+  stroke: var(--color-wave-muted);
+  stroke-width: 2;
+  stroke-linecap: round;
+}
+
+/* A note the attempt never played. The gap in the other line says it too. */
+.target line[data-missed] {
+  stroke: var(--color-danger);
+  stroke-dasharray: 4 4;
+}
+
+.attempt line {
+  stroke-width: 4;
+  stroke-linecap: round;
+}
+
+/*
+ * The vertical joins between one cell and the next. They belong to no single note,
+ * so they take neither verdict's colour — otherwise a riser between a right note
+ * and a wrong one would have to pick a side and would misreport one of them.
+ */
+.attempt > line {
+  stroke: var(--color-text-faint);
+  stroke-width: 3;
+}
+
+.attempt [data-op="match"] line {
+  stroke: var(--color-success);
+}
+
+.attempt [data-op="sub"] line,
+.attempt [data-op="ins"] line {
+  stroke: var(--color-danger);
+}
+
+.attempt circle {
+  fill: var(--color-danger);
+}

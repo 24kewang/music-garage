@@ -36,6 +36,12 @@
   --color-accent-line: rgb(129 140 248 / 0.35);
   --color-accent-glow: rgb(99 102 241 / 0.18);
 
+  /* Success. Added for MUSIC's alignment graph, which needs a green that reads as
+     "this note matched" next to --color-danger. 11.1:1 on bg, 9.6:1 on
+     --color-surface-raised, so it is safe as text and not only as a stroke. */
+  --color-success: #4ade80;
+  --color-success-soft: rgb(74 222 128 / 0.12);
+
   --color-warn: #fbbf24;
   --color-warn-soft: rgb(251 191 36 / 0.12);
   --color-danger: #f87171;

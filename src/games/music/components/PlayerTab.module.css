@@ -1,0 +1,159 @@
+.tab {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.hint {
+  margin: 0;
+  color: var(--color-text-faint);
+  font-size: var(--text-xs);
+  line-height: 1.5;
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.row {
+  display: grid;
+  grid-template-columns: auto 1fr auto auto;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: 2.75rem;
+  padding: var(--space-2);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  transition: transform var(--dur-fast) var(--ease-out);
+  touch-action: none;
+}
+
+/*
+ * Suppressed for the one frame where the reorder and the transform reset land
+ * together — without it every row animates from its drag offset while the DOM order
+ * has already changed, and the list visibly swims.
+ */
+.list[data-dropping] .row {
+  transition: none;
+}
+
+.row[data-dragging] {
+  z-index: 1;
+  border-color: var(--color-accent);
+  box-shadow: var(--shadow-md);
+  transition: none;
+}
+
+.handle {
+  display: grid;
+  place-items: center;
+  width: 2rem;
+  height: 2.25rem;
+  border: none;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--color-text-faint);
+  cursor: grab;
+  touch-action: none;
+}
+
+.handle:hover {
+  color: var(--color-text);
+}
+
+.handle:active {
+  cursor: grabbing;
+}
+
+.name {
+  min-width: 0;
+  padding: var(--space-2);
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--color-text);
+  font-family: inherit;
+  font-size: var(--text-sm);
+}
+
+.name:hover {
+  border-color: var(--color-border-strong);
+}
+
+.name:focus-visible {
+  border-color: var(--color-accent);
+  outline: none;
+}
+
+.strikes {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.strikes input {
+  width: 3.25rem;
+  padding: var(--space-2);
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface-raised);
+  color: var(--color-text);
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  font-variant-numeric: tabular-nums;
+  text-align: center;
+}
+
+/*
+ * The letters that number actually spells. Editing a strike count is otherwise a
+ * guess about what the board will do.
+ */
+.spelled {
+  min-width: 3ch;
+  color: var(--color-danger);
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  letter-spacing: 0.05em;
+}
+
+.active {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding-right: var(--space-2);
+  color: var(--color-text-muted);
+  font-size: var(--text-xs);
+  cursor: pointer;
+}
+
+.active input {
+  width: 1rem;
+  height: 1rem;
+  accent-color: var(--color-accent);
+  cursor: pointer;
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* Two rows of controls rather than four squeezed columns. */
+@media (max-width: 26rem) {
+  .row {
+    grid-template-columns: auto 1fr;
+  }
+
+  .strikes,
+  .active {
+    grid-column: 2;
+  }
+}
