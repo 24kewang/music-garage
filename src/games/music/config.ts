@@ -180,12 +180,14 @@ export const config = {
   },
 
   drag: {
-    /** Pointer movement before a mouse press becomes a drag. */
+    /**
+     * Pointer movement before a press on a row's handle becomes a drag.
+     *
+     * The only thing standing between a drag and a click that focuses the handle for
+     * the arrow keys. There is no long-press wait: the handle is a dedicated surface,
+     * so there is no swipe-to-scroll to tell a drag apart from.
+     */
     thresholdPx: 4,
-    /** A touch press must be held this long, so a swipe still scrolls the panel. */
-    longPressMs: 220,
-    /** Moving further than this before the long press fires means they meant to scroll. */
-    longPressSlopPx: 10,
   },
 
   toast: {

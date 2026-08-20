@@ -8,7 +8,7 @@ export const manifest: GameManifest = {
   iconId: "target",
   status: "playable",
   minPlayers: 2,
-  maxPlayers: 12,
+  maxPlayers: 5,
 };
 
 export default manifest;

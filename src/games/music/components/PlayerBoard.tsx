@@ -1,6 +1,6 @@
 "use client";
 
-import { lettersShown, type Player } from "../lib/rules";
+import { isContender, lettersShown, type Player } from "../lib/rules";
 import styles from "./PlayerBoard.module.css";
 
 /**
@@ -12,6 +12,12 @@ import styles from "./PlayerBoard.module.css";
  * Eliminated players stay on the board while they are active. Removing them would
  * lose the running story of the game, which is the thing everyone in the room is
  * actually watching.
+ *
+ * Before a first take the boxes are **buttons**: turn order picks a default setter,
+ * and clicking picks a different one. Four people around one screen do not take turns
+ * in the order an array happens to be in, and the alternative was making them open
+ * settings and drag rows to say so. The moment a melody is recorded the boxes go back
+ * to being plain cells, because from then on it belongs to whoever recorded it.
  */
 
 export default function PlayerBoard({
@@ -20,6 +26,8 @@ export default function PlayerBoard({
   currentId,
   setterId,
   showSetter,
+  selectable,
+  onSelect,
 }: {
   players: readonly Player[];
   word: string;
@@ -28,6 +36,9 @@ export default function PlayerBoard({
   setterId: string | null;
   /** The setter tag only means something once a melody is actually set. */
   showSetter: boolean;
+  /** True while the setting turn is still up for grabs. */
+  selectable: boolean;
+  onSelect: (id: string) => void;
 }) {
   const visible = players.filter((player) => player.active);
 
@@ -36,14 +47,11 @@ export default function PlayerBoard({
       {visible.map((player) => {
         const lit = lettersShown(player, word);
         const out = lit >= word.length;
+        // Only a contender can be handed the turn; an eliminated box stays inert.
+        const pickable = selectable && isContender(player, word);
 
-        return (
-          <li
-            key={player.id}
-            className={styles.card}
-            data-current={player.id === currentId || undefined}
-            data-out={out || undefined}
-          >
+        const body = (
+          <>
             {showSetter && player.id === setterId && (
               <span className={styles.tag}>Their round</span>
             )}
@@ -72,6 +80,33 @@ export default function PlayerBoard({
                 {lit} of {word.length} letters{out ? ", out" : ""}
               </span>
             </span>
+          </>
+        );
+
+        return (
+          <li key={player.id} className={styles.slot}>
+            {pickable ? (
+              <button
+                type="button"
+                className={styles.card}
+                data-current={player.id === currentId || undefined}
+                data-out={out || undefined}
+                data-pickable
+                aria-pressed={player.id === currentId}
+                aria-label={`${player.name} sets the next melody`}
+                onClick={() => onSelect(player.id)}
+              >
+                {body}
+              </button>
+            ) : (
+              <div
+                className={styles.card}
+                data-current={player.id === currentId || undefined}
+                data-out={out || undefined}
+              >
+                {body}
+              </div>
+            )}
           </li>
         );
       })}

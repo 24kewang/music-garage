@@ -299,6 +299,13 @@ actually making the shot you called. If it does, the first take becomes the roun
 target and everyone else copies it in turn. If it doesn't, nobody takes a letter and
 the turn simply passes on.
 
+**Making your shot keeps you shooting.** Once everyone has answered, the melody goes
+back to the *same* setter for another one — you only lose the ball by missing a
+confirmation of your own. And before a first take is recorded, **any box on the board
+can be clicked** to hand that player the turn: turn order picks a sensible default, but
+four people around one screen rarely go in array order. The choice locks the moment a
+melody is recorded and opens again when the round comes back round.
+
 What gets compared is a **sequence of pitches** and nothing else:
 
 - **Rhythm is discarded.** Play it faster or slower, in any time you like.
@@ -325,10 +332,10 @@ extra note showing as a visible gap in one of the two lines. The score out of 10
 underneath is honest rather than flattering — a near miss reads in the high eighties,
 which is the number that makes switching to loose tolerance an informed decision.
 
-The gear in the bottom-right has two tabs. **Players** is the roster: drag rows to
-reorder them (top-to-bottom here is left-to-right on the board — or focus a handle and
-use the arrow keys), rename anyone, edit a strike count directly, and switch players in
-and out. **Game** sets the word — any 1–5 letters, not just MUSIC — and the tolerance,
+The gear in the bottom-right has two tabs. **Players** is the roster: drag a row **by
+its handle** to reorder it (top-to-bottom here is left-to-right on the board — or focus
+a handle and use the arrow keys), rename anyone, edit a strike count directly, and
+switch players in and out, down to a floor of two. **Game** sets the word — any 1–5 letters, not just MUSIC — and the tolerance,
 **strict** or **loose**. Everything applies immediately, including a shortened word
 that eliminates somebody on the spot. Settings lock while a melody is being copied,
 since that round's terms are already set.

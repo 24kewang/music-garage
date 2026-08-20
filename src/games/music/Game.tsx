@@ -73,6 +73,8 @@ export default function Game() {
           currentId={finished ? null : round.turnId}
           setterId={round.setterId}
           showSetter={round.phase === "copying"}
+          selectable={game.selectable}
+          onSelect={game.selectSetter}
         />
 
         {!game.playable && !finished && (
@@ -94,6 +96,7 @@ export default function Game() {
           level={recording.level}
           remaining={recording.remaining}
           working={game.working}
+          selectable={game.selectable}
           canPlayBack={game.clip !== null}
           playing={game.playing}
           disabled={!game.playable}

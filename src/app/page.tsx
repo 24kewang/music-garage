@@ -8,7 +8,7 @@ import styles from "./page.module.css";
 /** A game for exactly two reads "2 players", not "2–2 players". */
 function playersLabel(min?: number, max?: number): string | undefined {
   if (!min || !max) return undefined;
-  return `${min === max ? min : `${min}–${max}`} players`;
+  return `${min === max ? min : `${min}–${max}`} player${min === 1 && max === 1 ? "" : "s"}`;
 }
 
 export default function Home() {

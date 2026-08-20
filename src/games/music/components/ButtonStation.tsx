@@ -30,6 +30,7 @@ export default function ButtonStation({
   level,
   remaining,
   working,
+  selectable,
   canPlayBack,
   playing,
   disabled,
@@ -43,6 +44,8 @@ export default function ButtonStation({
   level: number;
   remaining: number | null;
   working: boolean;
+  /** True while a box can still be clicked to change who sets. */
+  selectable: boolean;
   canPlayBack: boolean;
   playing: boolean;
   disabled: boolean;
@@ -78,7 +81,11 @@ export default function ButtonStation({
             : phase === "setting" && takeIndex === 1
               ? "Play the same melody again to confirm it."
               : phase === "setting"
-                ? "Record the melody you want to set."
+                ? selectable
+                  // Stated rather than left to be discovered — a box that only
+                  // becomes a button some of the time is easy to miss.
+                  ? "Record the melody you want to set, or pick a different player."
+                  : "Record the melody you want to set."
                 : "Copy the melody.";
 
   return (

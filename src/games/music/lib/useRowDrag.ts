@@ -18,12 +18,14 @@ import { config } from "../config";
  * every frame and only the destination slot lives in React state, so a drag costs a
  * handful of renders rather than sixty a second.
  *
- * Dragging is never the only way to reorder — see the move buttons in `PlayerTab`.
- * A pointer-only list is unreachable by keyboard.
+ * The gesture starts on the **handle only**. A row full of text fields and checkboxes
+ * has no spare pointer surface to spend on dragging, and a whole-row grab meant every
+ * press near an input was ambiguous. It also removes the swipe-versus-drag problem
+ * outright, which is why there is no long-press wait here.
+ *
+ * Dragging is never the only way to reorder — the handle is a real button and the
+ * arrow keys move the row. A pointer-only list is unreachable by keyboard.
  */
-
-/** Anything a press should mean something else on. */
-const NO_DRAG = 'input, button, select, textarea, [data-no-drag]';
 
 interface DragState {
   index: number;
@@ -40,14 +42,12 @@ interface Gesture {
   startX: number;
   startY: number;
   started: boolean;
-  /** Touch presses wait for the long press; a mouse is armed at once. */
-  armed: boolean;
-  longPress: ReturnType<typeof setTimeout> | null;
 }
 
 export interface RowDrag {
   listRef: (node: HTMLElement | null) => void;
-  onRowPointerDown: (index: number, event: React.PointerEvent) => void;
+  /** Bind to the row's drag handle — nowhere else. */
+  onHandlePointerDown: (index: number, event: React.PointerEvent) => void;
   active: boolean;
   draggingIndex: number | null;
   /** Pixels each row translates to open the destination slot, by index. */
@@ -139,7 +139,6 @@ export function useRowDrag({
     gesture.current = null;
     dragRef.current = null;
     draggedNode.current = null;
-    if (g?.longPress) clearTimeout(g.longPress);
 
     // Clear the inline transforms and suppress transitions for one frame: the
     // reorder and the reset land together, and without this every row animates
@@ -180,14 +179,10 @@ export function useRowDrag({
       g.clientY = event.clientY;
 
       if (!g.started) {
+        // A small threshold, so that clicking the handle to focus it for the arrow
+        // keys does not count as a drag.
         const dx = Math.abs(event.clientX - g.startX);
         const dy = Math.abs(event.clientY - g.startY);
-
-        if (!g.armed) {
-          // Moving before the long press fires means they meant to scroll.
-          if (Math.hypot(dx, dy) > config.drag.longPressSlopPx) finish(false);
-          return;
-        }
         if (Math.hypot(dx, dy) < config.drag.thresholdPx) return;
         begin();
       }
@@ -219,15 +214,14 @@ export function useRowDrag({
     };
   }, [begin, finish, paint, updateTarget]);
 
-  const onRowPointerDown = useCallback(
+  const onHandlePointerDown = useCallback(
     (index: number, event: React.PointerEvent) => {
       if (gesture.current) return;
       if (event.button !== 0 && event.pointerType === "mouse") return;
 
-      const target = event.target as HTMLElement;
-      if (target.closest?.(NO_DRAG)) return;
-
-      const touch = event.pointerType === "touch";
+      // Every pointer type arms at once. The handle is a dedicated surface with
+      // `touch-action: none` on it, so there is no swipe-to-scroll to disambiguate
+      // from and nothing a long press would buy.
       gesture.current = {
         index,
         pointerId: event.pointerId,
@@ -236,21 +230,9 @@ export function useRowDrag({
         startX: event.clientX,
         startY: event.clientY,
         started: false,
-        armed: !touch,
-        longPress: null,
       };
-
-      if (touch) {
-        gesture.current.longPress = setTimeout(() => {
-          const g = gesture.current;
-          if (!g) return;
-          g.armed = true;
-          g.longPress = null;
-          begin();
-        }, config.drag.longPressMs);
-      }
     },
-    [begin, contentY],
+    [contentY],
   );
 
   const offsets = useMemo(() => {
@@ -263,7 +245,7 @@ export function useRowDrag({
 
   return {
     listRef,
-    onRowPointerDown,
+    onHandlePointerDown,
     active: drag !== null,
     draggingIndex: drag?.index ?? null,
     offsets,

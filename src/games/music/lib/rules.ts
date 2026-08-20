@@ -181,6 +181,12 @@ export function resolveSet(
  * A failure earns a letter, which may eliminate them — and because `nextCopier` reads
  * the updated roster, a player knocked out by their own letter is skipped on the very
  * same step rather than being offered another turn.
+ *
+ * When the round runs out of copiers the melody goes **back to the same setter**, not
+ * on to the next player. Making your shot in HORSE keeps you shooting; you only lose
+ * the ball by missing one of your own, which is what `resolveSet` handles at the other
+ * end. The one exception is a setter who stopped being a contender mid-round — they
+ * cannot earn a letter while setting, so this only happens by a settings edit.
  */
 export function resolveCopy(
   round: Round,
@@ -199,9 +205,48 @@ export function resolveCopy(
     return { round: settle({ ...round, turnId: following }, next, word), players: next };
   }
 
-  // Everyone has answered. The melody passes to the next player in order.
-  const setterId = nextContenderAfter(next, round.setterId, word);
+  // Everyone has answered. The setter keeps the ball and calls another one.
+  const keeper = next.find((player) => player.id === round.setterId);
+  const setterId =
+    keeper !== undefined && isContender(keeper, word)
+      ? keeper.id
+      : nextContenderAfter(next, round.setterId, word);
+
   return { round: settle(setting(setterId), next, word), players: next };
+}
+
+/**
+ * Whether the setter is still up for grabs.
+ *
+ * Only before a first take. `takeIndex` is the whole lock: once a melody has been
+ * recorded it belongs to whoever recorded it, and it stays theirs until the round
+ * comes back to setting — either because their confirmation failed, or because a full
+ * round of copies finished.
+ */
+export function canChooseSetter(round: Round): boolean {
+  return round.phase === "setting" && round.takeIndex === 0;
+}
+
+/**
+ * Hand the setting turn to a particular player.
+ *
+ * A no-op unless the round is open to it and the player is actually a contender, so
+ * an eliminated or switched-off box cannot be picked. Turn order still supplies the
+ * default — this only lets the room override it, which is what a game played around
+ * one screen actually needs.
+ */
+export function chooseSetter(
+  round: Round,
+  players: readonly Player[],
+  word: string,
+  id: string,
+): Round {
+  if (!canChooseSetter(round)) return round;
+
+  const player = players.find((candidate) => candidate.id === id);
+  if (player === undefined || !isContender(player, word)) return round;
+
+  return setting(id);
 }
 
 /** The setter's first take is in the bag; the confirmation take is next. */

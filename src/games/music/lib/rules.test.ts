@@ -1,7 +1,9 @@
 import { describe, expect, it } from "vitest";
 import {
   armConfirmation,
+  canChooseSetter,
   canPlay,
+  chooseSetter,
   contenders,
   lettersShown,
   nextContenderAfter,
@@ -154,11 +156,24 @@ describe("resolveCopy", () => {
     expect(round.turnId).toBe("c");
   });
 
-  it("returns the melody to the next setter once everyone has answered", () => {
+  it("gives the melody back to the same setter once everyone has answered", () => {
+    // Making your shot in HORSE keeps you shooting. The ball is only lost by missing
+    // one of your own, which is `resolveSet`'s job.
     const round: Round = { phase: "copying", setterId: "a", turnId: "d", takeIndex: 0 };
     const { round: after } = resolveCopy(round, four(), WORD, true);
 
-    expect(after).toMatchObject({ phase: "setting", setterId: "b", turnId: "b" });
+    expect(after).toMatchObject({ phase: "setting", setterId: "a", turnId: "a" });
+    expect(after.takeIndex).toBe(0);
+  });
+
+  it("hands the melody on when the setter was switched off mid-round", () => {
+    // They cannot earn a letter while setting, so this only happens by a settings
+    // edit — but the ball still has to go somewhere.
+    const players = [player("a", 0, false), player("b"), player("c")];
+    const round: Round = { phase: "copying", setterId: "a", turnId: "c", takeIndex: 0 };
+    const { round: after } = resolveCopy(round, players, WORD, true);
+
+    expect(after).toMatchObject({ phase: "setting", setterId: "b" });
   });
 
   it("skips a player eliminated by the very letter just given", () => {
@@ -176,13 +191,14 @@ describe("resolveCopy", () => {
     expect(winner(after, WORD)?.id).toBe("a");
   });
 
-  it("runs a two-player round without handing the melody back to the setter", () => {
+  it("runs a two-player round without giving the copier two turns at it", () => {
     // One step forward from the sole copier lands on the setter, which is the round
-    // boundary — the naive "next player still in" would give B the melody twice.
+    // boundary — the naive "next player still in" would have B copy twice. The round
+    // then ends and A, who made their shot, sets again.
     const players = [player("a"), player("b")];
     const { round } = resolveCopy(copying(), players, WORD, true);
 
-    expect(round).toMatchObject({ phase: "setting", setterId: "b", turnId: "b" });
+    expect(round).toMatchObject({ phase: "setting", setterId: "a", turnId: "a" });
   });
 });
 
@@ -280,6 +296,67 @@ describe("reconcile", () => {
     const players = [player("a", 5), player("b", 5)];
     expect(reconcile(startRound(players, WORD), players, WORD).phase).toBe("finished");
     expect(winner(players, WORD)).toBeNull();
+  });
+});
+
+describe("canChooseSetter", () => {
+  it("is open before a first take", () => {
+    expect(canChooseSetter(startRound(four(), WORD))).toBe(true);
+  });
+
+  it("locks once a melody has been recorded", () => {
+    expect(canChooseSetter(armConfirmation(startRound(four(), WORD)))).toBe(false);
+  });
+
+  it("is closed while copying and when finished", () => {
+    const copying: Round = { phase: "copying", setterId: "a", turnId: "b", takeIndex: 0 };
+    expect(canChooseSetter(copying)).toBe(false);
+    expect(canChooseSetter({ ...copying, phase: "finished" })).toBe(false);
+  });
+});
+
+describe("chooseSetter", () => {
+  it("hands the turn to the chosen player", () => {
+    const round = chooseSetter(startRound(four(), WORD), four(), WORD, "c");
+    expect(round).toEqual({
+      phase: "setting",
+      setterId: "c",
+      turnId: "c",
+      takeIndex: 0,
+    });
+  });
+
+  it("refuses once a melody is half set", () => {
+    const locked = armConfirmation(startRound(four(), WORD));
+    expect(chooseSetter(locked, four(), WORD, "c")).toBe(locked);
+  });
+
+  it("refuses during copying", () => {
+    const copying: Round = { phase: "copying", setterId: "a", turnId: "b", takeIndex: 0 };
+    expect(chooseSetter(copying, four(), WORD, "c")).toBe(copying);
+  });
+
+  it("refuses an eliminated player", () => {
+    const players = [player("a"), player("b", 5), player("c")];
+    const round = startRound(players, WORD);
+    expect(chooseSetter(round, players, WORD, "b")).toBe(round);
+  });
+
+  it("refuses a switched-off player", () => {
+    const players = [player("a"), player("b", 0, false), player("c")];
+    const round = startRound(players, WORD);
+    expect(chooseSetter(round, players, WORD, "b")).toBe(round);
+  });
+
+  it("refuses an id nobody has", () => {
+    const round = startRound(four(), WORD);
+    expect(chooseSetter(round, four(), WORD, "nobody")).toBe(round);
+  });
+
+  it("survives a settings edit, because reconcile keeps an eligible setter", () => {
+    const players = four();
+    const chosen = chooseSetter(startRound(players, WORD), players, WORD, "d");
+    expect(reconcile(chosen, players, WORD).setterId).toBe("d");
   });
 });
 

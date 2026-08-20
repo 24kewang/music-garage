@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { DotsSixVerticalIcon } from "@phosphor-icons/react";
 import { moveItem } from "@/shared/lib/reorder";
 import type { Player } from "../lib/rules";
-import { MAX_LETTERS } from "../lib/settings";
+import { canDeactivate, MAX_LETTERS, MIN_ACTIVE } from "../lib/settings";
 import { useRowDrag } from "../lib/useRowDrag";
 import styles from "./PlayerTab.module.css";
 
@@ -18,6 +18,10 @@ import styles from "./PlayerTab.module.css";
  * with the arrow keys, because a pointer-only reorder is simply unreachable for
  * anybody using a keyboard. Both paths call the same `moveItem`, so the tested
  * geometry covers both.
+ *
+ * The drag starts on the handle and nowhere else. A row of text fields, steppers and
+ * checkboxes has no spare pointer surface to give away, and grabbing anywhere made
+ * every press near an input ambiguous.
  */
 
 export default function PlayerTab({
@@ -67,11 +71,21 @@ export default function PlayerTab({
     onChange(players.map((player, at) => (at === index ? { ...player, ...patch } : player)));
   };
 
+  const setActive = (player: Player, active: boolean) => {
+    // Checked against the rule rather than trusting the disabled attribute, so the
+    // floor holds however the change arrived.
+    if (!active && !canDeactivate(players, player.id)) return;
+    update(
+      players.findIndex((candidate) => candidate.id === player.id),
+      { active },
+    );
+  };
+
   return (
     <div className={styles.tab}>
       <p className={styles.hint} id="music-reorder-hint">
-        Order runs left to right on the board. Drag a handle to reorder, or focus one
-        and use the arrow keys.
+        Order runs left to right on the board. Drag a row by its handle to reorder, or
+        focus a handle and use the arrow keys. At least {MIN_ACTIVE} players stay in.
       </p>
 
       <div className={styles.list} ref={attachList}>
@@ -82,12 +96,12 @@ export default function PlayerTab({
             className={styles.row}
             data-dragging={drag.draggingIndex === index || undefined}
             style={{ transform: `translateY(${drag.offsets[index] ?? 0}px)` }}
-            onPointerDown={(event) => drag.onRowPointerDown(index, event)}
           >
             <button
               type="button"
               data-handle={player.id}
               className={styles.handle}
+              onPointerDown={(event) => drag.onHandlePointerDown(index, event)}
               aria-label={`Reorder ${player.name}, position ${index + 1} of ${players.length}`}
               aria-describedby="music-reorder-hint"
               onKeyDown={(event) => {
@@ -133,11 +147,19 @@ export default function PlayerTab({
               </span>
             </label>
 
-            <label className={styles.active}>
+            <label
+              className={styles.active}
+              title={
+                player.active && !canDeactivate(players, player.id)
+                  ? `A game needs at least ${MIN_ACTIVE} players.`
+                  : undefined
+              }
+            >
               <input
                 type="checkbox"
                 checked={player.active}
-                onChange={(event) => update(index, { active: event.target.checked })}
+                disabled={player.active && !canDeactivate(players, player.id)}
+                onChange={(event) => setActive(player, event.target.checked)}
               />
               <span>Playing</span>
             </label>

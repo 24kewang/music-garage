@@ -22,6 +22,14 @@ export const PLAYER_COUNT = 4;
 /** The longest word, and so the most letters anyone can hold. */
 export const MAX_LETTERS = 5;
 
+/**
+ * The fewest players that may be switched on at once.
+ *
+ * Enforced here rather than only in the panel, so a blob written by an older build or
+ * edited by hand cannot come back with a roster that has nobody to play against.
+ */
+export const MIN_ACTIVE = 2;
+
 export type Tolerance = "strict" | "loose";
 
 export interface Settings {
@@ -94,9 +102,38 @@ export function coercePlayers(raw: unknown): Player[] {
   const list = Array.isArray(raw) ? raw : [];
   const usedIds = new Set<string>();
 
-  return Array.from({ length: PLAYER_COUNT }, (_, index) =>
-    coercePlayer(list[index], index, usedIds),
+  return enforceMinimumActive(
+    Array.from({ length: PLAYER_COUNT }, (_, index) =>
+      coercePlayer(list[index], index, usedIds),
+    ),
   );
+}
+
+export function activeCount(players: readonly Player[]): number {
+  return players.reduce((total, player) => total + (player.active ? 1 : 0), 0);
+}
+
+/** Whether this player may be switched off without breaching the floor. */
+export function canDeactivate(players: readonly Player[], id: string): boolean {
+  const player = players.find((candidate) => candidate.id === id);
+  if (player === undefined || !player.active) return false;
+  return activeCount(players) > MIN_ACTIVE;
+}
+
+/**
+ * Switch players back on, from the top, until the floor is met.
+ *
+ * Top-down rather than by any cleverer rule: the panel's order is the board's order,
+ * so the players who come back are the ones nearest the left of the board, which is
+ * where somebody looking for them will look.
+ */
+export function enforceMinimumActive(players: readonly Player[]): Player[] {
+  const next = players.map((player) => ({ ...player }));
+  for (const player of next) {
+    if (activeCount(next) >= MIN_ACTIVE) break;
+    player.active = true;
+  }
+  return next;
 }
 
 export function coerceSettings(raw: unknown): Settings {

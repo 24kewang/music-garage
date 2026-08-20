@@ -9,9 +9,16 @@ where this build departs from it, the departures are listed below with reasons.
 
 One player is the **setter**. They record two takes: the first is the melody they are
 calling, the second has to match it. If it does, take one becomes the round's target
-and everybody else copies it in turn; a failed copy earns a letter. Miss your own
-called shot and you lose nothing but the turn — the melody passes to the next player,
-exactly as in HORSE.
+and everybody else copies it in turn; a failed copy earns a letter.
+
+**Making your shot keeps you shooting.** When the round runs out of copiers the melody
+goes back to the same setter, not on to the next player. The only way to lose the ball
+is to miss one of your own — a failed confirmation costs no letter but does pass the
+turn on, exactly as in HORSE.
+
+**Who sets is chosen, not just rotated.** Turn order supplies a default, and until a
+first take is recorded any box on the board can be clicked to hand that player the
+turn instead.
 
 What is actually compared is a **sequence of distinct pitches** and nothing else.
 
@@ -173,6 +180,23 @@ Normalizing by `max(len(target), len(attempt))` keeps a short attempt from scori
 well against a long target. It does make long phrases marginally more forgiving per
 note, which is a real consequence and a deliberate trade.
 
+### The setter is picked by hand, and `takeIndex` is the lock
+
+Four people around one screen do not take turns in the order an array happens to be
+in. Rotation still supplies the default — nobody has to click anything — but the
+boxes are buttons until a melody exists, so the room can say who is up without opening
+settings and dragging rows.
+
+The lock needs no new state. `takeIndex` is already 0 before a first take and 1 after
+one, and it returns to 0 exactly when the round returns to setting — whether that is
+because a confirmation failed or because a full round of copies finished. So
+`canChooseSetter` is `phase === "setting" && takeIndex === 0`, and that is the whole
+rule. `chooseSetter` refuses anyone who is not a contender, so an eliminated box is
+inert rather than merely un-styled.
+
+The guard lives in `rules.ts` rather than in the board, so a stale render cannot slip
+a change through after the melody has been recorded.
+
 ### Elimination is derived, never stored
 
 A player is a contender when they are active and hold fewer letters than the word is
@@ -245,7 +269,10 @@ can hold them across a whole game.
 
 **Not the Loop Station's `useTrackDrag`.** Most of its size is edge auto-scrolling and
 long-press-versus-scroll arbitration over a long scrolling list. Four rows in a fixed
-panel need neither.
+panel need neither — and MUSIC's rows are grabbed by a **handle only**, which removes
+the swipe-versus-drag question outright. A row of text fields, steppers and checkboxes
+has no spare pointer surface to give away, so there is no long-press wait here and no
+exclusion list of controls a press should mean something else on.
 
 ## Tests
 
@@ -260,8 +287,8 @@ panel need neither.
 | `dsp/trim.test.ts` | chunk assembly; pre-roll trimming; pre-roll longer than the head; onset before the capture began or past the end; the fade's ramps do not overlap on a short clip |
 | `score/align.test.ts` | the ceiling stays under an indel pair; **a large substitution is not decomposed**; ties prefer the diagonal; one sub / one del / one ins each cost what they should; empty inputs; and a property check over 200 random pairs that every index appears exactly once and the path sums to the cost |
 | `score/compare.test.ts` | key-agnosticism with the shift's **sign pinned**; octave equivalence; smallest shift on an ambiguous phrase; `max` normalization; padding is not rewarded; the strict and loose thresholds land where documented |
-| `lib/rules.test.ts` | every edge case above — two-player rounds, a setter deactivated mid-copying, a player eliminated by their own letter, a shortened word ending the game, a lengthened word reopening it, reordering not changing whose turn it is, and nobody left standing |
-| `lib/settings.test.ts` | per-field coercion — duplicate ids reassigned, strikes clamped, blank names filled, an empty word refused, and one bad entry costing only itself |
+| `lib/rules.test.ts` | every edge case above — two-player rounds, a setter deactivated mid-copying, a player eliminated by their own letter, a shortened word ending the game, a lengthened word reopening it, reordering not changing whose turn it is, and nobody left standing; plus the setter keeping the melody at round end, and `chooseSetter` refusing a locked round, a copying round, and anyone who is not a contender |
+| `lib/settings.test.ts` | per-field coercion — duplicate ids reassigned, strikes clamped, blank names filled, an empty word refused, one bad entry costing only itself; and the two-player floor: who may be switched off, and a stored roster below it being brought back up |
 | `lib/graph.test.ts` | even spacing; higher pitches drawn higher; gaps where notes were missed or added; a unison phrase not dividing by zero; a narrow phrase not blown up to fill the panel; an out-of-range attempt clamped rather than NaN, without rescaling the target |
 
 ## What the tests cannot prove
@@ -277,5 +304,7 @@ covered and all of it needs a person:
   is the instrument for judging that — it is deliberately honest rather than
   flattering, so a near miss reads in the high eighties.
 - That the worklet's chunks join without an audible seam.
-- Drag-to-reorder under touch, and the header's coarse-pointer fallback on this page.
+- Drag-to-reorder under touch — the handle arms immediately, and a touch anywhere else
+  on a row should scroll the panel rather than drag.
+- The header's coarse-pointer fallback on this page.
 - That the countdown and the armed state read clearly under `prefers-reduced-motion`.

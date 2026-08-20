@@ -8,7 +8,9 @@ import { transcribe } from "../dsp/transcribe";
 import { compare, type Comparison } from "../score/compare";
 import {
   armConfirmation,
+  canChooseSetter,
   canPlay,
+  chooseSetter,
   reconcile,
   resetLetters,
   resolveCopy,
@@ -58,6 +60,10 @@ export interface Game {
   setter: Player | null;
   /** The last player standing, once there is one. */
   champion: Player | null;
+
+  /** True while the room may still pick who sets, by clicking a box. */
+  selectable: boolean;
+  selectSetter: (id: string) => void;
 
   /** What the playback button plays: take one, always. */
   clip: Recording | null;
@@ -320,6 +326,19 @@ export function useGame({
     release();
   }, [release, round.phase]);
 
+  /**
+   * Hand the setting turn to whoever was clicked.
+   *
+   * `chooseSetter` is a no-op unless the round is open to it, so the guard is the
+   * rules' rather than the board's — a stale render cannot slip a change through.
+   */
+  const selectSetter = useCallback(
+    (id: string) => {
+      setRound((current) => chooseSetter(current, latest.current.players, latest.current.word, id));
+    },
+    [],
+  );
+
   const press = useCallback(() => {
     if (recorderStatus !== "idle") {
       stopRecording();
@@ -364,6 +383,15 @@ export function useGame({
     current: byId(round.turnId),
     setter: byId(round.setterId),
     champion,
+
+    // Rotation supplies the default; this lets the room override it, right up until
+    // a first take makes the melody somebody's.
+    selectable:
+      canChooseSetter(round) &&
+      canPlay(players, word) &&
+      recording.status === "idle" &&
+      !working,
+    selectSetter,
 
     clip,
     playing: playback.playing,

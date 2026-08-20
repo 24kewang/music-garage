@@ -28,7 +28,6 @@
   border-radius: var(--radius-md);
   background: var(--color-surface);
   transition: transform var(--dur-fast) var(--ease-out);
-  touch-action: none;
 }
 
 /*
@@ -134,6 +133,16 @@
   height: 1rem;
   accent-color: var(--color-accent);
   cursor: pointer;
+}
+
+/* The last two players in. Dimmed so the floor is visible before it is hit. */
+.active:has(input:disabled) {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.active input:disabled {
+  cursor: not-allowed;
 }
 
 .srOnly {
