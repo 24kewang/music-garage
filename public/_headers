@@ -25,7 +25,7 @@
   # static.cloudflareinsights.com / cloudflareinsights.com are Web Analytics.
   # blob: covers REG's excerpt images and the recorded audio in MUSIC and the loop
   # station. worker-src blob: covers workers Emscripten may spawn.
-  Content-Security-Policy-Report-Only: default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'none'; form-action 'self'; script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval' https://cdn.jsdelivr.net https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline'; img-src 'self' blob: data:; media-src 'self' blob:; font-src 'self'; connect-src 'self' https://cdn.jsdelivr.net https://storage.googleapis.com https://cloudflareinsights.com; worker-src 'self' blob:; manifest-src 'self'; upgrade-insecure-requests
+  Content-Security-Policy: default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'none'; form-action 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline' 'wasm-unsafe-eval' https://cdn.jsdelivr.net https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline'; img-src 'self' blob: data:; media-src 'self' blob:; font-src 'self'; connect-src 'self' https://cdn.jsdelivr.net https://storage.googleapis.com https://cloudflareinsights.com; worker-src 'self' blob:; manifest-src 'self'; upgrade-insecure-requests
 
   # --- Transport ---------------------------------------------------------------
   # No `preload` on purpose: preloading is effectively irreversible. Add it only
