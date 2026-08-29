@@ -19,6 +19,10 @@ updates:
       # mind-ar is built against this three. Bump them together, by hand.
       - dependency-name: three
       - dependency-name: "@types/three"
+      - dependency-name: typescript
+        update-types: ["version-update:semver-major"]
+      - dependency-name: eslint
+        update-types: ["version-update:semver-major"]
 
   - package-ecosystem: github-actions
     directory: /
