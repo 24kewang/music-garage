@@ -26,7 +26,6 @@ _Requires attribution; this listing is that attribution._
 - `@phosphor-icons/react` 2.1.10
 - `@types/estree` 1.0.9
 - `@types/long` 4.0.2
-- `@types/node` 20.19.43
 - `@types/node-fetch` 2.6.13
 - `@types/offscreencanvas` 2019.7.3
 - `@types/seedrandom` 2.4.34
@@ -83,8 +82,8 @@ _Requires attribution; this listing is that attribution._
 - `picomatch` 4.0.5
 - `pitchy` 4.1.0
 - `postcss` 8.5.25
-- `react` 19.2.4
-- `react-dom` 19.2.4
+- `react` 19.2.8
+- `react-dom` 19.2.8
 - `regenerator-runtime` 0.13.11
 - `require-directory` 2.1.1
 - `rollup` 4.62.4
@@ -102,7 +101,7 @@ _Requires attribution; this listing is that attribution._
 - `tinyglobby` 0.2.17
 - `tr46` 0.0.3
 - `typed-function` 4.2.2
-- `undici-types` 6.21.0
+- `undici-types` 7.18.2
 - `vite` 6.4.3
 - `whatwg-url` 5.0.0
 - `wrap-ansi` 7.0.0
@@ -134,6 +133,7 @@ _Requires attribution; this listing is that attribution._
 - `empty-npm-package` 1.0.0
 - `get-caller-file` 2.0.5
 - `picocolors` 1.1.1
+- `semver` 7.8.5
 - `tinyqueue` 2.0.3
 - `y18n` 5.0.8
 - `yargs-parser` 20.2.9

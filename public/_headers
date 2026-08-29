@@ -8,21 +8,31 @@
 
 /*
   # --- Content Security Policy -------------------------------------------------
-  # Shipping as Report-Only first. Flip to `Content-Security-Policy` (delete the
-  # `-Report-Only` suffix) once REG's camera filter has been exercised in a real
-  # browser with a clean console — see HOSTING.md. Two things to know:
+  # Enforced, not Report-Only. Every allowance below is load-bearing; none of it is
+  # boilerplate, and each one breaks something specific if removed.
   #
   #   'unsafe-inline' in script-src is unavoidable: a static export cannot emit
   #   per-request nonces, and Next inlines its flight payload as <script> tags.
   #
+  #   'unsafe-eval' is the weakest thing in this policy and the one most likely to
+  #   be deleted by someone tidying up. It is here because mind-ar bundles mathjs,
+  #   whose expression parser builds functions at runtime. Report-Only surfaced the
+  #   violation before this was enforced. Removing it breaks REG's camera filter,
+  #   and it fails through the camera-error path, so the message blames the webcam
+  #   and the CSP never comes up. Self-hosting the MediaPipe assets is what would
+  #   let this go — see HOSTING.md §10.
+  #
   #   cdn.jsdelivr.net and storage.googleapis.com are REG's face tracking, not
   #   decoration. mind-ar fetches the MediaPipe WASM runtime from jsDelivr and the
   #   face_landmarker model from Google Cloud Storage, and it hardcodes both URLs
-  #   inside its shipped bundle. Removing either origin breaks the camera filter,
-  #   and it fails through the camera-error path, so the message blames the webcam.
+  #   inside its shipped bundle. Same failure mode as above if either is removed.
   #   'wasm-unsafe-eval' is what lets that WASM module compile.
   #
-  # static.cloudflareinsights.com / cloudflareinsights.com are Web Analytics.
+  # static.cloudflareinsights.com / cloudflareinsights.com are Web Analytics. Note
+  # that grepping this repo for "beacon" finds nothing — Cloudflare injects the
+  # script at the edge for proxied zones, so these entries look unused and are not.
+  # Delete them and analytics stops silently.
+  #
   # blob: covers REG's excerpt images and the recorded audio in MUSIC and the loop
   # station. worker-src blob: covers workers Emscripten may spawn.
   Content-Security-Policy: default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'none'; form-action 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline' 'wasm-unsafe-eval' https://cdn.jsdelivr.net https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline'; img-src 'self' blob: data:; media-src 'self' blob:; font-src 'self'; connect-src 'self' https://cdn.jsdelivr.net https://storage.googleapis.com https://cloudflareinsights.com; worker-src 'self' blob:; manifest-src 'self'; upgrade-insecure-requests
@@ -58,3 +68,18 @@
 # to change on a deploy.
 /worklets/*
   Cache-Control: public, max-age=3600
+
+# Icons, likewise not content-hashed. A day is long enough to be worth caching and
+# short enough that a redesign lands without anyone having to clear anything.
+/icon.svg
+  Cache-Control: public, max-age=86400
+/icon.png
+  Cache-Control: public, max-age=86400
+/icon-192.png
+  Cache-Control: public, max-age=86400
+/icon-512.png
+  Cache-Control: public, max-age=86400
+/apple-icon.png
+  Cache-Control: public, max-age=86400
+/favicon.ico
+  Cache-Control: public, max-age=86400

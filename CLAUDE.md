@@ -122,13 +122,26 @@ trip over:
 - **The CSP's `cdn.jsdelivr.net` and `storage.googleapis.com` entries are REG's face
   tracking, not decoration** — mind-ar fetches the MediaPipe runtime and model from
   them and hardcodes both URLs. Removing either breaks the camera filter, and it fails
-  through the camera-error path so the message blames the webcam. `'unsafe-inline'` in
-  `script-src` is likewise not laziness: a static export cannot emit per-request
-  nonces. The CSP ships as **Report-Only** until it has been exercised in a browser.
+  through the camera-error path so the message blames the webcam. The two weak
+  directives are not laziness either: `'unsafe-inline'` is unavoidable because a static
+  export cannot emit per-request nonces, and **`'unsafe-eval'` is there for the mathjs
+  parser inside mind-ar** — deleting it breaks REG with that same misleading camera
+  error. The policy is enforced; `public/_headers` records why each allowance exists.
 - **`camera` and `microphone` must stay `(self)` in `Permissions-Policy`.** Setting
   either to `()` silently kills REG, the loop station, and every pitch-based game.
 - **`src/shared/site.ts` is the only place the domain is written.** `metadataBase`,
-  `robots`, `sitemap`, `manifest`, the footer and both legal pages all read it.
+  `robots`, `sitemap`, `manifest`, the footer and both legal pages all read it. Its
+  `FALLBACK_URL` is the **real** production domain on purpose — a missing
+  `NEXT_PUBLIC_SITE_URL` once shipped canonical tags and a sitemap pointing at a host
+  that did not resolve, which tells search engines not to index the site.
+- **Analytics has no code.** Cloudflare injects the Web Analytics beacon at the edge
+  for proxied zones, so grepping for "beacon" finds nothing while the CSP still needs
+  `static.cloudflareinsights.com` and `cloudflareinsights.com`. They are not dead
+  entries.
+- **Icons are generated, not hand-made.** `npm run icons` rasterizes every one from
+  `public/icon.svg`; edit the SVG and re-run rather than touching the PNGs. They live
+  in `public/` rather than as `app/` file-convention icons because `manifest.ts` needs
+  stable paths, and the conventions emit hashed ones.
 - `SiteFooter` is **deliberately absent on `/games/*` and `/tools/*`** — those own the
   whole viewport, and the loop station is `position: fixed; inset: 0`, so a footer
   under it is unreachable. `SiteHeader` carries the legal links instead, on every

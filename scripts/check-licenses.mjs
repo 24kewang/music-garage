@@ -104,7 +104,11 @@ function loadPackages() {
       path,
     });
   }
-  return packages;
+  // The root entry records what this project itself declares, which is how a
+  // devDependency stays identifiable after npm has collapsed its flags.
+  const devDependencies = new Set(Object.keys(lock.packages?.[""]?.devDependencies ?? {}));
+
+  return { packages, devDependencies };
 }
 
 /** An SPDX expression is only a problem if every branch of it is. */
@@ -187,11 +191,22 @@ function check(packages) {
   console.log("OK — no disallowed or undeclared licenses.");
 }
 
-function notices(packages) {
+function notices(packages, devDependencies) {
   // Attribution is owed for what we distribute, so dev-only packages are out of
   // scope. Optional platform binaries are excluded for the same reason: a static
   // export ships none of them.
-  const shipped = packages.filter((pkg) => !pkg.dev && !pkg.optional);
+  //
+  // The `devDependencies` check is not redundant with `pkg.dev`. When a package is
+  // reachable both as a devDependency and as some production dependency's optional
+  // one, npm collapses the flags on the single install location to the least
+  // restrictive pair — `dev: false, optional: false` — and the lockfile can no longer
+  // say it is ours for building only. `sharp` is exactly that: our icon generator
+  // depends on it, and so does next, optionally, for image optimization this site
+  // never uses. What the project declares about its own dependencies is the better
+  // evidence, so it wins.
+  const shipped = packages.filter(
+    (pkg) => !pkg.dev && !pkg.optional && !devDependencies.has(pkg.name),
+  );
 
   const byName = new Map();
   for (const pkg of shipped) {
@@ -241,7 +256,7 @@ function notices(packages) {
 }
 
 const mode = process.argv[2];
-const packages = loadPackages();
-if (mode === "--notices") notices(packages);
+const { packages, devDependencies } = loadPackages();
+if (mode === "--notices") notices(packages, devDependencies);
 else if (mode === "--check") check(packages);
 else fail("Usage: node scripts/check-licenses.mjs --check | --notices");

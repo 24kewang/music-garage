@@ -23,6 +23,7 @@ npm run dev        # http://localhost:3000
 | `npm run lint` | ESLint |
 | `npm run typecheck` | `tsc --noEmit` |
 | `npm run licenses` | Dependency license audit |
+| `npm run icons` | Regenerate every app icon from `public/icon.svg` |
 | `npm run preview` | Build, then serve it exactly as production does |
 | `npm run deploy` | Build and deploy to Cloudflare |
 
@@ -123,11 +124,20 @@ Three things about this shape are worth knowing before you change anything:
   `output: "export"`. Security headers — CSP, HSTS, `Permissions-Policy` and the rest —
   live in [`public/_headers`](public/_headers), which the export copies into `out/` and
   Cloudflare parses at the edge. Every rule in there is commented with what needs it.
-- **The CSP ships as `Report-Only`** until it has been exercised against REG's camera
-  filter in a real browser. See `HOSTING.md` for the flip.
+- **The CSP is enforced, and its weakest directive is deliberate.** `'unsafe-eval'` is
+  there for the mathjs parser bundled inside mind-ar; removing it breaks REG's camera
+  filter, which reports the failure as a camera error rather than a CSP one. Every
+  allowance in `public/_headers` carries a comment saying what needs it.
 - **Adding a server later is additive.** `wrangler.jsonc` is written so that
   multiplayer means adding a `main` script, an `ASSETS` binding and Durable Objects to
   the same Worker — the static assets keep serving exactly as they do now.
+- **Icons are generated.** `npm run icons` rasterizes `favicon.ico`, the Apple touch
+  icon and the manifest PNGs from `public/icon.svg`. The outputs are committed, so the
+  build never runs it. Note there is deliberately no `src/app/favicon.ico`: Next's file
+  convention would outrank everything declared in `metadata.icons`.
+- **Analytics has no code.** Cloudflare injects the Web Analytics beacon at the edge,
+  which is why nothing in this repo mentions it and why the CSP still has to allow
+  `static.cloudflareinsights.com`.
 
 `src/shared/site.ts` holds the canonical URL and the publisher details, and is the only
 place either is written.

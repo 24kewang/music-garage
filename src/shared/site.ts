@@ -11,8 +11,19 @@
  * variable; see HOSTING.md.
  */
 
-/** TODO before launch: set NEXT_PUBLIC_SITE_URL, or change this fallback. */
-const FALLBACK_URL = "https://music-garage.pages.dev";
+/**
+ * The live domain, and the default rather than a placeholder.
+ *
+ * This used to be a `pages.dev` stand-in on the theory that preview deployments should
+ * not emit production canonicals. That was the wrong trade: the guarded-against failure
+ * was speculative, and the failure it caused was real — production shipped for a while
+ * declaring `<link rel="canonical">`, `og:url` and every sitemap entry on a host that
+ * did not resolve, which tells search engines not to index the site at all.
+ *
+ * A missing build variable should degrade to a correct site, not a silently broken one.
+ * `NEXT_PUBLIC_SITE_URL` still overrides for anything served elsewhere.
+ */
+const FALLBACK_URL = "https://music.trumpettuck.com";
 
 export const SITE = {
   name: "Music Garage",
