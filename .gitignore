@@ -46,3 +46,6 @@ next-env.d.ts
 
 # hosting runbook — deliberately untracked (deployment specifics, not source)
 HOSTING.md
+
+# release notes drafted per-release, pasted into the GitHub release body
+RELEASE-NOTES.md
