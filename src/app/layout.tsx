@@ -25,17 +25,6 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-/**
- * Cloudflare Web Analytics. Cookieless and aggregate-only — see the privacy policy.
- * Injected manually rather than through Cloudflare's automatic HTML rewriting so
- * that the beacon is visible in this file and covered by the CSP in
- * `public/_headers` rather than appearing from nowhere.
- *
- * Absent when the token is unset, which keeps local development and preview
- * deployments out of the production numbers.
- */
-const beaconToken = process.env.NEXT_PUBLIC_CF_BEACON_TOKEN;
-
 export const metadata: Metadata = {
   metadataBase: new URL(SITE.url),
   title: { default: SITE.name, template: `%s · ${SITE.name}` },
@@ -44,14 +33,25 @@ export const metadata: Metadata = {
   authors: [{ name: SITE.publisher, url: SITE.repoUrl }],
   creator: SITE.publisher,
   alternates: { canonical: "/" },
-  // favicon.ico lives at src/app/favicon.ico and is picked up by convention; the SVG
-  // is what modern browsers and the web app manifest actually use.
+  /*
+   * Every icon lives in `public/` and is generated from `public/icon.svg` by
+   * `npm run icons`. They are deliberately NOT `app/` file-convention icons: those
+   * emit hashed URLs (`/icon.svg?a1b2c3`), and `manifest.ts` needs stable paths it
+   * can name.
+   *
+   * Order matters — the SVG first, so anything that understands it uses the one
+   * that stays sharp at every size. `/favicon.ico` is still worth shipping because
+   * browsers probe that exact path on their own, before reading any of these tags.
+   * The apple icon must be a PNG: iOS ignores SVG for `apple-touch-icon` and falls
+   * back to a screenshot of the page.
+   */
   icons: {
     icon: [
-      { url: "/icon.svg", type: "image/svg+xml" },
-      { url: "/favicon.ico", sizes: "any" },
+      { url: "/icon.svg", type: "image/svg+xml", sizes: "any" },
+      { url: "/icon.png", type: "image/png", sizes: "64x64" },
     ],
-    apple: [{ url: "/icon.svg", type: "image/svg+xml" }],
+    shortcut: [{ url: "/favicon.ico", sizes: "16x16 32x32 48x48" }],
+    apple: [{ url: "/apple-icon.png", type: "image/png", sizes: "180x180" }],
   },
   manifest: "/manifest.webmanifest",
   openGraph: {
@@ -96,14 +96,6 @@ export default function RootLayout({
           {children}
         </main>
         <SiteFooter />
-
-        {beaconToken ? (
-          <script
-            defer
-            src="https://static.cloudflareinsights.com/beacon.min.js"
-            data-cf-beacon={JSON.stringify({ token: beaconToken })}
-          />
-        ) : null}
       </body>
     </html>
   );

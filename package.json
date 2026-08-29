@@ -12,6 +12,7 @@
     "test:watch": "vitest",
     "licenses": "node scripts/check-licenses.mjs --check",
     "licenses:notices": "node scripts/check-licenses.mjs --notices",
+    "icons": "node scripts/generate-icons.mjs",
     "preview": "npm run build && wrangler dev",
     "deploy": "npm run build && wrangler deploy"
   },
@@ -25,12 +26,13 @@
     "three": "0.160.0"
   },
   "devDependencies": {
-    "@types/node": "^26",
+    "@types/node": "^24.13.3",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "@types/three": "0.160.0",
     "eslint": "^9",
     "eslint-config-next": "16.3.3",
+    "sharp": "^0.35.4",
     "typescript": "^5",
     "vitest": "^4.1.11",
     "wrangler": "^4.127.0"
