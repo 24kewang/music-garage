@@ -1,9 +1,8 @@
 # MUSIC — architecture
 
 HORSE, played on melodies. This file records the decisions that are **not** obvious
-from the code. For how to play see the README; for what every knob does see
-`config.ts`. The original algorithm spec is `MUSIC-design.md` at the repo root, and
-where this build departs from it, the departures are listed below with reasons.
+from the code. For how to play see [`README.md`](README.md); for what every knob does see
+`config.ts`.
 
 ## The game, precisely
 

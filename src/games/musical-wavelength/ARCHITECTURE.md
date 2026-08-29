@@ -2,7 +2,7 @@
 
 Wavelength with a musical twist, for two players around one screen. This file records
 the decisions that are **not** obvious from the code and expensive to rediscover. For
-how to play, see the README; for what every knob does, see `config.ts`.
+how to play, see [`README.md`](README.md); for what every knob does, see `config.ts`.
 
 ## The game, precisely
 

@@ -1,8 +1,8 @@
 # Pitch Math — architecture
 
 Two players sound a note at the same time and race to name the interval. This file
-records the decisions that are **not** obvious from the code. For how to play see the
-README; for what every knob does see `config.ts`.
+records the decisions that are **not** obvious from the code. For how to play see
+[`README.md`](README.md); for what every knob does see `config.ts`.
 
 ## The game, precisely
 
