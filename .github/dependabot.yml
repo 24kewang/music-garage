@@ -9,8 +9,9 @@ updates:
     groups:
       # One PR for the routine churn, so CI has something meaningful to gate on
       # rather than a queue of single-line bumps.
-      minor-and-patch:
+      all-updates:
         update-types:
+          - major
           - minor
           - patch
     ignore:
