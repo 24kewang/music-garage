@@ -20,8 +20,8 @@
     "mind-ar": "1.2.5",
     "next": "16.3.3",
     "pitchy": "^4.1.0",
-    "react": "19.2.4",
-    "react-dom": "19.2.4",
+    "react": "19.2.8",
+    "react-dom": "19.2.8",
     "three": "0.160.0"
   },
   "devDependencies": {
@@ -32,7 +32,7 @@
     "eslint": "^9",
     "eslint-config-next": "16.3.3",
     "typescript": "^5",
-    "vitest": "^4.1.10",
+    "vitest": "^4.1.11",
     "wrangler": "^4.127.0"
   },
   "overrides": {
