@@ -32,7 +32,7 @@ describe("frequencyToMidi / midiToFrequency", () => {
     }
   });
 
-  it("honours a non-standard concert pitch", () => {
+  it("honors a non-standard concert pitch", () => {
     expect(midiToFrequency(69, 415)).toBeCloseTo(415, 10);
     expect(frequencyToMidi(415, 415)).toBeCloseTo(69, 10);
   });

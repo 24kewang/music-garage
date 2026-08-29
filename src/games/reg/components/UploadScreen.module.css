@@ -1,11 +1,11 @@
 /*
- * The empty-library screen. Same full-height, centred-column treatment as the other
+ * The empty-library screen. Same full-height, centered-column treatment as the other
  * games' stages; the drop zone doubles as the visual anchor so the page reads as
  * "put your excerpts here" even before the buttons are noticed.
  */
 
 .screen {
-  /* Break out of the app's centred column, like the other games. */
+  /* Break out of the app's centered column, like the other games. */
   margin: calc(var(--space-7) * -1) calc(50% - 50vw) calc(var(--space-8) * -1);
   min-height: 100dvh;
   padding: var(--space-8) var(--space-5);

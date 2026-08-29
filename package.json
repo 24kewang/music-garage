@@ -5,15 +5,20 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start",
+    "start": "wrangler dev",
     "lint": "eslint",
+    "typecheck": "tsc --noEmit",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "licenses": "node scripts/check-licenses.mjs --check",
+    "licenses:notices": "node scripts/check-licenses.mjs --notices",
+    "preview": "npm run build && wrangler dev",
+    "deploy": "npm run build && wrangler deploy"
   },
   "dependencies": {
     "@phosphor-icons/react": "^2.1.10",
     "mind-ar": "1.2.5",
-    "next": "16.2.12",
+    "next": "16.3.3",
     "pitchy": "^4.1.0",
     "react": "19.2.4",
     "react-dom": "19.2.4",
@@ -25,9 +30,10 @@
     "@types/react-dom": "^19",
     "@types/three": "0.160.0",
     "eslint": "^9",
-    "eslint-config-next": "16.2.12",
+    "eslint-config-next": "16.3.3",
     "typescript": "^5",
-    "vitest": "^4.1.10"
+    "vitest": "^4.1.10",
+    "wrangler": "^4.127.0"
   },
   "overrides": {
     "mind-ar": {

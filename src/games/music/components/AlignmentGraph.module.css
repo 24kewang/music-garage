@@ -32,7 +32,7 @@
 
 /*
  * The vertical joins between one cell and the next. They belong to no single note,
- * so they take neither verdict's colour — otherwise a riser between a right note
+ * so they take neither verdict's color — otherwise a riser between a right note
  * and a wrong one would have to pick a side and would misreport one of them.
  */
 .attempt > line {

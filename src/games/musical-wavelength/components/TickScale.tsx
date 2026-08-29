@@ -9,7 +9,7 @@ const { ticks: tickConfig } = config;
  *
  * Drawn inside the cover group, so it swings away with the lid when the cover opens
  * and the target bands are revealed. Tick angles come from the same functions that
- * position the needle, so a tick labelled A4 is exactly where A4 lands.
+ * position the needle, so a tick labeled A4 is exactly where A4 lands.
  */
 export default function TickScale({ ticks }: { ticks: readonly Tick[] }) {
   return (

@@ -16,7 +16,7 @@ type Load =
 /**
  * The excerpt, big enough to read.
  *
- * The filter sizes the image to the player's head, which is fine for recognising a
+ * The filter sizes the image to the player's head, which is fine for recognizing a
  * piece and useless for actually playing it — so clicking the floating excerpt opens
  * it here at viewport size. Deliberately a still: no zoom or pan, so a phone's own
  * pinch-zoom keeps working.
@@ -43,24 +43,24 @@ export default function ExcerptOverlay({
 
   useEffect(() => {
     let url: string | null = null;
-    let cancelled = false;
+    let canceled = false;
 
     // Read the file again rather than reusing the TexturePool's ImageBitmap: those are
     // decoded with `imageOrientation: "flipY"` for WebGL, so drawing one here would
     // come out upside-down.
     void readFileBlob(path).then(
       (blob) => {
-        if (cancelled) return;
+        if (canceled) return;
         url = URL.createObjectURL(blob);
         setLoad({ state: "ready", url });
       },
       () => {
-        if (!cancelled) setLoad({ state: "failed" });
+        if (!canceled) setLoad({ state: "failed" });
       },
     );
 
     return () => {
-      cancelled = true;
+      canceled = true;
       if (url !== null) URL.revokeObjectURL(url);
     };
   }, [path]);
@@ -95,7 +95,7 @@ export default function ExcerptOverlay({
           <div className={styles.figure}>
             {/* next/image has nothing to offer here: the source is a runtime blob: URL
                 from the browser's own file storage, with dimensions known only once
-                decoded, and there is no server in the loop to optimise through. */}
+                decoded, and there is no server in the loop to optimize through. */}
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               className={styles.image}

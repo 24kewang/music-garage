@@ -17,7 +17,7 @@ export interface Settings {
   pitchLow: string;
   /** High end, mapping to the right of the dial. */
   pitchHigh: string;
-  /** Half-width of the intonation scale, in cents either side of centre. */
+  /** Half-width of the intonation scale, in cents either side of center. */
   intonationSpanCents: number;
 }
 
@@ -29,7 +29,7 @@ export const DEFAULT_SETTINGS: Settings = {
 };
 
 /**
- * Floor of 10 because the scale is labelled every `config.ticks.labelStepCents`
+ * Floor of 10 because the scale is labeled every `config.ticks.labelStepCents`
  * (10) cents — a narrower span would draw a scale with no labels on it at all.
  */
 export const MIN_SPAN_CENTS = 10;

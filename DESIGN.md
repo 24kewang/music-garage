@@ -21,14 +21,14 @@ game will look bolted on.
    If a value is missing, add a token rather than a literal in a component.
 3. **Contrast is computed, not eyeballed.** Every text/background pair clears WCAG AA
    (4.5:1). The tightest in the system is `--color-text-faint` on
-   `--color-surface-raised` at **4.89:1**. Add or change a text colour and you compute the
+   `--color-surface-raised` at **4.89:1**. Add or change a text color and you compute the
    ratio and record it in `tokens.css`.
 4. **Type has exactly three roles** (§3). The display face is for the wordmark and page
    H1s *only* — never body copy, never button labels.
 5. **Icons are Phosphor, and never emoji.** Emoji render differently on every OS and read
    as filler.
 6. **Motion uses the tokens**, and `prefers-reduced-motion` removes it globally. Every
-   behaviour must still work with all motion gone.
+   behavior must still work with all motion gone.
 7. **Hover is never the only path** to anything. Fine-pointer hover, keyboard focus, and a
    coarse-pointer fallback are all required.
 8. **Interactive rows are at least 2.75rem (44px) tall**, even when the control inside is
@@ -38,7 +38,7 @@ game will look bolted on.
 
 ---
 
-## 2. Colour
+## 2. Color
 
 ### Surfaces — furthest back to closest
 
@@ -85,7 +85,7 @@ always means "this is the thing to press".
 | `--color-warn` / `--color-warn-soft` | `#fbbf24` / `12%` | In-progress badges, cautions. |
 | `--color-danger` / `--color-danger-soft` | `#f87171` / `12%` | Destructive actions, validation errors. |
 
-Status colours are **text-on-soft-tint**, not solid fills — a solid red button would
+Status colors are **text-on-soft-tint**, not solid fills — a solid red button would
 outrank the accent.
 
 ---
@@ -170,7 +170,7 @@ component.
 | --- | --- |
 | `--ease-out` | `cubic-bezier(0.16, 1, 0.3, 1)` |
 | `--ease-in-out` | `cubic-bezier(0.65, 0, 0.35, 1)` |
-| `--dur-fast` | 160ms — hover, focus, colour changes |
+| `--dur-fast` | 160ms — hover, focus, color changes |
 | `--dur-base` | 240ms — panels appearing, card hover lifts |
 | `--dur-slow` | 420ms — entrances, deliberate rotations |
 
@@ -198,7 +198,7 @@ explicit `animation: none` under the query, as the existing ones do.
 }
 /* A modal card */
 @keyframes cardIn { from { opacity: 0; transform: scale(0.97); } to { opacity: 1; transform: scale(1); } }
-/* Rejecting an action — note it preserves the translateX(-50%) that centres the button */
+/* Rejecting an action — note it preserves the translateX(-50%) that centers the button */
 @keyframes shake {
   0%, 100% { transform: translateX(-50%); }
   20% { transform: translateX(calc(-50% - 8px)); }
@@ -221,7 +221,7 @@ There is no z-index token; these are the values in use. Stay inside the scale.
 | `-1` | Ambient glows behind their own element |
 | `0` | A full-viewport game surface (camera feed, canvas) |
 | `29` / `30` | Header hover zone / the site header |
-| `40` | A game's primary fixed action (bottom-centre) |
+| `40` | A game's primary fixed action (bottom-center) |
 | `45` | The settings gear (bottom-right) |
 | `50` | Confetti, the games dropdown |
 | `60` | Modal backdrops |
@@ -233,7 +233,7 @@ There is no z-index token; these are the values in use. Stay inside the scale.
 
 ### The app shell
 
-`<main>` is a centred column: `max-width: var(--page-max-width)` (68rem), `margin: 0 auto`,
+`<main>` is a centered column: `max-width: var(--page-max-width)` (68rem), `margin: 0 auto`,
 `padding: calc(var(--space-7) + var(--nav-peek)) var(--space-5) var(--space-8)`. The header
 floats over the page, so content only clears the 4px peek strip. Under
 `@media (hover: none), (pointer: coarse)` the header becomes a real sticky bar and
@@ -246,7 +246,7 @@ Layout tokens: `--page-max-width: 68rem`, `--nav-height: 4rem`, `--nav-peek: 4px
 
 ```css
 .game {
-  /* Break out of the app's centred column. */
+  /* Break out of the app's centered column. */
   margin: calc(var(--space-7) * -1) calc(50% - 50vw) calc(var(--space-8) * -1);
   min-height: 100dvh;
   padding: var(--space-8) var(--space-5);
@@ -272,7 +272,7 @@ above it at z 40/45.
 
 ### Where controls live
 
-- **Primary action**: fixed, bottom-centre — `bottom: var(--space-5); left: 50%;
+- **Primary action**: fixed, bottom-center — `bottom: var(--space-5); left: 50%;
   transform: translateX(-50%)`.
 - **Settings**: fixed, bottom-right — `right: var(--space-5); bottom: var(--space-5)`.
 - Panels open **upward** from their trigger and are rendered *before* the trigger in DOM
@@ -476,12 +476,12 @@ backdrop covers should also be `disabled`, so it leaves the tab order too.
 
 | Kind | Recipe |
 | --- | --- |
-| Error block | `--color-danger-soft` bg, `1px solid var(--color-danger)`, `--radius-md`, `padding: var(--space-3) var(--space-4)`, `--text-sm`, centred, `max-width: 30rem` |
+| Error block | `--color-danger-soft` bg, `1px solid var(--color-danger)`, `--radius-md`, `padding: var(--space-3) var(--space-4)`, `--text-sm`, centered, `max-width: 30rem` |
 | Field error | `--text-xs`, `--color-danger`, `role="alert"` |
 | Warning | `--color-warn` text on `--color-warn-soft` |
 | Notice | `--text-xs`, `--color-text-muted` |
 | Hint | `--text-xs`, `line-height: 1.5`, `--color-text-faint` |
-| Status line | `--text-base`, `--color-text-muted`, centred, `pointer-events: none` when overlaid |
+| Status line | `--text-base`, `--color-text-muted`, centered, `pointer-events: none` when overlaid |
 
 ### Empty states
 
@@ -508,7 +508,7 @@ that search" and "nothing is selected" are different from "no items yet". Never 
   pointer-tracked cursor change) need a non-hover equivalent or must be non-essential.
 - **The skip link** matters more than usual because the header overlays content — keep it at
   z 100 and never cover it.
-- **Selection colour** is already themed (`--color-accent-soft`), as are scrollbars
+- **Selection color** is already themed (`--color-accent-soft`), as are scrollbars
   (`scrollbar-color: var(--color-border-strong) transparent`).
 
 ---
@@ -519,7 +519,7 @@ that search" and "nothing is selected" are different from "no items yet". Never 
 - A second accent hue, or a solid `--color-danger` button competing with the primary action.
 - The display face on body copy, buttons, or anything below a page title.
 - Emoji standing in for icons.
-- Text dimmer than `--color-text-faint`, or a new text colour without a computed ratio.
+- Text dimmer than `--color-text-faint`, or a new text color without a computed ratio.
 - A hover-only route to a control, or a control smaller than 44px on touch.
 - Margins for layout rhythm where `gap` would do.
 - A `z-index` outside the scale in §6, or anything above the skip link's 100.
@@ -546,6 +546,6 @@ registry. A fourth hand-rolled settings panel is a smell — the gear-and-panel 
 shared on purpose: three games, one way to open settings.
 
 **Deliverables that translate cleanly:** wireframes at 1440px and 390px wide; the coarse-
-pointer variant of anything that relies on hover; a token name (not a colour) called out for
-every fill, border and text colour; and a named state for each of resting, hover, focus,
+pointer variant of anything that relies on hover; a token name (not a color) called out for
+every fill, border and text color; and a named state for each of resting, hover, focus,
 active, disabled, loading, error and empty.

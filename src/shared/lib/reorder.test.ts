@@ -14,7 +14,7 @@ const unevenRows: RowBox[] = [
   { top: 246, height: 120 },
 ];
 
-const centre = (row: RowBox) => row.top + row.height / 2;
+const center = (row: RowBox) => row.top + row.height / 2;
 
 describe("moveItem", () => {
   it("moves an item down", () => {
@@ -49,19 +49,19 @@ describe("targetIndex", () => {
   const rows = evenRows();
 
   it("holds its place when the row hasn't moved", () => {
-    expect(targetIndex(rows, 2, centre(rows[2]))).toBe(2);
+    expect(targetIndex(rows, 2, center(rows[2]))).toBe(2);
   });
 
-  it("takes the next slot down once it passes that row's centre", () => {
-    // Just short of row 3's centre: still slot 2.
-    expect(targetIndex(rows, 2, centre(rows[3]) - 1)).toBe(2);
+  it("takes the next slot down once it passes that row's center", () => {
+    // Just short of row 3's center: still slot 2.
+    expect(targetIndex(rows, 2, center(rows[3]) - 1)).toBe(2);
     // Past it: slot 3.
-    expect(targetIndex(rows, 2, centre(rows[3]) + 1)).toBe(3);
+    expect(targetIndex(rows, 2, center(rows[3]) + 1)).toBe(3);
   });
 
-  it("takes the next slot up once it passes above that row's centre", () => {
-    expect(targetIndex(rows, 2, centre(rows[1]) + 1)).toBe(2);
-    expect(targetIndex(rows, 2, centre(rows[1]) - 1)).toBe(1);
+  it("takes the next slot up once it passes above that row's center", () => {
+    expect(targetIndex(rows, 2, center(rows[1]) + 1)).toBe(2);
+    expect(targetIndex(rows, 2, center(rows[1]) - 1)).toBe(1);
   });
 
   it("clamps at both ends of the list", () => {
@@ -71,19 +71,19 @@ describe("targetIndex", () => {
 
   it("works with rows of differing heights", () => {
     // Dragging the first row down past the tall second row.
-    expect(targetIndex(unevenRows, 0, centre(unevenRows[1]) - 1)).toBe(0);
-    expect(targetIndex(unevenRows, 0, centre(unevenRows[1]) + 1)).toBe(1);
+    expect(targetIndex(unevenRows, 0, center(unevenRows[1]) - 1)).toBe(0);
+    expect(targetIndex(unevenRows, 0, center(unevenRows[1]) + 1)).toBe(1);
     // And all the way to the bottom.
-    expect(targetIndex(unevenRows, 0, centre(unevenRows[3]) + 1)).toBe(3);
+    expect(targetIndex(unevenRows, 0, center(unevenRows[3]) + 1)).toBe(3);
   });
 
   it("caps at the floor so nothing lands below an in-progress track", () => {
     // Row 4 is in-progress, so the last usable slot is 3.
     const floor = 3;
     expect(targetIndex(rows, 0, 10_000, floor)).toBe(3);
-    expect(targetIndex(rows, 0, centre(rows[4]) + 1, floor)).toBe(3);
+    expect(targetIndex(rows, 0, center(rows[4]) + 1, floor)).toBe(3);
     // Slots above the floor are unaffected.
-    expect(targetIndex(rows, 0, centre(rows[2]) + 1, floor)).toBe(2);
+    expect(targetIndex(rows, 0, center(rows[2]) + 1, floor)).toBe(2);
   });
 
   it("pins everything to slot 0 when only the first row is free", () => {

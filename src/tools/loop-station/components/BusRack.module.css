@@ -87,7 +87,7 @@
   box-shadow: 0 0 0 1px color-mix(in srgb, var(--bus-color) 45%, transparent);
 }
 
-/* A colour chip so the bus is identifiable even when it isn't selected. */
+/* A color chip so the bus is identifiable even when it isn't selected. */
 .card::before {
   content: "";
   position: absolute;

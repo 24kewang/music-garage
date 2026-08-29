@@ -139,7 +139,7 @@ export function magnitudeSpectrum(
   return magnitude;
 }
 
-/** Hertz at the centre of a bin. */
+/** Hertz at the center of a bin. */
 export function binToFrequency(bin: number, sampleRate: number, size: number): number {
   return (bin * sampleRate) / size;
 }

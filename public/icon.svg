@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <!-- App icon. Colors are the literal values behind  -->
+  <rect width="64" height="64" rx="14" fill="#0d0d16"/>
+  <rect x="4" y="4" width="56" height="56" rx="11" fill="#1c1c2b"/>
+  <g fill="#818cf8">
+    <!-- Beamed pair of eighth notes: the wordmark's sibling, not a new mark. -->
+    <path d="M26 14.5 L46 11 v5.4 L26 19.9 Z"/>
+    <rect x="24.2" y="17" width="3.2" height="24" rx="1.6"/>
+    <rect x="44.2" y="13" width="3.2" height="24" rx="1.6"/>
+    <ellipse cx="19.6" cy="42.5" rx="6.6" ry="5.2" transform="rotate(-16 19.6 42.5)"/>
+    <ellipse cx="39.6" cy="38.5" rx="6.6" ry="5.2" transform="rotate(-16 39.6 38.5)"/>
+  </g>
+</svg>

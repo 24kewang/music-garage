@@ -33,7 +33,7 @@ export const config = {
     housingRadius: 322,
     /** Radius at which band score labels sit. */
     bandLabelRadius: 262,
-    /** Needle length, from the centre outward. */
+    /** Needle length, from the center outward. */
     needleLength: 244,
     /** Needle travel limit either side of vertical. Manual aiming uses all of it. */
     needleMaxDeg: 88,
@@ -46,10 +46,10 @@ export const config = {
      * inward makes that worse, not better. Pulling the span in is the fix.
      */
     scaleMaxDeg: 86.5,
-    /** Centre button. */
+    /** Center button. */
     buttonRadius: 63,
     buttonRingRadius: 52,
-    /** Cover handle, drawn to the right of centre at coverDeg = 0. */
+    /** Cover handle, drawn to the right of center at coverDeg = 0. */
     handle: { x: 250, y: -38, width: 235, height: 36, radius: 18 },
     /** The trapezoid the dial sits in. */
     base: { topHalfWidth: 200, bottomHalfWidth: 300, depth: 430 },
@@ -66,7 +66,7 @@ export const config = {
   /**
    * Scoring bands, innermost first. `edgeFraction` is each band's outer edge as a
    * fraction of `targetHalfWidthDeg`, so band N spans
-   * bands[N-1].edgeFraction … bands[N].edgeFraction either side of centre.
+   * bands[N-1].edgeFraction … bands[N].edgeFraction either side of center.
    *
    * The outermost band must end at 1 — that's the edge of the target.
    */
@@ -152,7 +152,7 @@ export const config = {
     labelEverySemitones: 1,
     /** Pitch mode: above this many semitones, labels auto-thin to stay readable. */
     autoThinAboveSemitones: 14,
-    /** Intonation mode: cents between labelled major ticks. */
+    /** Intonation mode: cents between labeled major ticks. */
     labelStepCents: 10,
     /** Intonation mode: minor ticks drawn between adjacent labels. */
     minorTicksPerLabel: 5,

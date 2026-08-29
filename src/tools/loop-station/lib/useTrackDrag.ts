@@ -131,15 +131,15 @@ export function useTrackDrag({
     node.style.transform = `translateY(${contentY(g.clientY) - g.grabContentY}px)`;
   }, [contentY]);
 
-  /** Recompute which slot the row is over, from its dragged centre. */
+  /** Recompute which slot the row is over, from its dragged center. */
   const updateTarget = useCallback(() => {
     const g = gesture.current;
     const d = dragRef.current;
     if (!g || !d || !g.started) return;
     const box = boxes.current[d.fromIndex];
     if (!box) return;
-    const centreY = box.top + box.height / 2 + (contentY(g.clientY) - g.grabContentY);
-    const to = targetIndex(boxes.current, d.fromIndex, centreY, latest.current.lockedFrom - 1);
+    const centerY = box.top + box.height / 2 + (contentY(g.clientY) - g.grabContentY);
+    const to = targetIndex(boxes.current, d.fromIndex, centerY, latest.current.lockedFrom - 1);
     if (to === d.toIndex) return;
     dragRef.current = { ...d, toIndex: to };
     setDrag(dragRef.current);

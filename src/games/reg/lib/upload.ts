@@ -3,7 +3,7 @@ import { isImagePath, normalizePath } from "./paths";
 
 /**
  * Turning the three upload gestures — file picker, folder picker, drag-and-drop —
- * into one shape: `{ path, file }` pairs with normalised relative paths.
+ * into one shape: `{ path, file }` pairs with normalized relative paths.
  */
 
 export interface Incoming {

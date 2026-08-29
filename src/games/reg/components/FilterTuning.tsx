@@ -36,7 +36,7 @@ export default function FilterTuning({
     settings.showCaption === DEFAULT_SETTINGS.showCaption;
 
   // Nothing to position against without a head to track, so the offsets go quiet —
-  // greyed rather than hidden, so the tab keeps its shape as the mode flips.
+  // grayed rather than hidden, so the tab keeps its shape as the mode flips.
   const positional = !useCamera;
 
   return (

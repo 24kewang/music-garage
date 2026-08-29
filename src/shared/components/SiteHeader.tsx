@@ -133,6 +133,20 @@ export default function SiteHeader() {
               onOpenChange={menuPin("tools")}
             />
           </nav>
+
+          {/*
+           * The footer carries these too, but it is absent on the game and tool
+           * routes, which own their whole viewport. The header is on every route,
+           * so this is what keeps the legal documents reachable from everywhere.
+           */}
+          <nav className={styles.legal} aria-label="Legal">
+            <Link href="/terms" className={styles.legalLink}>
+              Terms
+            </Link>
+            <Link href="/privacy" className={styles.legalLink}>
+              Privacy
+            </Link>
+          </nav>
         </div>
       </header>
 

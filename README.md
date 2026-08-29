@@ -17,10 +17,14 @@ npm run dev        # http://localhost:3000
 | --- | --- |
 | `npm run dev` | Dev server |
 | `npm run build` | Production build |
-| `npm start` | Serve the production build |
+| `npm start` | Serve the last build through the Cloudflare Worker runtime |
 | `npm test` | Run the test suite once |
 | `npm run test:watch` | Tests in watch mode |
 | `npm run lint` | ESLint |
+| `npm run typecheck` | `tsc --noEmit` |
+| `npm run licenses` | Dependency license audit |
+| `npm run preview` | Build, then serve it exactly as production does |
+| `npm run deploy` | Build and deploy to Cloudflare |
 
 **Microphone and camera access need a secure origin.** `localhost` counts, so
 `npm run dev` works; if you open the dev server from another device on your network it
@@ -28,7 +32,7 @@ needs HTTPS.
 
 ## Architecture
 
-The organising rule: **games and tools are self-contained, the shell knows nothing
+The organizing rule: **games and tools are self-contained, the shell knows nothing
 about them beyond their manifest.**
 
 ```
@@ -91,11 +95,63 @@ three-way contract, and the Tools menu and gallery section render from the regis
 
 ### Styling
 
-Colours, spacing, radii, type and motion come from CSS custom properties in
+Colors, spacing, radii, type and motion come from CSS custom properties in
 `src/shared/styles/tokens.css` — one dark theme, no light mode. Reference tokens
 (`var(--color-accent)`) instead of hard-coding values, and games inherit a consistent
 look without importing each other's stylesheets. Everything else is CSS Modules,
 colocated with the component it styles. See `CLAUDE.md` for the full styling rules.
+
+## Deployment
+
+The site is a **static export** served from a Cloudflare Worker. `next build` writes
+`out/`; the Worker serves it straight from the edge with no script in the request path.
+
+```bash
+npm run preview     # build, then serve it exactly as production does
+npm run deploy      # build and push it live
+```
+
+Continuous integration and deployment are split on purpose. **GitHub Actions gates
+pull requests** — lint, types, tests, build, license audit
+(`.github/workflows/ci.yml`). **Cloudflare's git integration deploys**, watching `main`
+directly, so no deployment credentials live in this repository. The full setup runbook
+is in `HOSTING.md`, which is untracked.
+
+Three things about this shape are worth knowing before you change anything:
+
+- **`headers()` / `redirects()` / `rewrites()` in `next.config.ts` are inert** under
+  `output: "export"`. Security headers — CSP, HSTS, `Permissions-Policy` and the rest —
+  live in [`public/_headers`](public/_headers), which the export copies into `out/` and
+  Cloudflare parses at the edge. Every rule in there is commented with what needs it.
+- **The CSP ships as `Report-Only`** until it has been exercised against REG's camera
+  filter in a real browser. See `HOSTING.md` for the flip.
+- **Adding a server later is additive.** `wrangler.jsonc` is written so that
+  multiplayer means adding a `main` script, an `ASSETS` binding and Durable Objects to
+  the same Worker — the static assets keep serving exactly as they do now.
+
+`src/shared/site.ts` holds the canonical URL and the publisher details, and is the only
+place either is written.
+
+## Licensing
+
+Music Garage is [MIT licensed](LICENSE). The dependency tree was audited before
+publication: no GPL, AGPL, SSPL, EPL, CDDL or CC-BY-SA anywhere, and no package with an
+undeclared license. The only copyleft present is the LGPL-3.0 libvips binaries that
+`next` pulls in as optional dependencies of `sharp` — build-time only, dynamically
+linked, and absent from a static export entirely.
+
+```bash
+npm run licenses            # the gate CI runs
+npm run licenses:notices    # regenerate THIRD-PARTY-NOTICES.md
+```
+
+`scripts/check-licenses.mjs` reads `package-lock.json` rather than walking
+`node_modules`, because the lockfile declares a license for every resolved package
+while an install only contains the binaries for the current platform. Exceptions are
+listed in that script with the reason recorded next to them.
+
+[`THIRD-PARTY-NOTICES.md`](THIRD-PARTY-NOTICES.md) is generated, and satisfies the
+attribution requirements of the Apache-2.0 and CC-BY-4.0 packages in the tree.
 
 ## Shared audio module
 
@@ -168,9 +224,9 @@ a usable configuration.
 Peeking is safe: the cover only ends the round if you release it past halfway. Let go
 before that and it springs shut with nothing changed.
 
-#### Customising the dial
+#### Customizing the dial
 
-Every geometry, colour, motion, tick, glow and confetti parameter lives in one place —
+Every geometry, color, motion, tick, glow and confetti parameter lives in one place —
 [`config.ts`](src/games/musical-wavelength/config.ts). Components read from it instead
 of embedding literals, so the look can be retuned without touching JSX.
 
@@ -254,9 +310,9 @@ The camera feed becomes a face filter: a box floats above your head, tracked in 
 you move. Press **SPIN** and it riffles through your checked excerpts slot-machine
 style, slowing until it lands on a random one, captioned with a name built from the
 file's path (`orchestral/mahler/Symphony 5.png` → *orchestral - mahler - Symphony 5*).
-Practise what fate hands you, then spin again.
+Practice what fate hands you, then spin again.
 
-The excerpt floats at head size, which is enough to recognise a piece but not to play
+The excerpt floats at head size, which is enough to recognize a piece but not to play
 it — so **clicking the excerpt itself opens it full-screen**, and the x, a click
 outside, or Escape closes it again. SPIN and the gear stay locked while it's open.
 
@@ -272,9 +328,9 @@ overall size as a percentage, and whether the excerpt's name is shown at all. Th
 follows the sliders live while you watch yourself, and your tuning is remembered.
 
 **Camera mode starts off.** Without it the same slot machine runs as an ordinary picker —
-the excerpt centred on screen with its name underneath, still clickable to enlarge — asking
+the excerpt centered on screen with its name underneath, still clickable to enlarge — asking
 for no camera permission and loading none of the 3D stack, so a visit that never turns the
-camera on never fetches it. The position sliders grey out there, since there's no head to
+camera on never fetches it. The position sliders gray out there, since there's no head to
 track. The switch is session-only: reload and you're back to camera-free. It also locks
 while the camera is starting, so a half-built scene can't be torn down under itself.
 
@@ -411,7 +467,7 @@ all rather than being a nice-to-have.
 | Level | Controls |
 | --- | --- |
 | **Track** | Volume, reverb send, mute, solo, timing, rename, drag to reorder, delete |
-| **Bus** | Volume, reverb send, mute, rename. Each bus has a colour that tags its tracks, and the selected bus is where new recordings land |
+| **Bus** | Volume, reverb send, mute, rename. Each bus has a color that tags its tracks, and the selected bus is where new recordings land |
 | **Master** | Volume to **150%**, reverb, mute, with a soft limiter on the output so the extra headroom reads as louder rather than distorted |
 
 Reverb is one shared convolver fed by sends rather than a unit per track — per-track

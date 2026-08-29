@@ -10,7 +10,7 @@ import styles from "./ListeningWave.module.css";
  * running silently in the background, this is how a player too quiet to trigger an
  * onset can see that they are too quiet rather than guessing.
  *
- * Under `prefers-reduced-motion` the travelling animation stops but the level response
+ * Under `prefers-reduced-motion` the traveling animation stops but the level response
  * stays — the information survives, the movement doesn't.
  */
 export default function ListeningWave({
@@ -41,7 +41,7 @@ export default function ListeningWave({
             className={styles.dot}
             style={{
               height: `${height}px`,
-              // Staggered so the pulse reads as travelling left to right.
+              // Staggered so the pulse reads as traveling left to right.
               animationDelay: `${(index / dotCount) * cycleSeconds}s`,
               animationDuration: `${cycleSeconds}s`,
             }}

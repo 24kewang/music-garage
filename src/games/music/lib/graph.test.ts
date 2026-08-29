@@ -60,7 +60,7 @@ describe("buildGraph", () => {
     const hole = geometry.ops.indexOf("del");
     expect(hole).toBeGreaterThanOrEqual(0);
     // The target keeps its cell there; the attempt has nothing to draw. That hole
-    // is what makes the error visible with the colours ignored.
+    // is what makes the error visible with the colors ignored.
     expect(geometry.attempt[hole]).toBeNull();
     expect(geometry.target[hole]).not.toBeNull();
   });

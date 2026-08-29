@@ -133,7 +133,7 @@
   font-variant-numeric: tabular-nums;
 }
 
-/* The last few seconds. Colour plus size, so it is not colour alone. */
+/* The last few seconds. Color plus size, so it is not color alone. */
 .clock[data-urgent] {
   color: var(--color-warn);
   font-size: var(--text-3xl);

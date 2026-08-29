@@ -88,7 +88,7 @@ describe("design fidelity", () => {
     );
   });
 
-  it("reproduces the design's centre wedge path", () => {
+  it("reproduces the design's center wedge path", () => {
     // Design: M 0 0 L -18.8 -299.4 A 300 300 0 0 1 18.8 -299.4 Z
     expect(wedgePath(-3.6, 3.6, R)).toBe(
       "M 0 0 L -18.84 -299.41 A 300 300 0 0 1 18.84 -299.41 Z",
@@ -106,8 +106,8 @@ describe("design fidelity", () => {
 });
 
 describe("WEDGES", () => {
-  it("has one wedge per band, mirrored, with the centre band shared", () => {
-    // 3 bands → 5 wedges: 2 left, 1 centre, 2 right.
+  it("has one wedge per band, mirrored, with the center band shared", () => {
+    // 3 bands → 5 wedges: 2 left, 1 center, 2 right.
     expect(WEDGES).toHaveLength(5);
     expect(WEDGES.map((w) => w.score)).toEqual([2, 3, 4, 3, 2]);
   });
@@ -121,7 +121,7 @@ describe("WEDGES", () => {
     expect(WEDGES[WEDGES.length - 1].endDeg).toBeCloseTo(config.targetHalfWidthDeg, 9);
   });
 
-  it("spans exactly targetHalfWidthDeg either side of centre", () => {
+  it("spans exactly targetHalfWidthDeg either side of center", () => {
     // The one knob that resizes the whole target.
     expect(WEDGES[0].startDeg).toBeCloseTo(-config.targetHalfWidthDeg, 9);
     expect(WEDGES[WEDGES.length - 1].endDeg).toBeCloseTo(config.targetHalfWidthDeg, 9);
@@ -141,11 +141,11 @@ describe("WEDGES", () => {
     );
   });
 
-  it("centres each label in its wedge", () => {
+  it("centers each label in its wedge", () => {
     for (const wedge of WEDGES) {
       expect(wedge.labelDeg).toBeCloseTo((wedge.startDeg + wedge.endDeg) / 2, 9);
     }
-    // The centre wedge straddles the line, so its label sits dead ahead.
+    // The center wedge straddles the line, so its label sits dead ahead.
     expect(WEDGES[2].labelDeg).toBeCloseTo(0, 9);
   });
 

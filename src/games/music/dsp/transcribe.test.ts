@@ -85,11 +85,11 @@ describe("transcribe", () => {
     expect(transcribe(silence(1, RATE), RATE).notes).toEqual([]);
   });
 
-  it("hears nothing in a buffer too short to analyse", () => {
+  it("hears nothing in a buffer too short to analyze", () => {
     expect(transcribe(new Float32Array(256), RATE).notes).toEqual([]);
   });
 
-  it("keeps the intermediate artefacts for the debug view", () => {
+  it("keeps the intermediate artifacts for the debug view", () => {
     const result = transcribe(melody([60, 64, 67], RATE, 0.4), RATE);
 
     expect(result.frames.length).toBeGreaterThan(0);

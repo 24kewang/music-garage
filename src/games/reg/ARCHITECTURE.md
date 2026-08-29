@@ -13,7 +13,7 @@ searchable checkbox tree with select-all, add-more and delete-everything) and
 **Filter** (the camera on/off switch, where the box sits above the head, and how big).
 
 **Two modes, and camera-free is the default.** With the camera off the same slot machine
-runs as plain DOM — the excerpt centred on screen with its name underneath, no feed and no
+runs as plain DOM — the excerpt centered on screen with its name underneath, no feed and no
 3D. It is not a lesser mode: it needs no camera permission and loads none of the 3D stack
 (§"Face tracking is *not* fully local"), so it is the offline, permission-free path
 through the game, and starting there is what keeps a first visit from fetching ~2 MB of
@@ -45,7 +45,7 @@ components/
 lib/
   useSpinReel.ts      intro→spinning→result, shared by both modes    (browser)
   images.ts           blob → decoded <img> + pool, for the flat mode (browser)
-  paths.ts            normalise / split / extension allowlist          (pure, tested)
+  paths.ts            normalize / split / extension allowlist          (pure, tested)
   tree.ts             build, cascade, derived check state, search      (pure, tested)
   names.ts            path → caption, budgeted truncation              (pure, tested)
   spin.ts             the whole spin as a data plan                    (pure, tested)
@@ -88,12 +88,12 @@ three sets `UNPACK_FLIP_Y_WEBGL` from `texture.flipY`, but **WebGL ignores that 
 for `ImageBitmap` sources** — an ImageBitmap's orientation is fixed at
 `createImageBitmap()` time. `texImage2D` puts source row 0 at `v = 0`, which
 `PlaneGeometry` maps to the *bottom* of the quad, so an unflipped bitmap renders
-upside-down. There is no warning of any kind. The canvas-drawn text planes do honour
+upside-down. There is no warning of any kind. The canvas-drawn text planes do honor
 `flipY`, which is exactly why the original bug flipped the excerpts but not the
 captions — a misleading clue if you go looking at the geometry instead.
 
 So `loadTexture` passes `imageOrientation: "flipY"` (the real fix) and also sets
-`texture.flipY = false` (a no-op today, correct if a browser ever honours the flag).
+`texture.flipY = false` (a no-op today, correct if a browser ever honors the flag).
 Don't "simplify" either away.
 
 ### Supersampling the render buffer
@@ -177,13 +177,13 @@ mirroring, so a child scale of 2.5 introduces no flipped normals or reversed tex
 half — **MindAR never removes the canvas it appended to the container**, the same fact
 that makes `forceContextLoss()` unusable (§`stop()`). A hidden-but-mounted screen would
 stack one dead canvas per toggle. Unmounting makes React discard the container subtree,
-orphaned canvas included, and runs the existing cleanup: pending swaps cancelled,
+orphaned canvas included, and runs the existing cleanup: pending swaps canceled,
 `scene.stop()`, `pool.disposeAll()`.
 
 Switching back on builds a fresh scene. `getUserMedia` does not re-prompt because the
 permission persists, and re-setting `Texture.DEFAULT_ANISOTROPY` is harmless. The stress
 case is **rapid toggling**, since `createRegScene` is async and the cleanup can fire while
-it is still pending; the `cancelled` branch plus the idempotent `stop()` cover it, and the
+it is still pending; the `canceled` branch plus the idempotent `stop()` cover it, and the
 thing to check by hand is that the webcam light ends up off.
 
 ### MindAR's own UI is switched off, and why that was a bug
@@ -339,7 +339,7 @@ unmatched file survives the intersection with no visible children, leaving an em
 folder in the tree. Deriving folders from the survivors makes that impossible by
 construction, and `tree.test.ts` pins the exact case.
 
-### Row filtering and search behaviour are deliberately separate
+### Row filtering and search behavior are deliberately separate
 
 `FileTree` takes `visible` **and** `searching`, rather than deriving one from the other
 as it once did. `visible` decides only which rows appear; `searching` decides whether the
@@ -398,6 +398,19 @@ Consequences to keep in mind:
 - Opening the filter reveals IP and user agent to jsDelivr and Google. No video leaves
   the tab, but those requests do.
 
+**Where this is written down for production.** The CSP that allows these two origins
+lives in `public/_headers`, applied at the edge by the Cloudflare Worker. Its entries
+are annotated as belonging to this game — if you change what the filter fetches,
+change that file too, and if you ever remove the filter those origins should come out
+of the CSP rather than lingering as permanent holes. The IP/user-agent disclosure is
+named explicitly in the site's privacy policy (`src/app/(legal)/privacy/page.tsx`),
+under "Third-party requests"; the same applies there.
+
+Self-hosting these assets would close both the privacy and supply-chain gaps — the
+files exist in `node_modules/@mediapipe/tasks-vision/wasm/` already — but the base
+path is a literal inside mind-ar's shipped bundle, so it needs a patch rather than a
+setting. HOSTING.md carries the recipe as a post-launch item.
+
 Self-hosting is possible but not cheap: the URLs are string literals inside mind-ar's
 prod bundle, so it means vendoring or patching that file.
 
@@ -447,7 +460,7 @@ un-persisted OPFS is merely evictable under storage pressure.
 
 | File | Guards |
 | --- | --- |
-| `paths.test.ts` | normalisation, extension allowlist edge cases |
+| `paths.test.ts` | normalization, extension allowlist edge cases |
 | `tree.test.ts` | build/sort/dedupe, derived folder state, cascade, folder listing, both visibility filters and their composition (including the empty-folder case), shown-file scoping |
 | `names.test.ts` | caption pipeline; drop-longest-folder-first, tie-break, ellipsis |
 | `spin.test.ts` | forced landing, monotone deceleration, no repeats, minSteps, bounds |

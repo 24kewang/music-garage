@@ -68,7 +68,7 @@ export interface BusState {
   /**
    * Which of the bus hues this one wears, 0-based. Assigned as the smallest
    * unused index so deleting the middle bus and adding another reuses the freed
-   * colour rather than drifting through the palette.
+   * color rather than drifting through the palette.
    */
   colorIndex: number;
   volume: number;
@@ -266,7 +266,7 @@ export function lockedFromIndex(tracks: readonly TrackState[]): number {
 }
 
 /**
- * The smallest free slot in `used`. Both track names and bus colours reuse
+ * The smallest free slot in `used`. Both track names and bus colors reuse
  * whatever a deletion or a rename freed, rather than climbing forever.
  */
 function smallestFree(used: ReadonlySet<number>, from = 0): number {
@@ -505,7 +505,7 @@ function reduceRecord(s: SessionState, now: number): Result {
     case "off":
       return startRecordSession(s, now);
     case "countIn":
-      // Cancelling the count-in leaves nothing behind; back to the empty state.
+      // Canceling the count-in leaves nothing behind; back to the empty state.
       return done({ ...s, recording: { kind: "off" } });
     case "free":
       return finishFreeLoop(s, s.recording.startTime, now);
@@ -634,7 +634,7 @@ function finishFreeLoop(s: SessionState, startTime: number, now: number): Result
 /** Turning the record button off mid-session. The in-flight segment dies; set tracks stay. */
 function endRecordSession(s: SessionState, session: RecordSession): Result {
   // The quantized-start edge case: nothing was set yet, so the whole attempt —
-  // transport included — is cancelled and the user starts again.
+  // transport included — is canceled and the user starts again.
   if (session.isInitial && session.targetTrackId === null) {
     return resetTransport({ ...s, recording: { kind: "off" } });
   }
@@ -780,7 +780,7 @@ function reduceSetMultiplier(s: SessionState, value: number, now: number): Resul
   if (s.recording.kind === "capturing") {
     const { session } = s.recording;
     // Changing the multiplier mid-capture discards that segment. If it was the
-    // quantized session's first segment, the whole attempt is cancelled.
+    // quantized session's first segment, the whole attempt is canceled.
     if (session.isInitial && session.targetTrackId === null) {
       return resetTransport({ ...s, multiplier: value, recording: { kind: "off" } });
     }

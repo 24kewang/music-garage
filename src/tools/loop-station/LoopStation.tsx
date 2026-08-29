@@ -56,7 +56,7 @@ export default function LoopStation() {
     [dispatch, session.tracks, lockedFrom],
   );
 
-  // Destructured rather than kept as one object: the React compiler analyses
+  // Destructured rather than kept as one object: the React compiler analyzes
   // custom hooks inter-procedurally, and reading a property off the whole
   // returned value inside the render loop reads as touching its refs.
   const {

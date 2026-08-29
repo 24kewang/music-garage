@@ -96,7 +96,7 @@ describe("detectPitch", () => {
     expect(result).toBeNull();
   });
 
-  it("honours a lowered clarity threshold", () => {
+  it("honors a lowered clarity threshold", () => {
     const clean = detectPitch(detector, sine(440), SAMPLE_RATE, { minClarity: 0.99 });
     expect(clean).not.toBeNull();
   });

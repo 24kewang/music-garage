@@ -54,7 +54,7 @@ export const config = {
      *  legible — but MSAA at a huge buffer costs fill-rate on phones. */
     maxPixelRatio: 3,
     /** Caption (excerpt name) canvas-text styling. Canvas can't read CSS custom
-     *  properties, so colours are literal here — keep them matching tokens.css. */
+     *  properties, so colors are literal here — keep them matching tokens.css. */
     caption: {
       fontPx: 48,
       /** Width at which text wraps to the next line. */
@@ -107,7 +107,7 @@ export const config = {
   overlay: {
     /** Height-to-width ratio above which the enlarged excerpt stops being fitted to the
      *  screen and scrolls at full width instead. Fitting a tall strip of systems to the
-     *  viewport height leaves it a few centimetres wide and unreadable. */
+     *  viewport height leaves it a few centimeters wide and unreadable. */
     scrollAboveRatio: 2,
   },
 

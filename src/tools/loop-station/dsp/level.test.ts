@@ -8,14 +8,14 @@ describe("peaks", () => {
     samples[10] = 0.8;
     samples[60] = -0.9;
     const envelope = peaks(samples, 2);
-    // Normalised against the loudest bucket, so the 0.9 becomes 1.
+    // Normalized against the loudest bucket, so the 0.9 becomes 1.
     expect(envelope[1]).toBeCloseTo(1);
     expect(envelope[0]).toBeCloseTo(0.8 / 0.9);
   });
 
   it("never returns a bar above 1, even when the buffer clips past it", () => {
     // Baked buffers exceed 1.0 wherever a crossfade sums correlated audio.
-    // Unnormalised, a bar like this drove `height: 140%` and blew out the row.
+    // Unnormalized, a bar like this drove `height: 140%` and blew out the row.
     const samples = new Float32Array(200).fill(0.3);
     samples[120] = 1.4;
     const envelope = peaks(samples, 8);
@@ -23,7 +23,7 @@ describe("peaks", () => {
     for (const bar of envelope) expect(bar).toBeLessThanOrEqual(1);
   });
 
-  it("normalises a quiet take up so it stays legible", () => {
+  it("normalizes a quiet take up so it stays legible", () => {
     const samples = new Float32Array(100).fill(0.2);
     expect(Math.max(...peaks(samples, 4))).toBeCloseTo(1);
   });

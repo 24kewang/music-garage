@@ -35,7 +35,7 @@
   object-fit: contain;
   border-radius: var(--radius-sm);
   /* Excerpt scans are usually white paper; the light mat reads as intentional against
-   * the dark page rather than as a rendering artefact. Matches the overlay. */
+   * the dark page rather than as a rendering artifact. Matches the overlay. */
   background: var(--color-text);
   box-shadow: var(--shadow-lg);
 }

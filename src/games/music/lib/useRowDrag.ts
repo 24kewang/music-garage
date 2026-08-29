@@ -125,8 +125,8 @@ export function useRowDrag({
     const box = boxes.current[d.index];
     if (!box) return;
 
-    const centreY = box.top + box.height / 2 + (contentY(g.clientY) - g.grabY);
-    const to = targetIndex(boxes.current, d.index, centreY);
+    const centerY = box.top + box.height / 2 + (contentY(g.clientY) - g.grabY);
+    const to = targetIndex(boxes.current, d.index, centerY);
     if (to === d.toIndex) return;
 
     dragRef.current = { ...d, toIndex: to };

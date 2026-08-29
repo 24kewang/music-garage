@@ -244,7 +244,7 @@ export function useRecorder({ onCaptured, onDiscarded }: UseRecorderOptions): Re
 
       void ensureAudio()
         .then((context) => {
-          // Cancelled while the permission prompt was up.
+          // Canceled while the permission prompt was up.
           if (statusRef.current !== "arming") return;
 
           const node = new AudioWorkletNode(context, "music-capture", {

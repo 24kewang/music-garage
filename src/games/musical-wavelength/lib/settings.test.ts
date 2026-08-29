@@ -59,7 +59,7 @@ describe("validateSpan", () => {
   });
 
   it("rejects spans too narrow to carry a label", () => {
-    // The scale is labelled every 10 cents, so anything under that draws a bare scale.
+    // The scale is labeled every 10 cents, so anything under that draws a bare scale.
     expect(validateSpan(1).ok).toBe(false);
     expect(validateSpan(9).ok).toBe(false);
   });

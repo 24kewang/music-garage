@@ -20,7 +20,7 @@ describe("pitchNeedleDeg", () => {
     expect(pitchNeedleDeg(midiToFrequency(C5), C4, C5)).toBeCloseTo(MAX, 6);
   });
 
-  it("puts the midpoint of the range at the centre", () => {
+  it("puts the midpoint of the range at the center", () => {
     // F#4 is six semitones into a one-octave range.
     expect(pitchNeedleDeg(midiToFrequency(C4 + 6), C4, C5)).toBeCloseTo(0, 6);
   });
@@ -49,7 +49,7 @@ describe("pitchNeedleDeg", () => {
 });
 
 describe("intonationNeedleDeg", () => {
-  it("centres a perfectly in-tune note", () => {
+  it("centers a perfectly in-tune note", () => {
     expect(intonationNeedleDeg(0, 50)).toBe(0);
   });
 
@@ -99,9 +99,9 @@ describe("pitchTicks", () => {
   it("thins labels on wide ranges so they don't collide", () => {
     const wide = pitchTicks(parseNoteName("C2")!, parseNoteName("C6")!);
     const majors = wide.filter((t) => t.major);
-    const labelled = wide.filter((t) => t.label);
+    const labeled = wide.filter((t) => t.label);
     expect(majors.length).toBe(49);
-    expect(labelled.length).toBeLessThan(majors.length);
+    expect(labeled.length).toBeLessThan(majors.length);
   });
 
   it("drops minor ticks when they would be too dense to read", () => {
@@ -136,12 +136,12 @@ describe("outermost label clearance", () => {
     const halfWidth = (chars * labelSize * 0.6) / 2;
     const halfHeight = labelSize / 2;
 
-    const centre = polar(labelRadius, MAX);
+    const center = polar(labelRadius, MAX);
     const radians = (MAX * Math.PI) / 180;
-    // Rotated by MAX about its own centre: the text runs along (cos, sin) and its
+    // Rotated by MAX about its own center: the text runs along (cos, sin) and its
     // height lies along (-sin, cos).
     return (
-      centre.y +
+      center.y +
       Math.abs(Math.sin(radians)) * halfWidth +
       Math.abs(Math.cos(radians)) * halfHeight
     );
@@ -165,19 +165,19 @@ describe("outermost label clearance", () => {
 });
 
 describe("intonationTicks", () => {
-  it("labels in cents with zero at the centre", () => {
+  it("labels in cents with zero at the center", () => {
     const labels = intonationTicks(50)
       .filter((tick) => tick.label)
       .map((tick) => tick.label);
     expect(labels).toEqual(["-50", "-40", "-30", "-20", "-10", "0", "10", "20", "30", "40", "50"]);
   });
 
-  it("puts zero exactly at the centre of the dial", () => {
+  it("puts zero exactly at the center of the dial", () => {
     const zero = intonationTicks(50).find((tick) => tick.label === "0");
     expect(zero!.deg).toBe(0);
   });
 
-  it("is symmetric about the centre", () => {
+  it("is symmetric about the center", () => {
     const ticks = intonationTicks(40);
     const degrees = ticks.map((tick) => tick.deg);
     for (const deg of degrees) {

@@ -20,7 +20,7 @@ export interface Candidate {
   /**
    * Fractional bin of each harmonic, 1st first, or {@link ABSENT} past Nyquist.
    * Fractional because a bin index is where the harmonic *is*, not where the nearest
-   * bin centre happens to sit.
+   * bin center happens to sit.
    */
   harmonicBins: Float64Array;
   /** Search radius for each harmonic, in bins. See {@link toleranceBins}. */

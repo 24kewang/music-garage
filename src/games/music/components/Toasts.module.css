@@ -1,5 +1,5 @@
 /*
- * Bottom centre. Above the nav menu (50) so a notice is never buried, below the
+ * Bottom center. Above the nav menu (50) so a notice is never buried, below the
  * dialog backdrop (60) so it never floats over a modal.
  *
  * Kept clear of the settings gear, which owns the bottom right.
@@ -36,7 +36,7 @@
 
 /*
  * Tone is carried by the left edge only. The message already says what happened in
- * words, so the colour is a glance-level echo rather than the information itself.
+ * words, so the color is a glance-level echo rather than the information itself.
  */
 .toast[data-tone="success"] {
   border-left-color: var(--color-success);

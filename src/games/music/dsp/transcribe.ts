@@ -5,7 +5,7 @@
  * in Node against synthesized phrases rather than only discoverable by singing at a
  * laptop. Nothing downstream of `track.ts` ever sees a `Float32Array`.
  *
- * The intermediate artefacts come back with the notes on purpose. The design doc
+ * The intermediate artifacts come back with the notes on purpose. The design doc
  * asks for them, and they are what make a threshold argument settleable: without the
  * contour and the segment list, "it heard the wrong notes" is unfalsifiable.
  */

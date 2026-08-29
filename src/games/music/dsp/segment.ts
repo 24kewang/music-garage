@@ -18,11 +18,11 @@
  * - **A band, not a derivative**, so vibrato inside the band is simply ignored.
  * - **A fixed anchor, not a running one**, because a running median drifts along
  *   with a slow portamento and swallows the entire slide into one "note". Anchored,
- *   a glide leaves the band after it has travelled `tolerance` semitones, however
+ *   a glide leaves the band after it has traveled `tolerance` semitones, however
  *   slowly it got there.
  *
  * **This stage expects an already-smoothed contour** — step 5's median filter, with
- * a kernel around one vibrato period. The band tolerates vibrato that is centred on
+ * a kernel around one vibrato period. The band tolerates vibrato that is centered on
  * the anchor, but the anchor is taken from the run's opening frames, and on a raw
  * contour those frames can land anywhere in the swing and push the whole band off to
  * one side. The median filter is what puts the anchor in the middle of the vibrato

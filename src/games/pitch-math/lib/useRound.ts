@@ -12,7 +12,7 @@ import {
   detectionSemitones,
   type Detection,
 } from "../dsp/multiPitch";
-import { analyseSpectrum, planSpectrum, type SpectrumPlan } from "../dsp/spectrum";
+import { analyzeSpectrum, planSpectrum, type SpectrumPlan } from "../dsp/spectrum";
 import { isCorrectGuess, type IntervalMode } from "./intervals";
 
 export type Phase =
@@ -21,7 +21,7 @@ export type Phase =
   /** Listening, or filling the capture window. */
   | "listening"
   /** Running the detector. */
-  | "analysing"
+  | "analyzing"
   /** The board is up and the players are guessing. */
   | "guessing"
   /** Someone got it; the notes are on screen. */
@@ -103,7 +103,7 @@ export function useRound(mode: IntervalMode): Round {
   );
 
   const onCaptured = useCallback((samples: Float32Array, sampleRate: number) => {
-    setPhase("analysing");
+    setPhase("analyzing");
 
     if (!analysis.current || analysis.current.sampleRate !== sampleRate) {
       analysis.current = {
@@ -114,7 +114,7 @@ export function useRound(mode: IntervalMode): Round {
     }
 
     const { plan, grid } = analysis.current;
-    const result = detect(samples, analyseSpectrum(plan, samples, sampleRate), grid);
+    const result = detect(samples, analyzeSpectrum(plan, samples, sampleRate), grid);
 
     if (result.kind === "none") {
       // Straight back to listening rather than stopping — the players shouldn't have
@@ -126,7 +126,7 @@ export function useRound(mode: IntervalMode): Round {
       return false;
     }
 
-    // Playable straight away, from the window that was analysed. The longer clip
+    // Playable straight away, from the window that was analyzed. The longer clip
     // replaces it a moment later, once the tail has been collected.
     setRecording({ samples, sampleRate });
 

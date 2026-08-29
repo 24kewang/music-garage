@@ -4,7 +4,7 @@
  */
 
 .game {
-  /* Break out of the app's centred column: the board wants the full width. */
+  /* Break out of the app's centered column: the board wants the full width. */
   margin: calc(var(--space-7) * -1) calc(50% - 50vw) calc(var(--space-8) * -1);
   min-height: 100dvh;
   padding: var(--space-8) var(--space-5);

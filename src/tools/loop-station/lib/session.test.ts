@@ -837,7 +837,7 @@ describe("buses", () => {
     expect(state.selectedBusId).toBe(previous.id);
   });
 
-  it("gives each bus its own colour slot", () => {
+  it("gives each bus its own color slot", () => {
     let s = createSession();
     for (let i = 0; i < config.mix.maxBuses - 1; i++) {
       s = reduce(s, { type: "addBus" }, 0).state;
@@ -846,7 +846,7 @@ describe("buses", () => {
     expect(s.buses.map((b) => b.name)).toEqual(["BUS 1", "BUS 2", "BUS 3"]);
   });
 
-  it("reuses the colour slot a deleted bus freed", () => {
+  it("reuses the color slot a deleted bus freed", () => {
     let s = createSession();
     s = reduce(s, { type: "addBus" }, 0).state;
     s = reduce(s, { type: "addBus" }, 0).state;

@@ -29,7 +29,7 @@ describe("trackPitch", () => {
     expect(trackPitch(new Float32Array(512), 48000, OPTIONS)).toEqual([]);
   });
 
-  it("spaces frames one hop apart, timed at the window centre", () => {
+  it("spaces frames one hop apart, timed at the window center", () => {
     const frames = trackPitch(melody([60], 48000, 0.3), 48000, OPTIONS);
     const hop = OPTIONS.hopMs / 1000;
 

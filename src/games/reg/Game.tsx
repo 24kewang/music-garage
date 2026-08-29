@@ -71,12 +71,12 @@ export default function Game() {
     }
     setExcluded(loadExcluded());
     setSettings(loadSettings());
-    let cancelled = false;
+    let canceled = false;
     void listImagePaths().then((found) => {
-      if (!cancelled) setPaths(found);
+      if (!canceled) setPaths(found);
     });
     return () => {
-      cancelled = true;
+      canceled = true;
     };
   }, []);
 

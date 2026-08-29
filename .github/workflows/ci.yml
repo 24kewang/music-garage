@@ -1,0 +1,77 @@
+# Checks only. Deployment is Cloudflare's own git integration (Workers Builds),
+# which watches this repo independently — see HOSTING.md. Nothing here deploys, and
+# nothing here holds Cloudflare credentials.
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+# A new push supersedes the run in flight for the same branch.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    name: Lint, types, tests, build
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .node-version
+          cache: npm
+
+      # `npm ci` rather than `npm install`, so the lockfile is what gets tested.
+      - run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Test
+        run: npm test
+
+      # Also the gate on the three-way registry contract: a game whose slug, folder
+      # and route have drifted apart fails here rather than 404ing in production.
+      - name: Build
+        run: npm run build
+
+      # The static export must carry _headers into out/, or the site ships with no
+      # security headers at all and nothing else would notice.
+      - name: Verify security headers shipped
+        run: |
+          test -f out/_headers || {
+            echo "::error::out/_headers is missing — the export dropped public/_headers"
+            exit 1
+          }
+          test -f out/404.html || {
+            echo "::error::out/404.html is missing — Workers has no page to serve for not_found_handling"
+            exit 1
+          }
+
+      - name: License audit
+        run: npm run licenses
+
+  audit:
+    name: npm audit
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .node-version
+          cache: npm
+      - run: npm ci
+      - run: npm audit --audit-level=high

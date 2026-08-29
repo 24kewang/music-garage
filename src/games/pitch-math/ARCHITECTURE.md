@@ -56,7 +56,7 @@ window later returns exactly the samples from the end of the previous one, so su
 reads are **contiguous, with no gap and no overlap**. `playbackWindows: 2` collects two
 and joins them into ~1.4 s.
 
-Only the **first** window is analysed, and it is handed over the moment it is ready — so
+Only the **first** window is analyzed, and it is handed over the moment it is ready — so
 the board appears with no added delay while the tail is collected behind it.
 
 `onCaptured` returns a boolean for this reason: `false` abandons the tail immediately.
@@ -107,7 +107,7 @@ note's evidence goes with it — **every 5th collapses into a unison**.
 `cancellationCeiling` caps how much of any bin the subtraction may remove. P4, P5 and the
 octave have dedicated tests because they are where this breaks.
 
-### Octave detection normalises timbre away
+### Octave detection normalizes timbre away
 
 A note and its octave cannot be separated by subtraction — the upper note owns no bin of
 its own. All it leaves is a signature: it reinforces the lower note's **even** harmonics
@@ -165,11 +165,11 @@ input level**, a caption says what went wrong, and there's a **Stop** button. Th
 is `aria-live="polite"`, never `role="alert"` — the loop can run repeatedly and an alert
 each pass would nag.
 
-### Status is never carried by colour alone
+### Status is never carried by color alone
 
 A wrong button is dimmed **and struck through** and marked `aria-disabled`; the winner is
-lit **and ticked**. Colour-only status is the most common accessibility failure in a UI
-like this and would leave a colour-blind player unable to see which answers they had
+lit **and ticked**. Color-only status is the most common accessibility failure in a UI
+like this and would leave a color-blind player unable to see which answers they had
 already burned. Eliminated buttons stay focusable rather than `disabled`, so a keyboard
 user can still read them.
 
@@ -178,7 +178,7 @@ user can still read them.
 - `@/shared/audio` — `useMicrophone` (unchanged), and the note-theory conversions.
 - `@/shared/components/Confetti` — promoted here from Musical Wavelength, now taking its
   tuning as a prop plus an optional element origin, since this game bursts at the winning
-  button rather than the screen centre.
+  button rather than the screen center.
 - `@/shared/hooks/useDismiss` — Escape/outside-click, previously written out in both
   popovers.
 
@@ -201,7 +201,7 @@ loop. This game needs one-shot two-pitch estimation over a fixed buffer.
 `synth.ts` is the instrument: additive harmonic tones with configurable brightness,
 detuning and amplitude, plus seeded noise so a failure is reproducible.
 
-**What the tests cannot prove** is behaviour on real instruments in a real room, or
+**What the tests cannot prove** is behavior on real instruments in a real room, or
 anything audible: that the stitched windows join without a seam, or that the edge fades
 actually kill the click. The maths is pinned; `onsetRmsThreshold`,
 `secondNoteSalienceRatio` and `octaveEvidenceThreshold` are the knobs to turn if

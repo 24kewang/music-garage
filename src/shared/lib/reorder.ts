@@ -28,13 +28,13 @@ export function moveItem<T>(items: readonly T[], from: number, to: number): T[] 
   return next;
 }
 
-const centre = (row: RowBox) => row.top + row.height / 2;
+const center = (row: RowBox) => row.top + row.height / 2;
 
 /**
- * Which slot the dragged row currently occupies, given where its centre has
+ * Which slot the dragged row currently occupies, given where its center has
  * been dragged to.
  *
- * Counting how many *other* rows sit above that centre gives the destination
+ * Counting how many *other* rows sit above that center gives the destination
  * index directly — it is the position the row would land in after being removed
  * and re-inserted, which is exactly what `moveItem` does. Counting rather than
  * accumulating means variable row heights need no special handling and the
@@ -47,13 +47,13 @@ const centre = (row: RowBox) => row.top + row.height / 2;
 export function targetIndex(
   rows: readonly RowBox[],
   fromIndex: number,
-  centreY: number,
+  centerY: number,
   maxIndex: number = rows.length - 1,
 ): number {
   let index = 0;
   for (let i = 0; i < rows.length; i++) {
     if (i === fromIndex) continue;
-    if (centre(rows[i]) < centreY) index++;
+    if (center(rows[i]) < centerY) index++;
   }
   return Math.min(Math.max(0, maxIndex), Math.max(0, index));
 }

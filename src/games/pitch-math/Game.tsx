@@ -61,7 +61,7 @@ export default function Game() {
     round.reset();
   };
 
-  /** Where the winning button was, so the confetti bursts there rather than centre. */
+  /** Where the winning button was, so the confetti bursts there rather than center. */
   const [burst, setBurst] = useState<{ key: number; x: number; y: number } | null>(null);
 
   const onGuess = (semitones: number, button: HTMLButtonElement) => {
@@ -84,7 +84,7 @@ export default function Game() {
   // press, but the burst belongs to the correct one.
   const burstKey = round.phase === "solved" && burst ? burst.key : null;
 
-  const listening = round.phase === "listening" || round.phase === "analysing";
+  const listening = round.phase === "listening" || round.phase === "analyzing";
 
   return (
     <div className={styles.game}>
@@ -115,7 +115,7 @@ export default function Game() {
              */}
             <p className={styles.status} aria-live="polite">
               {round.notice ??
-                (round.phase === "analysing"
+                (round.phase === "analyzing"
                   ? "Working out what you played…"
                   : "Listening — play when you're ready.")}
             </p>

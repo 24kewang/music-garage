@@ -134,6 +134,28 @@
   color: var(--color-accent-hover);
 }
 
+/*
+ * Pushed to the far end, and quieter than the main nav — these are the documents
+ * you go looking for, not somewhere you browse to.
+ */
+.legal {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.legalLink {
+  color: var(--color-text-faint);
+  font-size: var(--text-xs);
+  white-space: nowrap;
+  transition: color var(--dur-fast) var(--ease-out);
+}
+
+.legalLink:hover {
+  color: var(--color-text-muted);
+}
+
 @media (max-width: 560px) {
   .inner {
     padding: 0 var(--space-4);
@@ -142,6 +164,20 @@
 
   .brandText {
     display: none;
+  }
+
+  /*
+   * Something has to give at this width. The Home link goes rather than the legal
+   * links: the brand mark beside it already goes home, whereas the terms and
+   * privacy policy have no other route in from a game page, where the footer that
+   * would otherwise carry them is absent.
+   */
+  .link {
+    display: none;
+  }
+
+  .legal {
+    gap: var(--space-2);
   }
 }
 

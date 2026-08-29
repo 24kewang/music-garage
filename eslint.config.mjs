@@ -12,6 +12,9 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Wrangler's build scratch space. It writes a middleware facade in here that
+    // trips no-unused-vars, and none of it is ours to lint.
+    ".wrangler/**",
   ]),
 ]);
 

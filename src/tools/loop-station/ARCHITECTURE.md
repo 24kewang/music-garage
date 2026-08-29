@@ -162,7 +162,7 @@ manifest and the audio under one transaction so a save is never half-written.
 
 A snapshot is stored **resting** — stopped, unselected, nothing recording, in-progress
 tracks graduated — because none of that is meaningful after a reload. `parseSnapshot`
-returns `null` rather than throwing on anything it doesn't recognise, and merges over
+returns `null` rather than throwing on anything it doesn't recognize, and merges over
 `createSession()` so a field an older save omitted can't leave the reducer holding an
 undefined it never checks.
 
@@ -212,7 +212,7 @@ is recoverable — save again — but it is a hole.
 `shortcuts.ts` maps a key to a session event, purely, so every "not possible right now"
 rule is a unit test. Most of it falls out of the reducer already refusing impossible
 events; where a key has no meaningful target at all — a bus that doesn't exist, nothing
-left to delete — it returns `null` and the browser's own behaviour is left alone.
+left to delete — it returns `null` and the browser's own behavior is left alone.
 
 The delete rule is the one with real logic: the selected track if there is one,
 otherwise the bottom-most **unlocked** track, and its overwrite before the track itself.
@@ -232,7 +232,7 @@ reads `selectedTrackId` instead, declines when nothing is selected, and respects
 in-progress floor exactly as dragging does. Alt is therefore the one modifier
 `useShortcuts` lets through, and only for that pair. Escape defers to any open
 `[role="dialog"]` so closing the settings panel doesn't also drop the selection, and the
-form-field check leaves every slider's native arrow behaviour intact.
+form-field check leaves every slider's native arrow behavior intact.
 
 Reorders from the keyboard route through `LoopStation`'s `moveTrack` rather than straight
 to the reducer, so a keyboard move is announced to screen readers the same way a dragged
@@ -279,7 +279,7 @@ The master meter taps **post**-limiter, so it reads what actually leaves the sta
 a meter pinned at the top is the signal that the fader is being driven past what the
 output can carry.
 
-### Meters are peak-on-a-dB-scale; waveforms are normalised
+### Meters are peak-on-a-dB-scale; waveforms are normalized
 
 Both started out linear and both were wrong for the same reason: signal amplitude is
 small compared to full scale. The meters read *peak* (not RMS — RMS sits far below what
@@ -287,7 +287,7 @@ the ear calls loud) and map it through `meterFraction`, amplitude → dBFS → a
 `config.ui.meterFloorDb`, so ordinary playing lands two-thirds up rather than a fifth.
 The rAF loop smooths with a fast attack and slow release so transients register.
 
-Waveform envelopes are normalised to their own loudest bar. That is not cosmetic:
+Waveform envelopes are normalized to their own loudest bar. That is not cosmetic:
 a baked buffer routinely exceeds 1.0 where a crossfade sums correlated audio, and the
 raw value drives a percentage height, so one spike used to push bars out through the top
 of the row. The divisor is clamped to `config.ui.waveFloor` so a near-silent take stays
@@ -305,15 +305,15 @@ button is held so dragging a fader past the row's edge doesn't collapse it mid-d
 
 ### Bus hues label, they don't accent
 
-`DESIGN.md` §10 forbids a second accent hue, and the station needs three colours to make
+`DESIGN.md` §10 forbids a second accent hue, and the station needs three colors to make
 bus membership scannable. The compromise: `--color-bus-1/2/3` reach only the bus card's
 name plus its edge chip and a track's bus badge/select. Row borders, outlines, selection
-and waveforms all stay on the single indigo accent. Components never touch a colour
+and waveforms all stay on the single indigo accent. Components never touch a color
 value — `busColorStyle()` sets a `--bus-color` custom property and the CSS modules read
 it, so the palette lives entirely in `tokens.css`. A bus's `colorIndex` is the smallest
 unused slot, the same "smallest free" rule that names tracks, so deleting the middle bus
-and adding another reuses the freed colour instead of walking off the end of a
-three-colour palette.
+and adding another reuses the freed color instead of walking off the end of a
+three-color palette.
 
 ### Track order is presentation, and in-progress tracks are a floor
 
@@ -353,7 +353,7 @@ until then a touch swipe still scrolls the list; touch additionally requires a
 long-press to arm, which is what keeps scrolling and reordering from fighting over the
 same gesture.
 
-**The React compiler analyses custom hooks inter-procedurally.** Reading a property off
+**The React compiler analyzes custom hooks inter-procedurally.** Reading a property off
 the whole object `useTrackDrag` returns, inside the render loop, counts as touching the
 refs inside it — so the caller destructures the return value, and `offsets` is a
 precomputed array rather than a function the list calls during render. Both shapes are
@@ -399,10 +399,10 @@ on the beat plays on the beat.
 | `lib/shortcuts.test.ts` | every key mapping, multiplier and bus wrap-around at both ends, arrow track-stepping (clamped, locked tracks skipped, the selectTrack-toggle trap), and the delete rule — selection, bottom-most, stale selections ignored |
 | `lib/snapshot.test.ts` | snapshot lands resting, JSON round-trip, junk/version/shape rejection, missing fields filled, and what `loopSignature` does and does not react to |
 | `dsp/resample.test.ts` | duration held across a rate change, endpoints kept, ramp shape preserved |
-| `lib/session.test.ts` | every recording rule in the spec: count-in bar-line snap and cancels, free mode incl. derived-tempo limits, replacement, graduation (incl. on stop), multiplier discards, overwrite lifecycle, locking, delete-all, take-name reuse, bus colour slots, track/bus caps, reordering and its in-progress floor, new-recording defaults, auto-detect (backoff clamp, surviving a loop boundary, cancels, toggle lock), idle-tick bailout |
+| `lib/session.test.ts` | every recording rule in the spec: count-in bar-line snap and cancels, free mode incl. derived-tempo limits, replacement, graduation (incl. on stop), multiplier discards, overwrite lifecycle, locking, delete-all, take-name reuse, bus color slots, track/bus caps, reordering and its in-progress floor, new-recording defaults, auto-detect (backoff clamp, surviving a loop boundary, cancels, toggle lock), idle-tick bailout |
 | `dsp/tile.test.ts` | tiling positions, seam and wrap crossfades, delay windows, silence past padding, punch-in replace semantics |
-| `dsp/level.test.ts` | normalised envelopes never exceed 1, quiet takes lift, near-silence stays flat; the meter's dB curve is monotonic and clears the floor |
-| `dsp/calibration.test.ts` | offset wrapping, RTL recovery under noise + outliers, onset edge/refractory behaviour |
+| `dsp/level.test.ts` | normalized envelopes never exceed 1, quiet takes lift, near-silence stays flat; the meter's dB curve is monotonic and clears the floor |
+| `dsp/calibration.test.ts` | offset wrapping, RTL recovery under noise + outliers, onset edge/refractory behavior |
 
 Tests derive expectations from `config.ts` rather than hardcoding values.
 
@@ -433,7 +433,7 @@ twenty tracks, and whether excluding *all* text still leaves a comfortable grab 
 a collapsed row (the waveform and padding are the target — if it feels cramped, drop
 `data-no-drag` from the inert badges). Only the geometry underneath it is pinned.
 
-`:focus-visible` behaviour on a *clicked* `<input type="range">` is the one place the
-row-collapse fix rests on browser judgement rather than a test. Every engine checked
+`:focus-visible` behavior on a *clicked* `<input type="range">` is the one place the
+row-collapse fix rests on browser judgment rather than a test. Every engine checked
 treats a mouse click on a range as not-focus-visible, and the `onPointerLeave` blur
 covers it if one ever disagrees.

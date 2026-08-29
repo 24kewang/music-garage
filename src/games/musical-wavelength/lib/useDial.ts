@@ -36,14 +36,14 @@ export interface DialControls extends DialState {
   onPointerMove: (event: React.PointerEvent) => void;
   onPointerUp: (event: React.PointerEvent) => void;
   onCoverPointerDown: (event: React.PointerEvent) => void;
-  /** The centre button: START, or the lock toggle, depending on phase and mode. */
+  /** The center button: START, or the lock toggle, depending on phase and mode. */
   onButton: () => void;
 }
 
 const { motion, geometry } = config;
 
 /**
- * The dial's behaviour. The caller owns the `<svg>` ref and passes it in, so the
+ * The dial's behavior. The caller owns the `<svg>` ref and passes it in, so the
  * returned controls stay a plain data object that can be handed to components.
  */
 export function useDial(

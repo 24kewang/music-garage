@@ -65,7 +65,7 @@ export function planSpectrum(size: number): SpectrumPlan {
  * to the most recent `size` samples, since the end of the capture is the part most
  * likely to be steady rather than mid-attack.
  */
-export function analyseSpectrum(
+export function analyzeSpectrum(
   plan: SpectrumPlan,
   samples: ArrayLike<number>,
   sampleRate: number,
@@ -88,7 +88,7 @@ export function analyseSpectrum(
 }
 
 /**
- * Largest magnitude within `tolerance` bins either side of `centre`.
+ * Largest magnitude within `tolerance` bins either side of `center`.
  *
  * The detector asks about a harmonic's predicted position, not an exact bin: a note
  * played slightly sharp or flat puts its harmonics a little off where equal
@@ -96,11 +96,11 @@ export function analyseSpectrum(
  */
 export function peakNear(
   magnitude: Float64Array,
-  centre: number,
+  center: number,
   tolerance: number,
 ): number {
-  const from = Math.max(0, Math.round(centre - tolerance));
-  const to = Math.min(magnitude.length - 1, Math.round(centre + tolerance));
+  const from = Math.max(0, Math.round(center - tolerance));
+  const to = Math.min(magnitude.length - 1, Math.round(center + tolerance));
 
   let peak = 0;
   for (let bin = from; bin <= to; bin++) {
@@ -113,21 +113,21 @@ export function peakNear(
  * Refine a peak's position using its neighbours.
  *
  * A parabola through the three bins around a maximum lands closer to the true
- * frequency than the bin centre does — useful for reporting the note actually played
+ * frequency than the bin center does — useful for reporting the note actually played
  * rather than the nearest bin.
  */
 export function interpolatePeak(magnitude: Float64Array, bin: number): number {
   if (bin <= 0 || bin >= magnitude.length - 1) return bin;
 
   const left = magnitude[bin - 1];
-  const centre = magnitude[bin];
+  const center = magnitude[bin];
   const right = magnitude[bin + 1];
 
-  const denominator = left - 2 * centre + right;
+  const denominator = left - 2 * center + right;
   if (denominator === 0) return bin;
 
   const offset = (0.5 * (left - right)) / denominator;
   // A parabola fitted to a genuine peak cannot place it outside the neighbouring bins;
-  // if it does, the three points weren't a peak and the bin centre is the better answer.
+  // if it does, the three points weren't a peak and the bin center is the better answer.
   return Math.abs(offset) > 1 ? bin : bin + offset;
 }

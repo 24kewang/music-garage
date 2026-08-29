@@ -6,7 +6,7 @@
  * space is the wrong choice and it is worth saying why before someone "simplifies"
  * it: one wrong note corrupts the two intervals either side of it, and one inserted
  * note corrupts two more, so every error gets counted twice and the indels stop
- * meaning anything a player would recognise.
+ * meaning anything a player would recognize.
  */
 
 import { align, type Alignment, type AlignCosts } from "./align";

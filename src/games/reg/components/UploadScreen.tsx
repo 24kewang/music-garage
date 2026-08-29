@@ -64,7 +64,7 @@ export default function UploadScreen({
       <div className={styles.stage}>
         <h1 className={styles.title}>Random Excerpt Generator</h1>
         <p className={styles.tagline}>
-          Load your excerpt library — images of the passages you practise. They stay
+          Load your excerpt library — images of the passages you practice. They stay
           in this browser; nothing is uploaded anywhere.
         </p>
 

@@ -1,0 +1,31 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "music-garage",
+  "compatibility_date": "2026-08-28",
+
+  /*
+   * Static assets only, for now. `next build` writes ./out and the Worker serves it
+   * straight from the edge — there is no Worker script, so every request is a cache
+   * hit rather than an invocation.
+   *
+   * Adding multiplayer later is additive, not a migration:
+   *
+   *   "main": "worker/index.ts",
+   *   "assets": { ..., "binding": "ASSETS", "run_worker_first": ["/api/*"] },
+   *   "durable_objects": { "bindings": [{ "name": "ROOM", "class_name": "Room" }] },
+   *   "migrations": [{ "tag": "v1", "new_sqlite_classes": ["Room"] }]
+   *
+   * The assets keep serving exactly as they do now; the Worker only sees /api/*.
+   * Note that `public/_headers` does NOT apply to Worker-generated responses — set
+   * those headers in the Worker itself.
+   */
+  "assets": {
+    "directory": "./out",
+    // Serve out/404.html (built from src/app/not-found.tsx) with a real 404 status.
+    "not_found_handling": "404-page",
+    // Matches Next's default trailingSlash:false output shape.
+    "html_handling": "auto-trailing-slash"
+  },
+
+  "observability": { "enabled": true }
+}

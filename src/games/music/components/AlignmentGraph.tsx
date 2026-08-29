@@ -9,7 +9,7 @@ import styles from "./AlignmentGraph.module.css";
  * The attempt drawn over the melody it was trying to be.
  *
  * SVG rather than canvas: a few dozen cells, static, and the strokes want
- * `var(--color-…)` directly. A canvas would force colour literals into JavaScript,
+ * `var(--color-…)` directly. A canvas would force color literals into JavaScript,
  * which the styling rules rule out outright.
  *
  * No axes, no gridlines, no pitch labels — only the two shapes, which is what the
@@ -42,7 +42,7 @@ export default function AlignmentGraph({
 
     cells.forEach((cell, index) => {
       // Only join cells that are actually adjacent. A gap left by a missed or extra
-      // note must stay a gap — it is doing as much work as the colours are.
+      // note must stay a gap — it is doing as much work as the colors are.
       if (cell && previous && index === previousIndex + 1 && previous.y !== cell.y) {
         out.push({ x: cell.x0, y0: previous.y, y1: cell.y, index });
       }
@@ -87,7 +87,7 @@ export default function AlignmentGraph({
         )}
       </g>
 
-      {/* The attempt, over the top, coloured cell by cell from the alignment. */}
+      {/* The attempt, over the top, colored cell by cell from the alignment. */}
       <g className={styles.attempt}>
         {risers(geometry.attempt).map((riser) => (
           <line
@@ -104,7 +104,7 @@ export default function AlignmentGraph({
               <line x1={cell.x0} y1={cell.y} x2={cell.x1} y2={cell.y} />
               {/*
                * A mark on every cell that is not a match, so the difference between
-               * right and wrong survives being read without colour.
+               * right and wrong survives being read without color.
                */}
               {geometry.ops[index] !== "match" && (
                 <circle cx={(cell.x0 + cell.x1) / 2} cy={cell.y} r={4} />

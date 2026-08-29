@@ -241,13 +241,13 @@ export function useLoopStation() {
   // Engine boot: the mic prompt happens on page load, by design.
 
   useEffect(() => {
-    let cancelled = false;
+    let canceled = false;
     let engine: LoopEngine | null = null;
 
     (async () => {
       try {
         engine = await LoopEngine.create();
-        if (cancelled) {
+        if (canceled) {
           engine.dispose();
           return;
         }
@@ -261,14 +261,14 @@ export function useLoopStation() {
         });
         setStatus(engine.context.state === "suspended" ? "gate" : "ready");
       } catch (error) {
-        if (cancelled) return;
+        if (canceled) return;
         setErrorMessage(micErrorMessage(error));
         setStatus("error");
       }
     })();
 
     return () => {
-      cancelled = true;
+      canceled = true;
       engineRef.current = null;
       engine?.dispose();
     };
@@ -477,10 +477,10 @@ export function useLoopStation() {
     if (status !== "ready" || !engine || restored.current) return;
     restored.current = true;
 
-    let cancelled = false;
+    let canceled = false;
     (async () => {
       const stored = await loadLoop();
-      if (cancelled || !stored) return;
+      if (canceled || !stored) return;
       setHasSave(true);
       if (stored.snapshot.state.tracks.length === 0) return;
       const rate = engine.context.sampleRate;
@@ -496,7 +496,7 @@ export function useLoopStation() {
     })();
 
     return () => {
-      cancelled = true;
+      canceled = true;
     };
   }, [status, dispatch, bakeAndSwap]);
 

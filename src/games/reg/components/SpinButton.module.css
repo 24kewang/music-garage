@@ -1,8 +1,8 @@
 /*
- * Fixed bottom-centre, above the camera feed (z 0) and below the settings gear (z 45).
+ * Fixed bottom-center, above the camera feed (z 0) and below the settings gear (z 45).
  *
  * The shake keyframes are written against `translateX(-50%)` because that is what
- * centres the button — the centring and the animation have to stay together or the
+ * centers the button — the centering and the animation have to stay together or the
  * shake flings it sideways.
  */
 

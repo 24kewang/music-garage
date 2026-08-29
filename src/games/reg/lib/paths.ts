@@ -6,7 +6,7 @@
  * drag-and-drop walk (`FileSystemEntry.fullPath`).
  */
 
-/** Normalise a raw path: backslashes to slashes, no leading "./" or "/", no empty segments. */
+/** Normalize a raw path: backslashes to slashes, no leading "./" or "/", no empty segments. */
 export function normalizePath(raw: string): string {
   return raw
     .replace(/\\/g, "/")
@@ -15,7 +15,7 @@ export function normalizePath(raw: string): string {
     .join("/");
 }
 
-/** Split a normalised path into its segments. */
+/** Split a normalized path into its segments. */
 export function splitSegments(path: string): string[] {
   return normalizePath(path)
     .split("/")

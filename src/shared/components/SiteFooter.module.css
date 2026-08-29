@@ -1,0 +1,50 @@
+/*
+ * Deliberately quiet: this sits under the catalog, and the page's own content
+ * should be what carries weight. A hairline rule and faint text, nothing else.
+ */
+.footer {
+  border-top: 1px solid var(--color-border);
+}
+
+.inner {
+  max-width: var(--page-max-width);
+  margin: 0 auto;
+  padding: var(--space-5);
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--space-3) var(--space-5);
+}
+
+.copyright {
+  color: var(--color-text-faint);
+  font-size: var(--text-sm);
+}
+
+.links {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.link {
+  color: var(--color-text-faint);
+  font-size: var(--text-sm);
+  transition: color var(--dur-fast) var(--ease-out);
+}
+
+.link:hover {
+  color: var(--color-text);
+}
+
+@media (max-width: 560px) {
+  .inner {
+    padding: var(--space-5) var(--space-4);
+    /* Stacked rather than squeezed — three links plus a copyright line do not fit
+       one row on a phone without wrapping mid-link. */
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}

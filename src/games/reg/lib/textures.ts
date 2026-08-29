@@ -23,14 +23,14 @@ export async function loadTexture(blob: Blob): Promise<LoadedTexture> {
     // three sets UNPACK_FLIP_Y_WEBGL from `texture.flipY`, but WebGL *ignores* that
     // flag for ImageBitmap sources — orientation is baked in at decode time. Without
     // this the excerpt arrives with its top row at v=0 and renders upside-down, while
-    // the canvas-drawn text planes (which do honour flipY) look fine.
+    // the canvas-drawn text planes (which do honor flipY) look fine.
     createImageBitmap(blob, {
       imageOrientation: "flipY",
       colorSpaceConversion: "none",
     }),
   ]);
   const texture = new CanvasTexture(bitmap);
-  // Already flipped above; false keeps it correct if a browser ever honours the flag.
+  // Already flipped above; false keeps it correct if a browser ever honors the flag.
   texture.flipY = false;
   texture.colorSpace = SRGBColorSpace;
   return {

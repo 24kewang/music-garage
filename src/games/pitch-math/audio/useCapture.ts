@@ -14,7 +14,7 @@ import { rms } from "../dsp/spectrum";
  *
  * The same property is what makes the replay clip possible: a read one window later is
  * exactly contiguous with the previous one, so successive reads concatenate seamlessly.
- * Only the first window is analysed; the rest are collected purely so the players have
+ * Only the first window is analyzed; the rest are collected purely so the players have
  * something long enough to listen back to.
  */
 
@@ -23,7 +23,7 @@ export type CaptureStatus =
   | "idle"
   /** Listening for someone to start playing. */
   | "waiting"
-  /** Onset heard; the window being analysed is filling. */
+  /** Onset heard; the window being analyzed is filling. */
   | "capturing"
   /** Analysis has already started; extra windows are being collected for the replay. */
   | "extending";
@@ -42,7 +42,7 @@ export interface UseCaptureOptions {
   analyser: AnalyserNode | null;
   sampleRate: number | null;
   /**
-   * Called with the window to analyse, as soon as it is full.
+   * Called with the window to analyze, as soon as it is full.
    *
    * Return `true` to keep collecting the remaining replay windows, `false` to stop
    * immediately — which is how a capture that turned out to be unusable avoids holding

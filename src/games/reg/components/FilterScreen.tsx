@@ -93,7 +93,7 @@ export default function FilterScreen({
     const container = containerRef.current;
     if (!container) return;
 
-    let cancelled = false;
+    let canceled = false;
     const pool = new TexturePool();
     poolRef.current = pool;
 
@@ -102,24 +102,24 @@ export default function FilterScreen({
         sceneRef.current = scene;
         try {
           await scene.start();
-          if (cancelled) {
+          if (canceled) {
             scene.stop(); // Unmounted while the permission prompt was up.
           } else {
             setCameraState("ready");
           }
         } catch (error) {
-          if (!cancelled) {
+          if (!canceled) {
             setCameraState(isPermissionDenied(error) ? "denied" : "failed");
           }
         }
       },
       () => {
-        if (!cancelled) setCameraState("failed");
+        if (!canceled) setCameraState("failed");
       },
     );
 
     return () => {
-      cancelled = true;
+      canceled = true;
       // Without this a queued swap would call setImage on a disposed scene.
       cancel();
       sceneRef.current?.stop();

@@ -25,7 +25,7 @@ lib/             Pure logic — no React, no DOM (except one bounding rect). Uni
   modes.ts       Audio -> needle angle, and the matching tick scale
   settings.ts    Validation, coercion, persistence
   useDial.ts     The only stateful piece: phases, drags, cover animation
-components/      SVG parts. Presentational; all behaviour arrives as props.
+components/      SVG parts. Presentational; all behavior arrives as props.
 Game.tsx         Wires mic -> mode -> needle, and owns the settings.
 ```
 
@@ -102,7 +102,7 @@ groups and reports which one was hit, since the reveal glow needs to know where 
 
 `coverValueRef` is authoritative and `setCover()` writes both it and the state.
 
-This is not premature optimisation. Scheduling `requestAnimationFrame` from inside a
+This is not premature optimization. Scheduling `requestAnimationFrame` from inside a
 state updater would run **twice** under StrictMode's double-invoked updaters, producing
 two competing loops and a cover that eases at double speed. The drag and the animation
 loop also both need to read the current angle synchronously.
@@ -124,7 +124,7 @@ than discarding the whole object. Stored settings that have drifted shouldn't co
 player the fields that are still fine. Defaults are always playable, so exiting the
 popup any way at all leaves a working game.
 
-`MIN_SPAN_CENTS` is 10 because the scale is labelled every `ticks.labelStepCents` (10)
+`MIN_SPAN_CENTS` is 10 because the scale is labeled every `ticks.labelStepCents` (10)
 cents — a narrower span would draw a scale with no labels on it. **These two are
 coupled; change one and check the other.**
 

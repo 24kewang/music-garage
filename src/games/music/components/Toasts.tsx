@@ -7,7 +7,7 @@ import styles from "./Toasts.module.css";
 /**
  * The notice stack.
  *
- * Bottom centre, not top: the top fifty pixels of every page belong to the header's
+ * Bottom center, not top: the top fifty pixels of every page belong to the header's
  * hover zone, and a toast landing there would pull the header open every time
  * somebody reached for it.
  *

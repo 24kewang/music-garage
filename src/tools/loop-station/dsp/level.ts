@@ -2,9 +2,9 @@ import { config } from "../config";
 
 /**
  * Peak envelope of a buffer for the waveform rows: `bars` buckets of
- * max |sample|, **normalised so the loudest bar is exactly 1**.
+ * max |sample|, **normalized so the loudest bar is exactly 1**.
  *
- * Normalising is not cosmetic. Baked buffers routinely exceed 1.0 where a
+ * Normalizing is not cosmetic. Baked buffers routinely exceed 1.0 where a
  * crossfade sums correlated audio, and the raw value drives a percentage
  * height — so a single spike would push bars out through the top of the row.
  * Dividing by the observed maximum also means a quiet take is still legible.

@@ -13,7 +13,7 @@ import type { AlignStep, Op } from "../score/align";
  * then occupies real width instead of being wedged into a boundary. The consequence
  * is the good bit: a missed note leaves a *gap* in the attempt's line and an extra
  * one leaves a gap in the target's, so both kinds of error are legible with the
- * colours ignored entirely.
+ * colors ignored entirely.
  *
  * **The y range comes from the target alone**, with the attempt clamped into it.
  * Fitting the range to both would let one note sung two octaves out squash the real
@@ -34,7 +34,7 @@ export interface GraphGeometry {
   target: (Cell | null)[];
   /** One entry per alignment step; `null` where the attempt missed one. */
   attempt: (Cell | null)[];
-  /** Parallel to both, so the renderer can colour each cell. */
+  /** Parallel to both, so the renderer can color each cell. */
   ops: Op[];
 }
 

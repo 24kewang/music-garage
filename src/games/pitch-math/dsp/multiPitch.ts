@@ -143,7 +143,7 @@ export function cancel(
  * while a quiet octave sits at 0.66 — overlapping ranges, so no threshold on that
  * ratio can separate them.
  *
- * So the timbre is normalised away first. A harmonic series decays smoothly, roughly
+ * So the timbre is normalized away first. A harmonic series decays smoothly, roughly
  * as `1/h^r`; fitting that curve to the **odd** harmonics alone gives a prediction for
  * the even ones that is free of any octave contribution, because an octave above
  * touches no odd harmonic. Dividing the observed even harmonics by that prediction

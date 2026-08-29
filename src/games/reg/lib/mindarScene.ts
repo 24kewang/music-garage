@@ -361,7 +361,7 @@ function wrapText(
   return lines;
 }
 
-/** Render wrapped text to a canvas: rounded backdrop, centred lines. */
+/** Render wrapped text to a canvas: rounded backdrop, centered lines. */
 function drawTextCanvas(text: string, style: TextStyle): HTMLCanvasElement {
   const canvas = document.createElement("canvas");
   const ctx = canvas.getContext("2d")!;

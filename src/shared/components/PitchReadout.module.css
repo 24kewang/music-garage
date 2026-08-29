@@ -40,7 +40,7 @@
   font-size: var(--text-sm);
 }
 
-/* Cents meter: a centre line with a needle that slides ±50 cents. */
+/* Cents meter: a center line with a needle that slides ±50 cents. */
 
 .meter {
   display: flex;
@@ -65,7 +65,7 @@
   overflow: hidden;
 }
 
-.meterCentre {
+.meterCenter {
   position: absolute;
   left: 50%;
   top: 0;

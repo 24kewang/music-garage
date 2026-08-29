@@ -3,7 +3,7 @@
 import { formatNote, type LivePitch } from "@/shared/audio";
 import styles from "./PitchReadout.module.css";
 
-/** Cents within this of centre are treated as in tune. */
+/** Cents within this of center are treated as in tune. */
 const IN_TUNE_CENTS = 10;
 
 /**
@@ -43,7 +43,7 @@ export default function PitchReadout({ pitch }: { pitch: LivePitch }) {
           aria-valuenow={note ? Math.round(note.cents) : 0}
         >
           <div className={styles.meterTolerance} />
-          <div className={styles.meterCentre} />
+          <div className={styles.meterCenter} />
           {note && (
             <div
               className={`${styles.needle} ${inTune ? "" : styles.needleOff}`}

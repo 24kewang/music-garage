@@ -233,7 +233,7 @@ export const config = {
     /** Waveform bars rendered per track row. */
     waveBars: 300,
     /**
-     * Waveform envelopes are normalised to their own loudest bar. This is the
+     * Waveform envelopes are normalized to their own loudest bar. This is the
      * floor that divisor is clamped to, so a near-silent take stays visually
      * flat instead of being amplified into noise.
      */

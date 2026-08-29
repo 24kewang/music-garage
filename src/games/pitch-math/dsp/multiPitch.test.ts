@@ -12,7 +12,7 @@ import {
   type Detection,
 } from "./multiPitch";
 import { buildNoteGrid } from "./noteGrid";
-import { analyseSpectrum, planSpectrum } from "./spectrum";
+import { analyzeSpectrum, planSpectrum } from "./spectrum";
 import { mix, noise, tone } from "./synth";
 
 /**
@@ -50,7 +50,7 @@ function hear(
   );
 
   const samples = extra ? mix(...parts, extra) : mix(...parts);
-  return detect(samples, analyseSpectrum(plan, samples, SAMPLE_RATE), grid);
+  return detect(samples, analyzeSpectrum(plan, samples, SAMPLE_RATE), grid);
 }
 
 /** The interval the detector would hand to the guessing board. */
@@ -62,7 +62,7 @@ function heardInterval(detection: Detection): number | null {
 describe("salience", () => {
   it("peaks at the note that was played", () => {
     const samples = tone(midi("A4"), SAMPLE_RATE, SIZE);
-    const { magnitude } = analyseSpectrum(plan, samples, SAMPLE_RATE);
+    const { magnitude } = analyzeSpectrum(plan, samples, SAMPLE_RATE);
 
     const scores = grid.candidates.map((candidate) => salience(magnitude, candidate));
     const best = grid.candidates[scores.indexOf(Math.max(...scores))];
@@ -74,7 +74,7 @@ describe("salience", () => {
     // The classic failure: A5's harmonics are a subset of A4's, so a detector that
     // just sums harmonics can pick the octave up. The 1/h weighting is what stops it.
     const samples = tone(midi("A4"), SAMPLE_RATE, SIZE);
-    const { magnitude } = analyseSpectrum(plan, samples, SAMPLE_RATE);
+    const { magnitude } = analyzeSpectrum(plan, samples, SAMPLE_RATE);
 
     const scoreFor = (note: string) => {
       const candidate = grid.candidates.find((c) => c.midi === midi(note))!;
@@ -86,9 +86,9 @@ describe("salience", () => {
 });
 
 describe("cancel", () => {
-  it("reduces the cancelled note's own score", () => {
+  it("reduces the canceled note's own score", () => {
     const samples = tone(midi("C4"), SAMPLE_RATE, SIZE);
-    const { magnitude } = analyseSpectrum(plan, samples, SAMPLE_RATE);
+    const { magnitude } = analyzeSpectrum(plan, samples, SAMPLE_RATE);
     const candidate = grid.candidates.find((c) => c.midi === midi("C4"))!;
 
     const before = salience(magnitude, candidate);
@@ -99,12 +99,12 @@ describe("cancel", () => {
 
   it("leaves a shared harmonic partly standing", () => {
     // The perfect-5th case in miniature: C4's 3rd harmonic sits on G4's 2nd. If
-    // cancelling C4 flattened that bin, G4 would vanish with it.
+    // canceling C4 flattened that bin, G4 would vanish with it.
     const samples = mix(
       tone(midi("C4"), SAMPLE_RATE, SIZE),
       tone(midi("G4"), SAMPLE_RATE, SIZE),
     );
-    const { magnitude } = analyseSpectrum(plan, samples, SAMPLE_RATE);
+    const { magnitude } = analyzeSpectrum(plan, samples, SAMPLE_RATE);
 
     const c4 = grid.candidates.find((c) => c.midi === midi("C4"))!;
     const g4 = grid.candidates.find((c) => c.midi === midi("G4"))!;
@@ -244,14 +244,14 @@ describe("detect — real-world tolerance", () => {
 describe("detect — nothing to hear", () => {
   it("reports silence", () => {
     const samples = new Float64Array(SIZE);
-    const detection = detect(samples, analyseSpectrum(plan, samples, SAMPLE_RATE), grid);
+    const detection = detect(samples, analyzeSpectrum(plan, samples, SAMPLE_RATE), grid);
 
     expect(detection).toEqual({ kind: "none", reason: "silence" });
   });
 
   it("reports silence for a signal below the capture floor", () => {
     const samples = tone(midi("A4"), SAMPLE_RATE, SIZE, { amplitude: 0.0005 });
-    const detection = detect(samples, analyseSpectrum(plan, samples, SAMPLE_RATE), grid);
+    const detection = detect(samples, analyzeSpectrum(plan, samples, SAMPLE_RATE), grid);
 
     expect(detection.kind).toBe("none");
   });
@@ -266,7 +266,7 @@ describe("detect — nothing to hear", () => {
 describe("octaveEvidence", () => {
   const evidenceFor = (samples: Float64Array, note: string) =>
     octaveEvidence(
-      analyseSpectrum(plan, samples, SAMPLE_RATE).magnitude,
+      analyzeSpectrum(plan, samples, SAMPLE_RATE).magnitude,
       grid.candidates.find((c) => c.midi === midi(note))!,
     );
 
@@ -275,7 +275,7 @@ describe("octaveEvidence", () => {
   const NOTES = ["C3", "A3", "C4", "E4", "A4", "C5"];
 
   it("sits near 1 for a lone note, whatever its timbre", () => {
-    // The whole point of normalising against the note's own harmonic decay: a raw
+    // The whole point of normalizing against the note's own harmonic decay: a raw
     // even-to-odd ratio swings from 0.19 to 0.74 across these same timbres, which is
     // why no threshold on it could separate one note from two.
     for (const note of NOTES) {

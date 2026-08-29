@@ -5,7 +5,7 @@ import { splitSegments } from "./paths";
  *
  * Only *file* paths are ever stored or persisted — a folder's checkbox is derived
  * from its descendants every render, so folder state can never drift out of sync
- * with the files it summarises.
+ * with the files it summarizes.
  */
 
 export interface TreeNode {

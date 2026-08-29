@@ -6,7 +6,7 @@
  * game is over, so "everyone but one was knocked out halfway through a round" is not
  * a special case anybody has to remember to write.
  *
- * The organising idea: **elimination is derived, never stored.** A player is a
+ * The organizing idea: **elimination is derived, never stored.** A player is a
  * contender when they are active and hold fewer letters than the word is long. That
  * one rule is what makes the awkward settings edits fall out for free — shorten the
  * word and people drop out, lengthen it and they come back, because the letters are

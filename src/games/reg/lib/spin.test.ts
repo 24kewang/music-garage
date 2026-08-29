@@ -65,7 +65,7 @@ describe("buildSpinPlan", () => {
     expect(total).toBeLessThan(TUNING.durationMs + 2 * TUNING.endIntervalMs);
   });
 
-  it("honours minSteps even when the duration is tiny", () => {
+  it("honors minSteps even when the duration is tiny", () => {
     const plan = buildSpinPlan(
       5,
       0,

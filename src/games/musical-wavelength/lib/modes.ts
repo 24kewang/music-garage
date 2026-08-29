@@ -3,7 +3,7 @@
  * scale drawn on the cover.
  *
  * The needle mapping and the tick positions come from the same functions, so a tick
- * labelled A4 is exactly where the needle sits when A4 is sung.
+ * labeled A4 is exactly where the needle sits when A4 is sung.
  */
 
 import { formatMidi, frequencyToMidi } from "@/shared/audio";
@@ -13,7 +13,7 @@ import { clamp } from "./geometry";
 /**
  * Half-span of the audio scale.
  *
- * One constant for both the needle mapping and the tick positions, so a tick labelled
+ * One constant for both the needle mapping and the tick positions, so a tick labeled
  * A4 sits exactly where singing A4 puts the needle. It stops short of the needle's own
  * `needleMaxDeg` limit to keep the outermost labels clear of the window edge.
  */
@@ -23,7 +23,7 @@ export interface Tick {
   /** Dial angle, in degrees. */
   deg: number;
   major: boolean;
-  /** Present on labelled ticks only. */
+  /** Present on labeled ticks only. */
   label?: string;
 }
 
@@ -74,7 +74,7 @@ export function labelStrideFor(semitones: number): number {
   return Math.max(labelEverySemitones, thinning);
 }
 
-/** Semitone ticks across the pitch range, subdivided and labelled with note names. */
+/** Semitone ticks across the pitch range, subdivided and labeled with note names. */
 export function pitchTicks(lowMidi: number, highMidi: number): Tick[] {
   const ticks: Tick[] = [];
   const semitones = highMidi - lowMidi;
@@ -113,7 +113,7 @@ export function pitchTicks(lowMidi: number, highMidi: number): Tick[] {
   return ticks;
 }
 
-/** Cent ticks across ±span, labelled every `labelStepCents` with 0 at the centre. */
+/** Cent ticks across ±span, labeled every `labelStepCents` with 0 at the center. */
 export function intonationTicks(spanCents: number): Tick[] {
   const ticks: Tick[] = [];
   if (spanCents <= 0) return ticks;
@@ -124,7 +124,7 @@ export function intonationTicks(spanCents: number): Tick[] {
   const minorSpacingDeg = degPerStep / (minorTicksPerLabel + 1);
   const drawMinors = minorTicksPerLabel > 0 && minorSpacingDeg >= minMinorSpacingDeg;
 
-  // Walk outward from centre so 0 is always present and the scale stays symmetric
+  // Walk outward from center so 0 is always present and the scale stays symmetric
   // even when the span isn't a whole number of steps.
   for (let cents = 0; cents <= spanCents; cents += labelStepCents) {
     for (const signed of cents === 0 ? [0] : [-cents, cents]) {

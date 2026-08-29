@@ -49,7 +49,7 @@ dsp/             Pure signal processing — no React, no DOM, no Web Audio.
   contour.ts     Concatenate voiced frames, median filter         (pure, tested)
   segment.ts     Plateau detection, duration gate, glide removal  (pure, tested)
   sequence.ts    Tuning offset, quantize, collapse                (pure, tested)
-  transcribe.ts  The pipeline, composed, plus debug artefacts     (pure, tested)
+  transcribe.ts  The pipeline, composed, plus debug artifacts     (pure, tested)
   trim.ts        Chunk assembly and pre-roll trimming             (pure, tested)
   fade.ts        Edge ramps for playback                          (pure, tested)
   synth.ts       The tests' instrument                            (pure)
@@ -133,11 +133,11 @@ Both halves are load-bearing:
   never merge two neighbouring notes.
 - **A fixed anchor, not a running one.** A running median drifts along with a slow
   portamento and swallows the whole slide into one "note". Anchored, a glide leaves
-  the band after it has travelled 0.7 semitones however slowly it got there.
+  the band after it has traveled 0.7 semitones however slowly it got there.
 
 `findSegments` **requires an already-smoothed contour**. The anchor is taken from a
 run's opening frames, and on a raw contour those can land anywhere in the vibrato
-swing and push the band off to one side; the median filter is what centres it. This
+swing and push the band off to one side; the median filter is what centers it. This
 is a real coupling between two stages and the tests assert it by smoothing first.
 
 ### The median filter is long, and that is safe because it is a median
@@ -161,7 +161,7 @@ distance to the nearest semitone is subtracted first so the rounding is unanimou
 Interval space would be transposition-invariant for free, and is the wrong choice:
 one wrong note corrupts the two intervals either side of it, one inserted note
 corrupts two more, so every error is counted twice and the indels stop meaning
-anything a player would recognise.
+anything a player would recognize.
 
 Two constraints hold the cost model up:
 
@@ -231,8 +231,8 @@ without an effect racing the render.
 Every alignment step gets identical width — evenly spaced, as asked — which means an
 inserted note occupies real width instead of being wedged into a boundary. The payoff
 is that **a missed note leaves a gap in the attempt's line and an extra one leaves a
-gap in the target's**, so both kinds of error are legible with the colours ignored
-entirely. Colour is the echo, not the message.
+gap in the target's**, so both kinds of error are legible with the colors ignored
+entirely. Color is the echo, not the message.
 
 The y range comes from the **target alone**, with the attempt clamped into it. Fitting
 the range to both would let one note sung two octaves out squash the real phrase into
@@ -259,7 +259,7 @@ a round resolves, which explains an outcome without giving one away.
 - `@/shared/components/Confetti` — the win.
 - `@/shared/icons` — `basketball`, added for the manifest.
 
-**Not `usePitchDetector`.** It is a live rAF loop over an analyser; this game analyses
+**Not `usePitchDetector`.** It is a live rAF loop over an analyser; this game analyzes
 a stored buffer after the fact and needs the frame-by-frame contour, not a smoothed
 current reading.
 
@@ -279,7 +279,7 @@ exclusion list of controls a press should mean something else on.
 | File | Guards |
 |---|---|
 | `dsp/onset.test.ts` | fires on a sustained rise, not a single loud block; reports the run's start; fires at most once; respects the grace period |
-| `dsp/track.test.ts` | a steady tone reads as its note; silence is unvoiced; frame times are hop-accurate and centred; 44.1 kHz agrees with 48 kHz; vibrato is tracked, not lost |
+| `dsp/track.test.ts` | a steady tone reads as its note; silence is unvoiced; frame times are hop-accurate and centered; 44.1 kHz agrees with 48 kHz; vibrato is tracked, not lost |
 | `dsp/contour.test.ts` | unvoiced frames dropped and the contour closed over a rest; a one-frame octave spike removed; a spike on the very first frame still outvoted; step edges survive |
 | `dsp/segment.test.ts` | a vibrato'd note is one segment; a slow glide is not a note; one bad frame does not split a run; runs under the minimum dropped; neighbours a semitone apart stay separate; oscillating figures preserved; glide removal keeps short *real* notes and chromatic runs |
 | `dsp/sequence.test.ts` | tuning offset found and not dragged off by an outlier; a consistently flat performance keeps its intervals; adjacent duplicates collapse and `C D C D` does not |

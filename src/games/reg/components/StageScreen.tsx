@@ -101,7 +101,7 @@ export default function StageScreen({
       >
         {frameSrc !== null ? (
           // next/image has nothing to offer a runtime blob: URL from the browser's own
-          // file storage, with no server in the loop to optimise through.
+          // file storage, with no server in the loop to optimize through.
           // eslint-disable-next-line @next/next/no-img-element
           <img
             src={frameSrc}

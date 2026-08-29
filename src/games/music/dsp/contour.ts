@@ -7,7 +7,7 @@
  * here, and a gap must not be allowed to re-articulate a repeated note.
  *
  * Each point keeps the clock time it came from anyway — not for the pipeline, which
- * never reads it, but for the debug artefacts, which are what make a threshold
+ * never reads it, but for the debug artifacts, which are what make a threshold
  * argument settleable.
  */
 

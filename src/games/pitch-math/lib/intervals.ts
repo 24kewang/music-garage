@@ -104,7 +104,7 @@ export function intervalAt(semitones: number): Interval {
   return INTERVALS[foldSemitones(semitones)];
 }
 
-/** The label to print on a button, honouring the abbreviate setting. */
+/** The label to print on a button, honoring the abbreviate setting. */
 export function intervalLabel(interval: Interval, abbreviate: boolean): string {
   return abbreviate ? interval.abbr : interval.name;
 }

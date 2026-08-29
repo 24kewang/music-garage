@@ -84,7 +84,7 @@ export function align(
       const left = cost[i * width + (j - 1)] + costs.indel;
 
       // The diagonal wins ties deliberately. When a substitution costs exactly what
-      // an indel pair costs, "one wrong note" is the reading a player recognises.
+      // an indel pair costs, "one wrong note" is the reading a player recognizes.
       let best = diagonal;
       let direction = DIAGONAL;
       if (up < best) {

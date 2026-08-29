@@ -36,12 +36,12 @@ export const config = {
     /**
      * How many analyser windows are kept for the replay button.
      *
-     * Only the first is analysed; the rest are collected afterwards purely so the clip
+     * Only the first is analyzed; the rest are collected afterwards purely so the clip
      * is long enough to judge by ear. Because the analyser always holds the most recent
      * `fftSize` samples, a read one window later is exactly contiguous with the last —
      * the windows join with no gap and no overlap.
      *
-     * 2 gives ~1.4 s at 48 kHz. 1 disables the tail and replays only what was analysed.
+     * 2 gives ~1.4 s at 48 kHz. 1 disables the tail and replays only what was analyzed.
      */
     playbackWindows: 2,
   },
@@ -56,7 +56,7 @@ export const config = {
     /**
      * How far off its predicted bin a harmonic may sit and still count, in cents.
      *
-     * This is what lets a player who is twenty cents flat still be recognised. Without
+     * This is what lets a player who is twenty cents flat still be recognized. Without
      * it the detector only works on perfectly tuned input, which no one produces.
      */
     harmonicToleranceCents: 35,
@@ -134,7 +134,7 @@ export const config = {
     baseHeight: 6,
     /** Extra height at full input level. */
     levelHeight: 34,
-    /** Seconds for one pass of the travelling wave. */
+    /** Seconds for one pass of the traveling wave. */
     cycleSeconds: 1.6,
     /**
      * How much of the previous level carries into the next frame. Smooths the meter so

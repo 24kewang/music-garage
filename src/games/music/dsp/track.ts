@@ -11,7 +11,7 @@
 import { createPitchDetector, detectPitch, frequencyToMidi } from "@/shared/audio";
 
 export interface Frame {
-  /** Frame centre, in seconds from the start of the buffer. */
+  /** Frame center, in seconds from the start of the buffer. */
   time: number;
   /**
    * Continuous MIDI — deliberately **not** rounded. Smoothing and plateau detection
@@ -31,7 +31,7 @@ export interface TrackOptions {
 }
 
 /**
- * Analyse the whole buffer at a fixed hop.
+ * Analyze the whole buffer at a fixed hop.
  *
  * One detector is allocated for the entire pass — it holds internal scratch buffers,
  * so reusing it makes the per-frame work allocation-free. That matters here: a
@@ -63,7 +63,7 @@ export function trackPitch(
     const result = detectPitch(detector, window, sampleRate, options);
 
     frames.push({
-      // The centre, not the leading edge: a frame's reading describes the middle of
+      // The center, not the leading edge: a frame's reading describes the middle of
       // the window it was measured over, and using the edge shifts every note
       // earlier by half a window.
       time: (start + frameSamples / 2) / sampleRate,

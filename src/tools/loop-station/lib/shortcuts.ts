@@ -8,7 +8,7 @@ import { divisorsOf } from "./transport";
  * buttons don't already allow. Most of that falls out of the reducer, which
  * already refuses impossible events — but where a key has no meaningful target
  * at all (a bus that doesn't exist, nothing to delete), this returns `null`,
- * and the caller leaves the browser's own behaviour alone.
+ * and the caller leaves the browser's own behavior alone.
  */
 
 export const SHORTCUT_HINTS: readonly { keys: string; label: string }[] = [

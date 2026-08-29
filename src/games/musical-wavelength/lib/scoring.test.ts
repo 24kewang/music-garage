@@ -8,12 +8,12 @@ import { MAX_SCORE, scoreAt, scoreValue } from "./scoring";
  * these hold at any `targetHalfWidthDeg` — the whole point of it being one knob.
  */
 const EDGE = config.targetHalfWidthDeg;
-/** Dead centre of a wedge, by index into WEDGES. */
+/** Dead center of a wedge, by index into WEDGES. */
 const midOf = (index: number) =>
   (WEDGES[index].startDeg + WEDGES[index].endDeg) / 2;
 
 describe("scoreAt", () => {
-  it("scores the centre band highest", () => {
+  it("scores the center band highest", () => {
     expect(scoreAt(0, 0)?.score).toBe(4);
     expect(scoreAt(midOf(2), 0)?.score).toBe(4);
   });
@@ -66,7 +66,7 @@ describe("scoreAt", () => {
   });
 
   it("puts band boundaries in exactly one wedge", () => {
-    // The centre band's edge is shared with the right-middle wedge; whichever wins,
+    // The center band's edge is shared with the right-middle wedge; whichever wins,
     // the result must be deterministic and a real band rather than a miss.
     const landing = scoreAt(WEDGES[2].endDeg, 0);
     expect(landing).not.toBeNull();
@@ -82,7 +82,7 @@ describe("scoreValue", () => {
 });
 
 describe("MAX_SCORE", () => {
-  it("is the centre band's score", () => {
+  it("is the center band's score", () => {
     expect(MAX_SCORE).toBe(4);
   });
 });

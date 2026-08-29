@@ -61,7 +61,7 @@
 
 /*
  * Ruled out. Dimmed *and* struck through — the strikethrough is what carries the
- * meaning for anyone who can't rely on the colour shift.
+ * meaning for anyone who can't rely on the color shift.
  */
 .buttonOut {
   background: transparent;
@@ -76,7 +76,7 @@
   text-decoration-thickness: 1px;
 }
 
-/* Correct. Again, not colour alone — a tick appears alongside. */
+/* Correct. Again, not color alone — a tick appears alongside. */
 .buttonWon {
   background: var(--color-accent);
   border-color: var(--color-accent-hover);

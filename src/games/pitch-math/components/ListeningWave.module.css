@@ -34,7 +34,7 @@
 }
 
 /*
- * The travelling pulse is decoration; the height is information. Only the first is
+ * The traveling pulse is decoration; the height is information. Only the first is
  * removed, so a player can still see whether they are being heard.
  */
 @media (prefers-reduced-motion: reduce) {

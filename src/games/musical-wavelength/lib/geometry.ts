@@ -18,7 +18,7 @@ export interface Point {
 }
 
 export interface Wedge {
-  /** Leading edge, degrees from the wheel's centre line (negative = left). */
+  /** Leading edge, degrees from the wheel's center line (negative = left). */
   startDeg: number;
   /** Trailing edge. */
   endDeg: number;
@@ -76,7 +76,7 @@ function round(value: number): number {
 }
 
 /**
- * Wedge for one scoring band, as an SVG path: centre → outer edge → arc → close.
+ * Wedge for one scoring band, as an SVG path: center → outer edge → arc → close.
  * Mirrors the design's `M 0 0 L … A 300 300 0 0 1 … Z`.
  */
 export function wedgePath(startDeg: number, endDeg: number, radius: number): string {
@@ -115,7 +115,7 @@ export function bandEdgeDeg(index: number): number {
 
 /**
  * The five band wedges in the design's draw order: outermost-left inward to the
- * centre, then back out to the right.
+ * center, then back out to the right.
  */
 export function buildWedges(): Wedge[] {
   const { bands } = config;
@@ -134,7 +134,7 @@ export function buildWedges(): Wedge[] {
   for (let i = bands.length - 1; i >= 1; i--) {
     wedges.push(make(-bandEdgeDeg(i), -bandEdgeDeg(i - 1), bands[i]));
   }
-  // The centre band straddles the line.
+  // The center band straddles the line.
   wedges.push(make(-bandEdgeDeg(0), bandEdgeDeg(0), bands[0]));
   // Right half, innermost band first.
   for (let i = 1; i < bands.length; i++) {

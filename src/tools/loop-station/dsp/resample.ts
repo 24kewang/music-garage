@@ -8,7 +8,7 @@
  * samples once on load keeps every other frame calculation honest.
  *
  * Linear is enough here: the alternative is an audible-quality argument about
- * a conversion most people will never trigger, and the artefacts sit far above
+ * a conversion most people will never trigger, and the artifacts sit far above
  * anything a loop pedal is doing.
  */
 export function resample(

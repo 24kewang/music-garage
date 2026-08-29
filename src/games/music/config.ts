@@ -88,7 +88,7 @@ export const config = {
      *
      * Near one vibrato period, as the design doc asks. A *median* is what makes that
      * safe: unlike a mean it preserves the step between two notes, so a long kernel
-     * centres a vibrato'd note without rounding off the edges of the short ones. It
+     * centers a vibrato'd note without rounding off the edges of the short ones. It
      * only erases a feature shorter than half the kernel, which is why this sits at
      * 130 ms rather than the doc's 150–200 — 65 ms is comfortably under `minNoteMs`.
      *
@@ -196,7 +196,7 @@ export const config = {
   },
 
   win: {
-    /** Confetti burst, fired from the centre when the last player standing is found. */
+    /** Confetti burst, fired from the center when the last player standing is found. */
     confetti: {
       pieceCount: 140,
       originX: 0.5,

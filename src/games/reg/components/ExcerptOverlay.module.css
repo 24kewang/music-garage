@@ -36,8 +36,8 @@
   position: relative;
   max-width: 100%;
   /* Resolves against the backdrop, which has a definite height — that is what makes the
-     percentage on .image below meaningful. `margin: auto` does the centring rather than
-     `align-items`, because a flex item centred that way is unreachable by scrolling once
+     percentage on .image below meaningful. `margin: auto` does the centering rather than
+     `align-items`, because a flex item centered that way is unreachable by scrolling once
      it overflows: the top gets clipped with no way to reach it. */
   max-height: 100%;
   margin: auto;
@@ -120,14 +120,14 @@
   object-fit: contain;
   border-radius: var(--radius-sm);
   /* Excerpt scans are usually white paper — a light mat reads as intentional against
-   * the dark panel instead of looking like a rendering artefact. */
+   * the dark panel instead of looking like a rendering artifact. */
   background: var(--color-text);
 }
 
 /*
  * A very tall excerpt — a strip of stacked systems — is unreadable once fitted to the
  * height, so it renders at full width and the backdrop scrolls instead of shrinking it
- * to a few centimetres wide.
+ * to a few centimeters wide.
  */
 .cardTall {
   max-height: none;
