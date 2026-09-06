@@ -19,7 +19,7 @@
   "dependencies": {
     "@phosphor-icons/react": "^2.1.10",
     "mind-ar": "1.2.5",
-    "next": "16.3.3",
+    "next": "16.3.4",
     "pitchy": "^4.1.0",
     "react": "19.2.8",
     "react-dom": "19.2.8",
@@ -31,11 +31,11 @@
     "@types/react-dom": "^19",
     "@types/three": "0.160.0",
     "eslint": "^9",
-    "eslint-config-next": "16.3.3",
+    "eslint-config-next": "16.3.4",
     "sharp": "^0.35.4",
     "typescript": "^5",
     "vitest": "^4.1.11",
-    "wrangler": "^4.127.0"
+    "wrangler": "^4.128.0"
   },
   "overrides": {
     "mind-ar": {
