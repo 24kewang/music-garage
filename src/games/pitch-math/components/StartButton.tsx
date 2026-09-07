@@ -11,7 +11,7 @@ const MODE_LABELS: Record<IntervalMode, string> = {
 
 const MODE_HINTS: Record<IntervalMode, string> = {
   absolute: "One answer, measured up from the lower note.",
-  relative: "The interval or its inversion — a 4th also answers a 5th.",
+  relative: "The interval or its inversion: a 4th also answers a 5th.",
 };
 
 /**

@@ -1,7 +1,7 @@
 /**
  * Which excerpts are in play, persisted across sessions.
  *
- * Stores the *excluded* file paths, not the checked ones — so a freshly uploaded
+ * Stores the *excluded* file paths, not the checked ones, so a freshly uploaded
  * file is checked by default (it isn't in the excluded set) and an empty or missing
  * store means "everything checked". Same defensive contract as the other games'
  * settings modules: SSR-safe, corrupt-safe, and storage failures never interrupt play.

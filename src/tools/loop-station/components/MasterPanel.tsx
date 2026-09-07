@@ -9,8 +9,8 @@ import styles from "./MasterPanel.module.css";
 
 /**
  * Master volume/reverb/mute, tempo, metronome, and the beats/bars fields.
- * Tempo, beats and bars lock together the moment the first track is set —
- * the loop's length depends on all three — and unlock when every track is gone.
+ * Tempo, beats and bars lock together the moment the first track is set:
+ * the loop's length depends on all three, and unlock when every track is gone.
  */
 export default function MasterPanel({
   session,
@@ -76,7 +76,7 @@ export default function MasterPanel({
           aria-label="Metronome"
           title={
             metronomeBlocked
-              ? "No tempo yet — close the free loop first"
+              ? "No tempo yet. Close the free loop first"
               : "Metronome"
           }
           disabled={metronomeBlocked}

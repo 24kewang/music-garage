@@ -23,7 +23,7 @@ describe("substitutionCost", () => {
 
   it("keeps the ceiling strictly under a pair of indels", () => {
     // The constraint the whole cost model rests on. If this ever fails, every large
-    // substitution silently becomes a deletion plus an insertion.
+    // substitution becomes a deletion plus an insertion, with nothing to signal it.
     expect(COSTS.subCeiling).toBeLessThan(2 * COSTS.indel);
   });
 });
@@ -101,7 +101,7 @@ describe("align", () => {
 
   it("keeps the path consistent with both sequences", () => {
     // The graph walks this path and indexes both arrays with it, so all three
-    // properties below are load-bearing rather than tidiness.
+    // properties below are requirements rather than tidiness.
     const random = (seed: number) => {
       let state = seed >>> 0;
       return () => {

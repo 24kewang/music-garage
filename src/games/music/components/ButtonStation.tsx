@@ -14,12 +14,12 @@ import styles from "./ButtonStation.module.css";
  * The controls, and nothing else.
  *
  * Which buttons exist is a function of the phase, so there is never a control on
- * screen that would do nothing — the playback button simply does not appear until
+ * screen that would do nothing: the playback button simply does not appear until
  * there is something to play.
  *
  * The record button carries four states and the caption underneath carries the
  * explanation. The important one is **armed**: the clock has not started, and the
- * button deliberately shows no digits, because a countdown that is not counting is
+ * button shows no digits, because a countdown that is not counting is
  * a lie about how much time somebody has.
  */
 
@@ -73,7 +73,7 @@ export default function ButtonStation({
     : status === "arming"
       ? "Opening the microphone…"
       : status === "armed"
-        ? "Listening — the clock starts on your first note."
+        ? "Listening. The clock starts on your first note."
         : status === "recording"
           ? "Recording. Press again when you're done."
           : status === "finishing"
@@ -82,7 +82,7 @@ export default function ButtonStation({
               ? "Play the same melody again to confirm it."
               : phase === "setting"
                 ? selectable
-                  // Stated rather than left to be discovered — a box that only
+                  // Stated rather than left to be discovered: a box that only
                   // becomes a button some of the time is easy to miss.
                   ? "Record the melody you want to set, or pick a different player."
                   : "Record the melody you want to set."
@@ -114,7 +114,7 @@ export default function ButtonStation({
         >
           {/*
            * The ring reacts to input level. It is the only thing on screen that
-           * proves the microphone is actually hearing the room, which is what makes
+           * proves the microphone is hearing the room, which makes
            * "nothing was recorded" diagnosable rather than mystifying.
            */}
           <span

@@ -5,7 +5,7 @@ import type { LoadedTexture } from "./textures";
 /**
  * The "where the box goes" half of the filter: everything three.js and MindAR.
  *
- * MindAR owns the renderer, scene, camera, video element and tracking loop — this
+ * MindAR owns the renderer, scene, camera, video element and tracking loop. This
  * module never re-implements any of it. It hangs one group off the forehead anchor
  * (which already carries head position, rotation and scale) and exposes a handful of
  * verbs for the React side: start, stop, where the box sits, what mode it's in, and
@@ -19,7 +19,7 @@ export interface BoxPlacement {
   x: number;
   y: number;
   z: number;
-  /** Uniform multiplier on the whole box — image and caption together. */
+  /** Uniform multiplier on the whole box: image and caption together. */
   scale: number;
 }
 
@@ -71,7 +71,7 @@ export async function createRegScene(
 
   // Anisotropic filtering is the difference between readable and mushy notation once
   // the head tilts. Set as the module default rather than per texture because it is
-  // part of three's texture cache key — changing it later reallocates the texture —
+  // part of three's texture cache key, changing it later reallocates the texture,
   // and every texture in this game is created after this line runs. getMaxAnisotropy
   // returns 0, not 1, when the extension is missing.
   THREE.Texture.DEFAULT_ANISOTROPY = Math.max(
@@ -86,7 +86,7 @@ export async function createRegScene(
   const applyPlacement = (next: BoxPlacement) => {
     box.position.set(next.x, next.y, next.z);
     // Scale the group, not the planes: a node's own scale doesn't move its own
-    // position, so the box stays planted at the offset and grows around its origin —
+    // position, so the box stays planted at the offset and grows around its origin:
     // which is the image's bottom edge. No plane sizing needs recomputing.
     box.scale.setScalar(next.scale);
   };
@@ -128,7 +128,7 @@ export async function createRegScene(
     let worldW = canvas.width / pxPerUnit;
     let worldH = canvas.height / pxPerUnit;
     if (worldW > cfg.maxTextWidth) {
-      // Shrink both axes together — squeezing one is what made long names look wrong.
+      // Shrink both axes together: squeezing one is what made long names look wrong.
       const shrink = cfg.maxTextWidth / worldW;
       worldW *= shrink;
       worldH *= shrink;
@@ -149,7 +149,7 @@ export async function createRegScene(
    *
    * MindAR sizes the buffer to the *camera frame* and then CSS-stretches the canvas
    * to cover the container, so devicePixelRatio cancels out and the overlay is drawn
-   * at whatever the webcam happens to offer — a 1280-wide stream on a 1920 viewport
+   * at whatever the webcam happens to offer: a 1280-wide stream on a 1920 viewport
    * is a 1.5x upscale. setPixelRatio re-runs setSize with updateStyle: false, so
    * MindAR's own CSS sizing is left alone, and the projection only depends on aspect,
    * which doesn't change.
@@ -202,7 +202,7 @@ export async function createRegScene(
       if (stopped) {
         // Torn down while the camera was starting. stop() skipped mindar.stop() because
         // `started` was still false, so the tracks it has just acquired are live and
-        // nothing else will ever release them — the webcam light would stay on.
+        // nothing else will ever release them: the webcam light would stay on.
         mindar.stop();
         mindar.video = null;
         return;
@@ -223,13 +223,13 @@ export async function createRegScene(
       if (started) {
         mindar.stop();
         // MindAR binds its own resize listener inline, so it can never be removed, and
-        // its guard only bails when `video` is falsy — stop() merely detaches the
+        // its guard only bails when `video` is falsy: stop() merely detaches the
         // element. Without this, a later resize runs setSize(0, 0) on the dead instance
         // and keeps this whole scene graph alive.
         mindar.video = null;
       } else {
         // Mid-start: mindar.stop() would throw reading tracks off a null srcObject, so
-        // release whatever exists by hand. `video` is deliberately left in place —
+        // release whatever exists by hand. `video` is left in place:
         // _startVideo may still be awaiting getUserMedia, and nulling it makes its
         // `this.video.srcObject = stream` throw, stranding a live stream that nothing
         // holds a reference to and nothing can switch off. start() nulls it instead,
@@ -239,7 +239,7 @@ export async function createRegScene(
       started = false;
 
       // Our own geometry, materials and text textures. The excerpt textures belong to
-      // the TexturePool, which disposes them itself — never `imageMaterial.map` here.
+      // the TexturePool, which disposes them itself: never `imageMaterial.map` here.
       imagePlane.geometry.dispose();
       imageMaterial.dispose();
       for (const plane of [introPlane, captionPlane]) {
@@ -248,11 +248,11 @@ export async function createRegScene(
         plane.material.dispose();
       }
 
-      // Frees three's caches and its canvas listeners. Deliberately NOT followed by
+      // Frees three's caches and its canvas listeners. NOT followed by
       // `forceContextLoss()`: MindAR never removes the canvas it appended to the
       // container, so a torn-down instance's canvas is still in the DOM, still
       // absolutely positioned over the feed. Killing its context makes it paint as a
-      // blank white sheet instead of staying transparent — which is a white screen
+      // blank white sheet instead of staying transparent, which is a white screen
       // where the camera should be, every time in development, where Strict Mode
       // mounts twice. The context here is left to be collected with the canvas.
       renderer.dispose();
@@ -294,7 +294,7 @@ export async function createRegScene(
      * CSS transforms (only the <video> gets the mirroring), so canvas-rect coordinates
      * map straight onto what's drawn; and the render loop keeps world matrices at most
      * one frame stale. A far-turned head leaves the plane back-facing and the cast
-     * misses, which is right — the excerpt isn't readable from there either.
+     * misses, which is right: the excerpt isn't readable from there either.
      */
     hitTestImage(clientX, clientY) {
       if (!imagePlane.visible) return false;
@@ -316,7 +316,7 @@ function textFont(style: TextStyle): string {
   return `600 ${style.fontPx}px Poppins, system-ui, sans-serif`;
 }
 
-/** Canvas height of a one-line block, including padding — the world-scale reference. */
+/** Canvas height of a one-line block, including padding: the world-scale reference. */
 function singleLineHeight(style: TextStyle): number {
   return style.fontPx * LINE_SPACING + verticalPadding(style) * 2;
 }
@@ -329,7 +329,7 @@ function verticalPadding(style: TextStyle): number {
  * Word-wrap into at most `maxLines` lines, breaking at `maxWidthPx`.
  *
  * Once the last allowed line is reached the rest is appended to it rather than
- * dropped — that line just runs long, and the caller shrinks the plane to fit. The
+ * dropped. That line just runs long, and the caller shrinks the plane to fit. The
  * alternative, condensing glyphs to a maximum width, is what made long names look
  * distorted.
  */

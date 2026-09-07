@@ -5,15 +5,15 @@
  * the main thread in coalesced chunks, alongside one RMS reading per 128-frame block
  * for the onset gate and the level meter.
  *
- * Plain JS on purpose: worklets are loaded by URL (`/worklets/music-capture.js`),
+ * Plain JS, because worklets are loaded by URL (`/worklets/music-capture.js`),
  * outside the app bundle. And kept dumb, the same rule the Loop Station's worklet
- * follows — every decision (when a take starts, where to cut it, when the cap is up)
+ * follows: every decision (when a take starts, where to cut it, when the cap is up)
  * happens on the main thread in TypeScript that has tests. This file only moves
  * samples.
  *
- * Simpler than `loop-capture.js` and deliberately not sharing it: that one keeps a
+ * Simpler than `loop-capture.js`, and separate from it because that one keeps a
  * ring buffer so button presses can be treated as time marks and audio extracted
- * from the *past*. MUSIC never looks backwards — a take runs from a press to a stop —
+ * from the *past*. MUSIC never looks backwards: a take runs from a press to a stop,
  * so a ring buffer would be machinery with nothing to do.
  *
  * Communication is postMessage rather than SharedArrayBuffer, because SAB needs
@@ -21,12 +21,12 @@
  * Chunks are transferred, so the copy is a pointer hand-off rather than the samples.
  *
  * Messages out:
- *   { type: "start", frame, time }   — once; maps the audio clock to a frame number.
- *   { type: "level", time, rms }     — every block, ~2.7 ms at 48 kHz.
- *   { type: "chunk", samples, final } — transferred.
+ *   { type: "start", frame, time }  : once; maps the audio clock to a frame number.
+ *   { type: "level", time, rms }    : every block, ~2.7 ms at 48 kHz.
+ *   { type: "chunk", samples, final }: transferred.
  *
  * Messages in:
- *   { type: "stop" }                 — flush whatever is left, marked final.
+ *   { type: "stop" }                : flush whatever is left, marked final.
  */
 class MusicCaptureProcessor extends AudioWorkletProcessor {
   constructor(options) {

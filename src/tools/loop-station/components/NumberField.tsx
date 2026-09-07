@@ -30,7 +30,7 @@ export default function NumberField({
   const [draft, setDraft] = useState(String(value));
   const [adopted, setAdopted] = useState(value);
 
-  // Adopt outside changes (a derived free-mode tempo, a reset) into the draft —
+  // Adopt outside changes (a derived free-mode tempo, a reset) into the draft:
   // the render-time derive-from-props pattern, not an effect.
   if (value !== adopted) {
     setAdopted(value);

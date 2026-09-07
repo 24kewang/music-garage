@@ -1,5 +1,5 @@
 /*
- * Deliberately quiet: this sits under the catalog, and the page's own content
+ * Quiet by design: this sits under the catalog, and the page's own content
  * should be what carries weight. A hairline rule and faint text, nothing else.
  */
 .footer {
@@ -42,7 +42,7 @@
 @media (max-width: 560px) {
   .inner {
     padding: var(--space-5) var(--space-4);
-    /* Stacked rather than squeezed — three links plus a copyright line do not fit
+    /* Stacked rather than squeezed: three links plus a copyright line do not fit
        one row on a phone without wrapping mid-link. */
     flex-direction: column;
     align-items: flex-start;

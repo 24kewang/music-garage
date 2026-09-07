@@ -9,11 +9,11 @@ import { SITE } from "@/shared/site";
  * build depend on the network for a decorative image. The default face is close
  * enough at this size, and the accent glow is what carries the identity.
  */
-export const alt = `${SITE.name} — ${SITE.description}`;
+export const alt = `${SITE.name}: ${SITE.description}`;
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
-/** Required by `output: "export"` — see the same note in robots.ts. */
+/** Required by `output: "export"`. See the same note in robots.ts. */
 export const dynamic = "force-static";
 
 export default function OpenGraphImage() {

@@ -46,7 +46,7 @@ export function toSnapshot(state: SessionState, sampleRate: number): LoopSnapsho
   };
 }
 
-/** Every segment id the state refers to — originals and overwrites. */
+/** Every segment id the state refers to: originals and overwrites. */
 export function referencedSegments(state: SessionState): number[] {
   const ids: number[] = [];
   for (const track of state.tracks) {
@@ -97,7 +97,7 @@ export function parseSnapshot(value: unknown): LoopSnapshot | null {
  * A cheap identity for "the loop as it would be saved".
  *
  * Compared against the signature at last save to decide whether leaving the
- * page should warn. Deliberately covers only what a save captures — selection,
+ * page should warn. Covers only what a save captures: selection,
  * notices, drag state and the metronome move constantly and would otherwise
  * make the station permanently "unsaved".
  */
@@ -137,7 +137,7 @@ export function loopSignature(state: SessionState): string {
   return parts.join("|");
 }
 
-/** The signature of an untouched station — nothing worth warning about. */
+/** The signature of an untouched station: nothing worth warning about. */
 export const EMPTY_SIGNATURE = loopSignature(createSession());
 
 export const SAVE_SLOT = config.save.slotKey;

@@ -8,7 +8,7 @@ import styles from "./FilterTuning.module.css";
 /**
  * The Filter tab: where the box sits above the head, and how big it is.
  *
- * Every slider writes on each input event so the filter follows the drag live — the
+ * Every slider writes on each input event so the filter follows the drag live: the
  * panel sits over the camera feed, so tuning is done by watching, not by numbers.
  */
 export default function FilterTuning({
@@ -20,7 +20,7 @@ export default function FilterTuning({
 }: {
   settings: Settings;
   onChange: (settings: Settings) => void;
-  /** Session state, not a stored setting — see lib/settings.ts. */
+  /** Session state, not a stored setting. See lib/settings.ts. */
   useCamera: boolean;
   /** The camera is starting; switching back now would tear down a half-built scene. */
   cameraBusy: boolean;
@@ -35,7 +35,7 @@ export default function FilterTuning({
     settings.scalePercent === DEFAULT_SETTINGS.scalePercent &&
     settings.showCaption === DEFAULT_SETTINGS.showCaption;
 
-  // Nothing to position against without a head to track, so the offsets go quiet —
+  // Nothing to position against without a head to track, so the offsets go quiet:
   // grayed rather than hidden, so the tab keeps its shape as the mode flips.
   const positional = !useCamera;
 

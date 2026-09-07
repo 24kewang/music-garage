@@ -3,7 +3,7 @@
  *
  * Lives in `dsp/` rather than in a test file because several test files build signals
  * from it, and because the harmonic model here is the assumption the detector is built
- * on — worth stating once, in one place.
+ * on, stated once here in one place.
  */
 
 import { midiToFrequency } from "@/shared/audio";
@@ -14,7 +14,7 @@ export interface ToneOptions {
   /** How many harmonics to synthesize. */
   harmonics?: number;
   /**
-   * How quickly harmonics fall away — amplitude of harmonic h is `1 / h ** rolloff`.
+   * How quickly harmonics fall away: amplitude of harmonic h is `1 / h ** rolloff`.
    * 1 is a bright, reedy tone; 2 is closer to a flute.
    */
   rolloff?: number;
@@ -28,7 +28,7 @@ export interface ToneOptions {
  * Additive tone at a MIDI pitch: a fundamental plus harmonics at `1/h ** rolloff`.
  *
  * A real instrument's spectrum is messier than this, but the property the detector
- * depends on — energy at integer multiples of the fundamental — is exactly what a
+ * depends on, energy at integer multiples of the fundamental, is exactly what a
  * harmonic series is.
  */
 export function tone(
@@ -75,7 +75,7 @@ export function mix(...parts: Float64Array[]): Float64Array {
 /**
  * Deterministic pseudo-random noise, for the "does it survive a real room" tests.
  *
- * Seeded rather than `Math.random` so a failure is reproducible — a detector test that
+ * Seeded rather than `Math.random` so a failure is reproducible: a detector test that
  * passes only sometimes is worse than no test.
  */
 export function noise(length: number, amplitude: number, seed = 1): Float64Array {

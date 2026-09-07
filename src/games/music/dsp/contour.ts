@@ -2,11 +2,11 @@
  * Steps 4 and 5: join the voiced frames into one contour, then smooth it.
  *
  * The unvoiced frames are dropped rather than held as gaps, so an index into the
- * contour counts *voiced* time, not wall-clock time. That is deliberate and it is
+ * contour counts *voiced* time, not wall-clock time. That is intended and it is
  * the whole reason rhythm plays no part in this game: a rest carries no meaning
  * here, and a gap must not be allowed to re-articulate a repeated note.
  *
- * Each point keeps the clock time it came from anyway — not for the pipeline, which
+ * Each point keeps the clock time it came from anyway, not for the pipeline, which
  * never reads it, but for the debug artifacts, which are what make a threshold
  * argument settleable.
  */
@@ -41,7 +41,7 @@ function medianOf(values: number[]): number {
 /**
  * Median filter over a sliding window, edges clamped.
  *
- * A **median**, never a mean — the failure this exists to catch is the detector
+ * A **median**, never a mean: the failure this exists to catch is the detector
  * reporting a lone frame an octave out, and a mean would smear that across the
  * whole kernel instead of discarding it.
  *
@@ -63,7 +63,7 @@ export function medianFilter(
   return points.map((point, index) => {
     // Truncated at the edges, not clamped. Clamping pads the window with copies of
     // the edge value, so a spike sitting *on* the first frame outvotes its
-    // neighbours and survives — and the first frame is exactly where an attack
+    // neighbours and survives, and the first frame is exactly where an attack
     // transient puts one. Truncating lets the real readings win.
     const from = Math.max(0, index - radius);
     const to = Math.min(last, index + radius);

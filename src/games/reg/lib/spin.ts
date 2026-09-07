@@ -1,8 +1,8 @@
 /**
  * The slot-machine spin, as data.
  *
- * The whole animation is planned up front — target picked first, then a list of
- * texture swaps whose gaps stretch from fast to slow — so the component just walks
+ * The whole animation is planned up front: target picked first, then a list of
+ * texture swaps whose gaps stretch from fast to slow, so the component just walks
  * the steps with timeouts. Planning is pure and takes an injected `random`, which is
  * what makes the deceleration and the forced landing testable in Node.
  */

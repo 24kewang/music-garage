@@ -10,12 +10,12 @@ export const config = {
     defaultTempo: 92,
     /**
      * Tempo range, in BPM. One ceiling for both the typed field and the tempo a
-     * free loop derives — a derived value the field would reject is refused at
+     * free loop derives: a derived value the field would reject is refused at
      * the source instead, so the two can never disagree.
      */
     minTempo: 20,
     maxTempo: 500,
-    /** Beats per bar — the time-signature numerator. */
+    /** Beats per bar: the time-signature numerator. */
     minBeats: 1,
     maxBeats: 16,
     defaultBeats: 4,
@@ -59,7 +59,7 @@ export const config = {
 
   settings: {
     /**
-     * The new-recording defaults — delay, volume, reverb. One key rather than
+     * The new-recording defaults: delay, volume, reverb. One key rather than
      * three, read once and coerced field by field so a partially corrupt entry
      * degrades instead of discarding the lot.
      */
@@ -71,7 +71,7 @@ export const config = {
     thresholdPx: 5,
     /**
      * Touch hold before a drag arms, ms. Until it fires the list scrolls
-     * normally, which is what keeps swipe-to-scroll working on a phone.
+     * normally, which keeps swipe-to-scroll working on a phone.
      */
     longPressMs: 400,
     /** Movement that cancels an un-armed long press, px. */
@@ -111,7 +111,7 @@ export const config = {
     threshold: 0.04,
     /** How much louder than the recent floor the rise must be. */
     riseRatio: 3.5,
-    /** Dead time after a hit, ms — one note can't arm twice. */
+    /** Dead time after a hit, ms: one note can't arm twice. */
     refractoryMs: 200,
     /**
      * A level threshold fires a block or two after the actual attack, so the
@@ -163,7 +163,7 @@ export const config = {
     maxGain: 1.0,
     /**
      * The master fader alone may boost past 100. Tracks and buses stay capped
-     * there — this is a mix output trim, not a per-source one. The limiter
+     * there. This is a mix output trim, not a per-source one. The limiter
      * below is what keeps the extra headroom from turning into hard clipping.
      */
     maxMasterVolume: 150,
@@ -180,7 +180,7 @@ export const config = {
     swapLeadSeconds: 0.05,
     maxBuses: 3,
     /**
-     * Nothing structural caps this — the cost is memory. A track holds its padded
+     * Nothing structural caps this: the cost is memory. A track holds its padded
      * recording, the baked loop and that buffer's AudioBuffer copy: ~35MB each at
      * the extreme (a 60s loop, mono 48kHz), ~5MB at ordinary loop lengths. The
      * capture ring buffer is unaffected; there is one, sized by maxLoopSeconds.
@@ -198,7 +198,7 @@ export const config = {
   reverb: {
     /**
      * Generated impulse-response length, seconds. This does **not** set how
-     * long the reverb rings — see `irDecay` — it only decides how much of the
+     * long the reverb rings. See `irDecay`. It only decides how much of the
      * tail is stored before being cut off. Keep it comfortably above RT60 or
      * the tail ends in a step.
      */
@@ -218,7 +218,7 @@ export const config = {
 
   /**
    * Soft limiter on the master output. Inaudible below full scale; above it,
-   * peaks round off instead of being shredded by the browser's hard clip —
+   * peaks round off instead of being shredded by the browser's hard clip,
    * which a 150% fader and a loud reverb return can otherwise reach easily.
    */
   limiter: {

@@ -7,7 +7,7 @@ export type MicrophoneStatus =
   | "idle"
   /** Permission prompt is up. */
   | "requesting"
-  /** Live — `analyser` is available. */
+  /** Live: `analyser` is available. */
   | "running"
   /** The user (or a browser policy) said no. */
   | "denied"
@@ -30,7 +30,7 @@ export interface Microphone {
   analyser: AnalyserNode | null;
   /** The hardware sample rate, needed to interpret detected pitches. */
   sampleRate: number | null;
-  /** Must be called from a user gesture — browsers block audio started any other way. */
+  /** Must be called from a user gesture: browsers block audio started any other way. */
   start: () => Promise<void>;
   stop: () => void;
 }
@@ -43,7 +43,7 @@ const DEFAULT_FFT_SIZE = 4096;
  * Two constraints drive this implementation:
  *
  * 1. `echoCancellation`, `noiseSuppression` and `autoGainControl` are all disabled.
- *    They are tuned for speech intelligibility and actively distort pitch — leaving
+ *    They are tuned for speech intelligibility and actively distort pitch: leaving
  *    them on produces readings that wobble and octave-jump.
  * 2. The `AudioContext` is created and resumed inside `start()`, which must be called
  *    from a click. Safari and iOS refuse to start audio outside a user gesture.
@@ -96,7 +96,7 @@ export function useMicrophone(options: MicrophoneOptions = {}): Microphone {
     if (typeof navigator === "undefined" || !navigator.mediaDevices?.getUserMedia) {
       setStatus("error");
       setError(
-        "This browser can't reach the microphone. Microphone access needs a secure origin — use https:// or localhost.",
+        "This browser can't reach the microphone. Microphone access needs a secure origin: use https:// or localhost.",
       );
       return;
     }
@@ -130,7 +130,7 @@ export function useMicrophone(options: MicrophoneOptions = {}): Microphone {
       return;
     }
 
-    // Unmounted while the permission prompt was up — release and bail.
+    // Unmounted while the permission prompt was up: release and bail.
     if (!mountedRef.current) {
       stream.getTracks().forEach((track) => track.stop());
       return;
@@ -148,7 +148,7 @@ export function useMicrophone(options: MicrophoneOptions = {}): Microphone {
       // being explicit documents that raw samples are what the detector wants.
       node.smoothingTimeConstant = 0;
 
-      // Deliberately NOT connected to context.destination — routing the mic to the
+      // NOT connected to context.destination: routing the mic to the
       // speakers would produce feedback.
       source.connect(node);
 

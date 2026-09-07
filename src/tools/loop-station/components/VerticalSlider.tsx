@@ -4,7 +4,7 @@ import { config } from "../config";
 import styles from "./VerticalSlider.module.css";
 
 /**
- * A vertical fader with an optional segment meter beside it — the mixer-strip
+ * A vertical fader with an optional segment meter beside it: the mixer-strip
  * control used by the master panel, buses and expanded track rows. The meter's
  * segments are lit by the root's rAF paint loop via [data-meter]/[data-lit];
  * React only renders the empty shells.

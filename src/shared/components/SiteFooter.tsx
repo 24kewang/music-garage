@@ -8,9 +8,9 @@ import styles from "./SiteFooter.module.css";
 /**
  * Routes that own the whole viewport. Games are `min-height: 100dvh` and the loop
  * station is `position: fixed; inset: 0` with nothing scrolling, so a footer under
- * them is either below the fold or genuinely unreachable behind a fixed stage.
+ * them is either below the fold or unreachable behind a fixed stage.
  *
- * The shell still knows nothing about individual games — only about the two route
+ * The shell still knows nothing about individual games, only about the two route
  * namespaces it already owns, the same way SiteHeader's NavMenu does.
  */
 const IMMERSIVE_PREFIXES = ["/games/", "/tools/"];
@@ -19,8 +19,8 @@ const IMMERSIVE_PREFIXES = ["/games/", "/tools/"];
  * Copyright and the legal links, on the pages that are documents rather than
  * instruments: the catalog, the terms, the privacy policy and the 404.
  *
- * The legal pages stay reachable from a game too — SiteHeader carries the same two
- * links, and it is on every route.
+ * The legal pages stay reachable from a game too. SiteHeader carries the same two
+ * links and is on every route.
  */
 export default function SiteFooter() {
   const pathname = usePathname();

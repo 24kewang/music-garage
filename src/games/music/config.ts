@@ -15,7 +15,7 @@ export const config = {
   capture: {
     /**
      * Analysis window, in samples. The McLeod Pitch Method needs roughly two periods
-     * of the fundamental, so 2048 reaches down to about 47 Hz at 48 kHz — below the
+     * of the fundamental, so 2048 reaches down to about 47 Hz at 48 kHz: below the
      * bottom of any instrument likely to be pointed at this game.
      *
      * It also sets the real time resolution of a *pitch change*: ~43 ms at 48 kHz.
@@ -28,10 +28,10 @@ export const config = {
     /**
      * Clarity floor for a frame to count as voiced.
      *
-     * Deliberately below `DEFAULT_PITCH_OPTIONS.minClarity` (0.9). That default is
+     * Below `DEFAULT_PITCH_OPTIONS.minClarity` (0.9). That default is
      * tuned for a live loop where a dropped frame costs nothing and the next one
      * arrives in 16 ms. Here a dropped frame shortens a plateau, and a plateau that
-     * falls under `minNoteMs` is not a worse note — it is a *deleted* note.
+     * falls under `minNoteMs` is not a worse note. It is a *deleted* note.
      */
     minClarity: 0.8,
     /** Below a bass's low B and above the top of a piccolo. */
@@ -48,7 +48,7 @@ export const config = {
     onsetRms: 0.02,
     /**
      * Consecutive blocks that must stay above the threshold before the clock starts.
-     * A block is ~2.7 ms, so 6 is ~16 ms — long enough that a chair scrape or a
+     * A block is ~2.7 ms, so 6 is ~16 ms: long enough that a chair scrape or a
      * desk knock does not start a take, short enough to feel instant.
      */
     onsetHoldBlocks: 6,
@@ -67,7 +67,7 @@ export const config = {
     /** The setter's hard wall-clock cap, from the onset. */
     setterSeconds: 10,
     /**
-     * The copier's window. Deliberately a multiple of the setter's: rhythm is
+     * The copier's window, a multiple of the setter's because rhythm is
      * discarded, so nobody should fail because their instrument cannot physically
      * match the setter's note density in the same wall-clock time.
      */
@@ -90,7 +90,7 @@ export const config = {
      * safe: unlike a mean it preserves the step between two notes, so a long kernel
      * centers a vibrato'd note without rounding off the edges of the short ones. It
      * only erases a feature shorter than half the kernel, which is why this sits at
-     * 130 ms rather than the doc's 150–200 — 65 ms is comfortably under `minNoteMs`.
+     * 130 ms rather than the doc's 150–200: 65 ms is comfortably under `minNoteMs`.
      *
      * The stage that actually needs it is `findSegments`: the band it extends a run
      * within is anchored on the run's opening frames, and on a raw contour those can
@@ -100,8 +100,8 @@ export const config = {
     /**
      * How far the contour may stray from a run's anchor and still be the same note.
      *
-     * Above the vibrato it has to tolerate — sung vibrato routinely reaches ±50
-     * cents, strings ±30 — and below a semitone, so it can never merge two
+     * Above the vibrato it has to tolerate: sung vibrato routinely reaches ±50
+     * cents, strings ±30, and below a semitone, so it can never merge two
      * neighbouring notes. This is why it is not the ±0.5 that "same rounded pitch"
      * would suggest.
      */
@@ -110,7 +110,7 @@ export const config = {
     anchorPoints: 5,
     /**
      * Consecutive out-of-band points needed to end a run. One stray frame is a
-     * consonant, a bow change or a bad reading — not a note boundary.
+     * consonant, a bow change or a bad reading, not a note boundary.
      */
     breakPoints: 3,
     /** Shortest run that counts as a note. */
@@ -122,7 +122,7 @@ export const config = {
      *
      * A whole tone leaves room for exactly one chromatic passing tone, and a fast
      * chromatic run is real music that nobody should lose notes from. Three
-     * semitones is the point where something genuinely had to happen in between.
+     * semitones is the point where something had to happen in between.
      */
     minGlideSpanSemitones: 3,
     /**
@@ -138,7 +138,7 @@ export const config = {
     /**
      * Ceiling on a substitution's cost. Must stay strictly below `2 * indel`, or the
      * aligner decomposes any large substitution into a cheaper deletion plus
-     * insertion — interval weighting stops mattering, and the graph shatters a
+     * insertion: interval weighting stops mattering, and the graph shatters a
      * single wrong note into a gap in one line and a spike in the other.
      */
     subCeiling: 1.9,
@@ -150,7 +150,7 @@ export const config = {
   /**
    * Error allowances. An attempt passes at or below its threshold.
    *
-   * The setter's is far tighter than the copier's on purpose: the target inherits
+   * The setter's is far tighter than the copier's, because the target inherits
    * whatever noise the setter's take contains, and every copy that round inherits
    * it in turn.
    */

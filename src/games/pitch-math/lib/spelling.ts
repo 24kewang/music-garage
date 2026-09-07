@@ -15,7 +15,7 @@ export const TRANSPOSITIONS: readonly Transposition[] = ["C", "Bb", "Eb", "F"];
 /**
  * Semitones to add to a sounding pitch to get the written one.
  *
- * A Bb trumpet reading a written C sounds a Bb — a tone lower — so the written note is
+ * A Bb trumpet reading a written C sounds a Bb: a tone lower, so the written note is
  * a tone above what came out of the bell. Eb and F instruments work the same way, a
  * major 6th and a perfect 5th above respectively. Octave doesn't matter here: the
  * reveal prints pitch names without an octave number.
@@ -39,7 +39,7 @@ export const TRANSPOSITION_LABELS: Record<Transposition, string> = {
  * Flat spellings, indexed by pitch class.
  *
  * `NOTE_NAMES` from the shared module is all sharps, which is right for concert pitch
- * but reads wrong to anyone on a transposing instrument — a trumpeter expects "B♭",
+ * but reads wrong to anyone on a transposing instrument: a trumpeter expects "B♭",
  * not "A♯". Naturals are identical in both, so only the five accidentals differ.
  */
 const FLAT_NAMES = [
@@ -65,7 +65,7 @@ function pitchClass(midi: number): number {
 /**
  * Write a sounding MIDI note as the player of `transposition` would read it.
  *
- * No octave number — the game is about the interval, and an octave number would only
+ * No octave number: the game is about the interval, and an octave number would only
  * invite arguments about which register someone was in.
  */
 export function writtenName(midi: number, transposition: Transposition): string {
@@ -77,7 +77,7 @@ export function writtenName(midi: number, transposition: Transposition): string 
 
 /** What the reveal line shows, once the notes are known. */
 export interface RevealNames {
-  /** One name for a unison, two otherwise — lower sounding note first. */
+  /** One name for a unison, two otherwise: lower sounding note first. */
   names: readonly string[];
   /** Joined for display, e.g. "C – G". */
   text: string;
@@ -87,7 +87,7 @@ export interface RevealNames {
  * What sits between the two names: an en dash held by non-breaking spaces, so the pair
  * never wraps mid-interval.
  *
- * Exported because those spaces are invisible in a source file — anything that needs to
+ * Exported because those spaces are invisible in a source file: anything that needs to
  * match this string should reference it rather than retype it.
  */
 export const NAME_SEPARATOR =" – ";
@@ -98,8 +98,8 @@ export const NAME_SEPARATOR =" – ";
  * The lower **sounding** note goes on the left. Sorting by written name instead would
  * reorder the pair on some transpositions, which would be a lie about what was played.
  *
- * A unison collapses to a single name — printing it twice would look like a mistake.
- * An octave deliberately does not: the same name twice is exactly what an octave is.
+ * A unison collapses to a single name: printing it twice would look like a mistake.
+ * An octave does not: the same name twice is exactly what an octave is.
  */
 export function revealNames(
   midis: readonly number[],

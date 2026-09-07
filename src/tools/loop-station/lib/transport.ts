@@ -4,7 +4,7 @@
  *
  * The master clock is `AudioContext.currentTime`; every function that takes a `time`
  * expects a value from that clock. `anchorTime` is the instant loop iteration 0
- * began — boundary N is `anchorTime + N * loopLength`, always computed fresh from
+ * began: boundary N is `anchorTime + N * loopLength`, always computed fresh from
  * the anchor rather than accumulated, so error can't build up over iterations.
  */
 
@@ -13,7 +13,7 @@ export function loopLengthSeconds(tempo: number, beats: number, bars: number): n
   return (bars * beats * 60) / tempo;
 }
 
-/** Seconds in one partition — the slice the multiplier divides the loop into. */
+/** Seconds in one partition: the slice the multiplier divides the loop into. */
 export function partitionLength(loopLength: number, multiplier: number): number {
   return loopLength / multiplier;
 }
@@ -54,7 +54,7 @@ export function nextPartitionBoundary(
 /**
  * When the spawn loop of a track whose first partition began at `segmentStart`
  * ends: the master boundary that closes the loop iteration the segment started in.
- * Until then the track is "recording-still-in-progress" — set, audible, but not
+ * Until then the track is "recording-still-in-progress": set, audible, but not
  * selectable or editable.
  */
 export function spawnLoopEnd(

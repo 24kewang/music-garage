@@ -4,7 +4,7 @@
  *
  * The design doc phrases step 6 as "regions where the derivative is near zero", and
  * that is the right *intent* but not an implementation that survives real input. A
- * frame-to-frame difference reads the instantaneous vibrato slope — half a semitone
+ * frame-to-frame difference reads the instantaneous vibrato slope: half a semitone
  * at five and a half hertz peaks around seventeen semitones per second, so every
  * sustained note reads as a glide. A least-squares slope over a window does not fix
  * it either: the regression slope of a sine over one period is only zero at one
@@ -21,7 +21,7 @@
  *   a glide leaves the band after it has traveled `tolerance` semitones, however
  *   slowly it got there.
  *
- * **This stage expects an already-smoothed contour** — step 5's median filter, with
+ * **This stage expects an already-smoothed contour**: step 5's median filter, with
  * a kernel around one vibrato period. The band tolerates vibrato that is centered on
  * the anchor, but the anchor is taken from the run's opening frames, and on a raw
  * contour those frames can land anywhere in the swing and push the whole band off to
@@ -36,9 +36,9 @@ export interface Segment {
   /** Half-open range into the contour. */
   startIndex: number;
   endIndex: number;
-  /** Median MIDI over the run — still continuous; rounding happens at step 9. */
+  /** Median MIDI over the run: still continuous; rounding happens at step 9. */
   midi: number;
-  /** Length in seconds of *voiced* contour, which is what the duration gates use. */
+  /** Length in seconds of *voiced* contour, which the duration gates use. */
   seconds: number;
   /** Clock times from the original recording, kept for the debug view only. */
   startTime: number;
@@ -62,7 +62,7 @@ export interface SegmentOptions {
   anchorPoints: number;
   /**
    * Consecutive out-of-band points needed to end a run. One stray frame is a
-   * consonant, a bow change or a bad reading — not a note boundary.
+   * consonant, a bow change or a bad reading, not a note boundary.
    */
   breakPoints: number;
   /** Shortest run that counts as a note. */
@@ -99,7 +99,7 @@ export function findRuns(
 
   for (let i = 1; i <= points.length; i++) {
     if (i === points.length) {
-      // The tail out-of-band points, if any, belong to nothing — they were the
+      // The tail out-of-band points, if any, belong to nothing. They were the
       // beginning of a move that the recording ended in the middle of.
       runs.push({ start, end: points.length - out });
       break;
@@ -169,7 +169,7 @@ export interface GlideOptions {
  * Three guards keep this from eating real music. It only fires on a **short**
  * segment, only when the neighbours are far enough apart that something had to
  * happen in between, and only when it is **strictly** between them and moving the
- * same way — so an upper neighbour tone, or a real note that happens to be brief,
+ * same way, so an upper neighbour tone, or a real note that happens to be brief,
  * survives. The pass repeats, because a two-step scoop leaves two intermediates and
  * removing the first exposes the second.
  */

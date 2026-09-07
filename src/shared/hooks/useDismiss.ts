@@ -9,7 +9,7 @@ export type DismissReason = "escape" | "outside";
  * Close an open overlay on Escape, or on a pointer landing outside it.
  *
  * Every popover in the garage needs exactly this, and it had been written out three
- * times — once per menu — which is three chances for one of them to quietly lose the
+ * times: once per menu, which is three chances for one of them to quietly lose the
  * Escape handler.
  *
  * Listens on `pointerdown` rather than `click` so the overlay closes as the press
@@ -18,8 +18,8 @@ export type DismissReason = "escape" | "outside";
  *
  * The reason matters, which is why it is passed on. Dismissing with Escape should
  * usually put focus back on the trigger, since the keyboard user has nowhere else to
- * be — but doing that on an outside click would snatch focus away from whatever they
- * just deliberately clicked on.
+ * be, but doing that on an outside click would snatch focus away from whatever they
+ * just clicked on.
  */
 export function useDismiss(
   open: boolean,

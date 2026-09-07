@@ -7,9 +7,9 @@ import { rms } from "../dsp/spectrum";
 /**
  * Waiting for the players to start, then grabbing the window that follows.
  *
- * Deliberately built on an `AnalyserNode` rather than an `AudioWorklet`. The analyser
+ * Built on an `AnalyserNode` rather than an `AudioWorklet`. The analyser
  * always holds the most recent `fftSize` samples, so after waiting exactly that long
- * from the onset, one read returns exactly the post-onset window — no ring buffer, no
+ * from the onset, one read returns exactly the post-onset window: no ring buffer, no
  * worklet module to load, and `useMicrophone` needs no changes to support it.
  *
  * The same property is what makes the replay clip possible: a read one window later is
@@ -45,7 +45,7 @@ export interface UseCaptureOptions {
    * Called with the window to analyze, as soon as it is full.
    *
    * Return `true` to keep collecting the remaining replay windows, `false` to stop
-   * immediately — which is how a capture that turned out to be unusable avoids holding
+   * immediately, which is how a capture that turned out to be unusable avoids holding
    * up the next attempt behind a tail nobody will listen to.
    */
   onCaptured: (samples: Float32Array, sampleRate: number) => boolean;
@@ -113,7 +113,7 @@ export function useCapture({
     if (status === "idle") return;
 
     const size = analyser.fftSize;
-    // Allocated once per analyser, not per frame — this is read sixty times a second.
+    // Allocated once per analyser, not per frame. This is read sixty times a second.
     if (!bufferRef.current || bufferRef.current.length !== size) {
       bufferRef.current = new Float32Array(size);
     }
@@ -129,8 +129,8 @@ export function useCapture({
     const tick = () => {
       frameRef.current = requestAnimationFrame(tick);
 
-      // The round can release the microphone from outside this loop — on a correct
-      // answer, or on Stop — which closes the context and leaves the analyser dead.
+      // The round can release the microphone from outside this loop: on a correct
+      // answer, or on Stop, which closes the context and leaves the analyser dead.
       if (analyser.context.state === "closed") {
         stopLoop();
         return;

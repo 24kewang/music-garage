@@ -22,7 +22,7 @@ export interface Playback {
  * Replaying the captured clip.
  *
  * Owns an `AudioContext` of its own rather than borrowing the microphone's, because
- * `useMicrophone`'s teardown closes that one — and the round deliberately releases the
+ * `useMicrophone`'s teardown closes that one, and the round releases the
  * microphone the moment someone answers correctly, which is exactly when the players
  * most want to hear the clip again. The samples themselves are a plain array in memory
  * and outlive the microphone without trouble.
@@ -76,7 +76,7 @@ export function usePlayback(): Playback {
         recording.samples.length,
         recording.sampleRate,
       );
-      // Copied before fading — the fade is destructive, and the stored recording has to
+      // Copied before fading: the fade is destructive, and the stored recording has to
       // survive being replayed more than once. Annotated rather than inferred through
       // fadeEdges, since copyToChannel rejects a view that might be shared-backed.
       const faded: Float32Array<ArrayBuffer> = Float32Array.from(recording.samples);

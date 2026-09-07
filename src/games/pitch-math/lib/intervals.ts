@@ -1,7 +1,7 @@
 /**
  * The interval catalog and the rules for judging a guess.
  *
- * Pure — no React, no DOM, no audio. This is the part of the game that decides who is
+ * Pure: no React, no DOM, no audio. This is the part of the game that decides who is
  * right, so it is kept separate from everything that detected the notes.
  */
 
@@ -23,9 +23,9 @@ export interface Interval {
 }
 
 /**
- * All thirteen, ordered by distance — the order they appear on screen.
+ * All thirteen, ordered by distance: the order they appear on screen.
  *
- * Unison and octave are both here and are genuinely different answers in absolute
+ * Unison and octave are both here and are different answers in absolute
  * mode, which is why there are thirteen buttons rather than twelve.
  */
 export const INTERVALS: readonly Interval[] = [
@@ -51,7 +51,7 @@ export const OCTAVE = 12;
  * Fold a raw semitone distance onto the board.
  *
  * Two players on different instruments can land several octaves apart, but the board
- * only goes as far as an octave — so a 12th answers as a perfect 5th and two octaves
+ * only goes as far as an octave, so a 12th answers as a perfect 5th and two octaves
  * as an octave, the usual ear-training convention. Unison is the one distance that
  * stays put; every other multiple of twelve reads as an octave rather than collapsing
  * back to unison.
@@ -76,7 +76,7 @@ export function invert(folded: number): number {
  * Absolute takes the distance from the lower note and nothing else. Relative also
  * takes the inversion, because a player naming the interval from the top note rather
  * than the bottom isn't wrong about what they heard. That yields exactly two answers
- * for every interval except the tritone, which is its own inversion — derived here
+ * for every interval except the tritone, which is its own inversion: derived here
  * rather than written out as a table, so the rule can't drift from the catalog.
  */
 export function acceptedAnswers(

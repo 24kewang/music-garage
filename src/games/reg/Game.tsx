@@ -31,7 +31,7 @@ import UploadScreen, { type UploadResult } from "./components/UploadScreen";
 import styles from "./game.module.css";
 
 /**
- * Random Excerpt Generator — orchestration only.
+ * Random Excerpt Generator: orchestration only.
  *
  * Which screen shows follows from one async fact (what's in the OPFS library);
  * everything camera- and three.js-shaped lives behind FilterScreen. Selection is
@@ -45,7 +45,7 @@ export default function Game() {
   const [settings, setSettings] = useState<Settings>(DEFAULT_SETTINGS);
   const [spinning, setSpinning] = useState(false);
   const [overlayOpen, setOverlayOpen] = useState(false);
-  // Camera mode is session state on purpose: every visit starts camera-free so the 3D
+  // Camera mode is session state: every visit starts camera-free so the 3D
   // stack is only fetched once a player asks for it. Persisting it would undo that on
   // the next load. See lib/settings.ts.
   const [useCamera, setUseCamera] = useState(false);
@@ -181,7 +181,7 @@ export default function Game() {
     <>
       {/*
        * Conditional, never mounted-and-hidden. Hiding the filter would leave the camera
-       * running with its light on, and — worse — MindAR never removes the canvas it
+       * running with its light on, and, worse, MindAR never removes the canvas it
        * appends to the container, so a hidden screen would stack a dead canvas on every
        * toggle. Unmounting makes React discard the subtree, orphaned canvas and all.
        */}

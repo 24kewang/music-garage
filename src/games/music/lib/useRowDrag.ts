@@ -8,7 +8,7 @@ import { config } from "../config";
  * Drag-to-reorder for the settings panel's player list.
  *
  * The geometry is the shared, tested `@/shared/lib/reorder`. What is here is only the
- * pointer gesture — and it is a good deal smaller than the Loop Station's, on purpose:
+ * pointer gesture, and it is a good deal smaller than the Loop Station's, because
  * four rows in a panel that does not scroll need no edge auto-scrolling and no
  * arbitration between a swipe and a drag over a long list. Sharing that hook would
  * have meant carrying machinery with nothing to do.
@@ -23,7 +23,7 @@ import { config } from "../config";
  * press near an input was ambiguous. It also removes the swipe-versus-drag problem
  * outright, which is why there is no long-press wait here.
  *
- * Dragging is never the only way to reorder — the handle is a real button and the
+ * Dragging is never the only way to reorder: the handle is a real button and the
  * arrow keys move the row. A pointer-only list is unreachable by keyboard.
  */
 
@@ -46,7 +46,7 @@ interface Gesture {
 
 export interface RowDrag {
   listRef: (node: HTMLElement | null) => void;
-  /** Bind to the row's drag handle — nowhere else. */
+  /** Bind to the row's drag handle: nowhere else. */
   onHandlePointerDown: (index: number, event: React.PointerEvent) => void;
   active: boolean;
   draggingIndex: number | null;
@@ -84,7 +84,7 @@ export function useRowDrag({
     [],
   );
 
-  /** Measure after the commit that starts the drag — these hold for the gesture. */
+  /** Measure after the commit that starts the drag. These hold for the gesture. */
   useLayoutEffect(() => {
     if (!drag || drag.shiftPx !== null) return;
 
@@ -142,7 +142,7 @@ export function useRowDrag({
 
     // Clear the inline transforms and suppress transitions for one frame: the
     // reorder and the reset land together, and without this every row animates
-    // from its drag offset while the DOM order has already changed — the list
+    // from its drag offset while the DOM order has already changed: the list
     // visibly swims.
     const list = listNode.current;
     if (list) {
@@ -187,7 +187,7 @@ export function useRowDrag({
         begin();
       }
 
-      // Only once a drag is genuinely running: before that the panel must stay free
+      // Only once a drag is running: before that the panel must stay free
       // to scroll normally.
       event.preventDefault();
       paint();

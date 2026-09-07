@@ -5,7 +5,7 @@ import { MAX_SCORE, scoreAt, scoreValue } from "./scoring";
 
 /**
  * Angles are derived from the configured target rather than written as literals, so
- * these hold at any `targetHalfWidthDeg` — the whole point of it being one knob.
+ * these hold at any `targetHalfWidthDeg`: the whole point of it being one knob.
  */
 const EDGE = config.targetHalfWidthDeg;
 /** Dead center of a wedge, by index into WEDGES. */

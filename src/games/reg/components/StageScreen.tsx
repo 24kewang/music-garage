@@ -12,7 +12,7 @@ import styles from "./StageScreen.module.css";
 /**
  * The camera-free mode: the same slot machine, drawn as ordinary DOM.
  *
- * No camera, no WebGL, no MindAR — and because `three` and `mind-ar` only ever arrive
+ * No camera, no WebGL, no MindAR, and because `three` and `mind-ar` only ever arrive
  * through dynamic imports inside `createRegScene` / `loadTexture`, neither of which this
  * screen calls, none of the 3D stack loads here at all. This is the path that works with
  * the camera denied and with no network.
@@ -61,7 +61,7 @@ export default function StageScreen({
 
   const { phase, landed, shaking, spin } = useSpinReel({
     checked,
-    // Nothing to wait for — there is no camera to start, and the pool exists before any
+    // Nothing to wait for. There is no camera to start, and the pool exists before any
     // click can reach spin().
     ready: true,
     spinning,

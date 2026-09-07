@@ -1,8 +1,8 @@
 /**
  * The tests' instrument.
  *
- * Synthesizing input in-process is the house convention for audio tests — there are
- * no fixture files anywhere in this repo, and a golden `.wav` would drift silently
+ * Synthesizing input in-process is the house convention for audio tests. There are
+ * no fixture files anywhere in this repo, and a golden `.wav` would drift unnoticed
  * against a detector change. Everything here is deterministic: the noise is seeded,
  * so a failure is reproducible rather than occasionally.
  *
@@ -26,7 +26,7 @@ export interface NoteSpec {
   amplitude?: number;
 }
 
-/** A seeded LCG — same numbers on every run, on every machine. */
+/** A seeded LCG: same numbers on every run, on every machine. */
 function seeded(seed: number): () => number {
   let state = seed >>> 0;
   return () => {
@@ -99,7 +99,7 @@ export function phrase(
   return out;
 }
 
-/** Every note the same length, straight, with no gaps — the simplest possible case. */
+/** Every note the same length, straight, with no gaps: the simplest possible case. */
 export function melody(
   midis: readonly number[],
   sampleRate: number,

@@ -63,22 +63,22 @@ export default function SettingsPanel({
 }: {
   root: TreeNode;
   checked: ReadonlySet<string>;
-  /** True while a spin is running — the gear refuses to open. */
+  /** True while a spin is running: the gear refuses to open. */
   disabled: boolean;
   settings: Settings;
   onSettingsChange: (settings: Settings) => void;
-  /** Camera mode is session state, not a stored setting — see lib/settings.ts. */
+  /** Camera mode is session state, not a stored setting. See lib/settings.ts. */
   useCamera: boolean;
   cameraBusy: boolean;
   onUseCameraChange: (useCamera: boolean) => void;
   onToggle: (node: TreeNode, value: boolean) => void;
-  /** Check or uncheck exactly these files — the ones the tree is showing. */
+  /** Check or uncheck exactly these files: the ones the tree is showing. */
   onToggleFiles: (files: readonly string[], value: boolean) => void;
   onUpload: (incoming: Incoming[]) => Promise<UploadResult>;
   onDeleteAll: () => Promise<void>;
 }) {
   const [open, setOpen] = useState(false);
-  // Deliberately not reset by close(): tuning the filter means opening the panel
+  // Not reset by close(): tuning the filter means opening the panel
   // over and over, and landing back on Files every time would be a nuisance.
   const [tab, setTab] = useState<TabId>("files");
   const [query, setQuery] = useState("");
@@ -137,7 +137,7 @@ export default function SettingsPanel({
     try {
       const { added, skipped } = await onUpload(incoming);
       if (added === 0 && skipped > 0) {
-        setNotice("No images in that pick — only image files are kept.");
+        setNotice("No images in that pick. Only image files are kept.");
       } else if (skipped > 0) {
         setNotice(`Added ${added}, skipped ${skipped} non-image file${skipped === 1 ? "" : "s"}.`);
       } else if (added > 0) {

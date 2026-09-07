@@ -50,7 +50,7 @@ describe("coerceSettings", () => {
     }
   });
 
-  it("ignores a stored camera mode — it is session state, not a setting", () => {
+  it("ignores a stored camera mode: it is session state, not a setting", () => {
     expect("useCamera" in coerceSettings({ useCamera: true })).toBe(false);
   });
 

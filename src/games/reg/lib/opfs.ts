@@ -10,7 +10,7 @@ import { isImagePath, splitSegments } from "./paths";
  * colliding with it.
  */
 
-/** OPFS support gate — old Safari lacks getDirectory/createWritable. */
+/** OPFS support gate: old Safari lacks getDirectory/createWritable. */
 export function isOpfsSupported(): boolean {
   return (
     typeof navigator !== "undefined" &&
@@ -20,7 +20,8 @@ export function isOpfsSupported(): boolean {
 
 /**
  * Ask the browser to make this origin's storage durable. Best-effort: Chrome may
- * refuse silently based on engagement heuristics, and the library still works —
+ * refuse without explanation based on engagement heuristics, and the library still
+ * works;
  * it's just theoretically evictable under storage pressure.
  */
 export async function requestPersistence(): Promise<boolean> {
@@ -65,8 +66,8 @@ async function walk(
 }
 
 /**
- * Write uploaded files, creating folders as needed. Duplicate paths overwrite —
- * `createWritable` truncates — so re-uploading a corrected excerpt just works.
+ * Write uploaded files, creating folders as needed. Duplicate paths overwrite:
+ * `createWritable` truncates, so re-uploading a corrected excerpt just works.
  */
 export async function writeFiles(
   entries: readonly { path: string; file: File }[],
@@ -108,6 +109,6 @@ export async function deleteAll(): Promise<void> {
   try {
     await opfsRoot.removeEntry(config.files.opfsRoot, { recursive: true });
   } catch {
-    // Already gone — deleting an empty library is a no-op, not an error.
+    // Already gone: deleting an empty library is a no-op, not an error.
   }
 }

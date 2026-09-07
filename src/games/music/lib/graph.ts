@@ -1,7 +1,7 @@
 import type { AlignStep, Op } from "../score/align";
 
 /**
- * Geometry for the failure graph — two step functions, one over the other.
+ * Geometry for the failure graph: two step functions, one over the other.
  *
  * Pure and tested, so the fiddly parts are checkable rather than only inspectable by
  * losing a round and squinting at the dialog.
@@ -9,7 +9,7 @@ import type { AlignStep, Op } from "../score/align";
  * Two decisions do most of the work here.
  *
  * **The x axis is indexed by the alignment path, not by the target sequence.** Every
- * step gets identical width — evenly spaced, as the brief asks — but an inserted note
+ * step gets identical width: evenly spaced, as the brief asks, but an inserted note
  * then occupies real width instead of being wedged into a boundary. The consequence
  * is the good bit: a missed note leaves a *gap* in the attempt's line and an extra
  * one leaves a gap in the target's, so both kinds of error are legible with the
@@ -101,7 +101,7 @@ export function buildGraph(
 /**
  * The graph in words, for the `aria-label`.
  *
- * The picture is not the only way to learn what went wrong — a screen reader gets
+ * The picture is not the only way to learn what went wrong: a screen reader gets
  * the same account, and it is the account the dialog's heading is built from too.
  */
 export function describeAlignment(steps: readonly AlignStep[]): string {

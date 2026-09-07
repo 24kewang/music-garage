@@ -7,7 +7,7 @@
  * logic are guaranteed to describe the same shape. `geometry.test.ts` pins the
  * generated coordinates to the design's values.
  *
- * Pure — no React, no DOM beyond an optional bounding rect. Unit-testable.
+ * Pure: no React, no DOM beyond an optional bounding rect. Unit-testable.
  */
 
 import { config } from "../config";
@@ -42,7 +42,7 @@ export function norm(deg: number): number {
 
 /**
  * Point on a circle in the dial's convention: 0° is straight up, positive is
- * clockwise — matching SVG's `rotate()` so generated geometry and transforms agree.
+ * clockwise: matching SVG's `rotate()` so generated geometry and transforms agree.
  */
 export function polar(radius: number, deg: number): Point {
   return {
@@ -144,13 +144,13 @@ export function buildWedges(): Wedge[] {
   return wedges;
 }
 
-/** Built once — the wedge list is static for a given config. */
+/** Built once: the wedge list is static for a given config. */
 export const WEDGES: readonly Wedge[] = buildWedges();
 
 // -------------------------------------------------------- the window and the lid
 
 /**
- * The opening in the housing — and, identically, the outline of the cover that closes
+ * The opening in the housing, and, identically, the outline of the cover that closes
  * over it. A plain upper semicircle, as the design has it.
  *
  * Both the housing's window and the cover fill are drawn from this one function. That
@@ -161,7 +161,7 @@ export function windowPath(radius: number = config.geometry.wheelRadius): string
   return `M ${-radius} 0 A ${radius} ${radius} 0 0 1 ${radius} 0 Z`;
 }
 
-/** The cover's curved rim, for the highlight stroke — the same arc, left open. */
+/** The cover's curved rim, for the highlight stroke: the same arc, left open. */
 export function coverRimPath(radius: number = config.geometry.wheelRadius): string {
   return `M ${-radius} 0 A ${radius} ${radius} 0 0 1 ${radius} 0`;
 }

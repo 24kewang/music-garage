@@ -49,7 +49,7 @@ export default function PlayerTab({
   };
 
   // The moved row is somewhere else in the DOM now, so its handle is found by id
-  // rather than held in a map — the same querySelector approach the Loop Station's
+  // rather than held in a map: the same querySelector approach the Loop Station's
   // drag uses, and it keeps the render free of ref bookkeeping.
   useEffect(() => {
     const id = pendingFocus.current;

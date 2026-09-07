@@ -12,11 +12,11 @@ import { toolHref } from "@/tools/types";
 export const dynamic = "force-static";
 
 /**
- * Built from the registries, not from a hand-kept list — registering a game is
+ * Built from the registries, not from a hand-kept list: registering a game is
  * already what puts it in the nav and the gallery, and this makes it what puts the
  * game in the sitemap too. One place to forget instead of three.
  *
- * `lastModified` is deliberately absent: a static export has no per-route history to
+ * `lastModified` is absent: a static export has no per-route history to
  * read, and stamping every URL with the build time would tell crawlers that the whole
  * site changed on every deploy.
  */

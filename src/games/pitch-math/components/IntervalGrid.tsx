@@ -9,7 +9,7 @@ import styles from "./IntervalGrid.module.css";
  * The thirteen answers.
  *
  * A wrong press shakes the button and dulls it; a right one lights up. Neither state
- * is carried by color alone — an eliminated button is also struck through and marked
+ * is carried by color alone: an eliminated button is also struck through and marked
  * `aria-disabled`, and the winner also gets a tick. Color-only status is the single
  * most common accessibility failure in a UI like this, and it would leave a
  * color-blind player unable to tell which answers they had already burned.
@@ -56,9 +56,9 @@ export default function IntervalGrid({
             aria-disabled={locked}
             aria-label={
               abbreviate
-                ? `${interval.name}${isOut ? " — already tried" : ""}`
+                ? `${interval.name}${isOut ? ", already tried" : ""}`
                 : isOut
-                  ? `${interval.name} — already tried`
+                  ? `${interval.name}, already tried`
                   : undefined
             }
             onClick={(event) => {

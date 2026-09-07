@@ -5,7 +5,7 @@
  * both click on playback. The ramp is long enough to remove the click and short
  * enough that nobody hears it as a fade.
  *
- * Destructive, deliberately: the caller copies first. Stored recordings get replayed
+ * Destructive: the caller copies first. Stored recordings get replayed
  * more than once, and fading the original each time would eat further into it.
  */
 export function fadeEdges(
@@ -17,7 +17,7 @@ export function fadeEdges(
   if (ramp <= 0) return;
 
   // Never longer than half the clip, or the two ramps would overlap and fight over
-  // the middle — a very short clip would come out quieter than it went in.
+  // the middle: a very short clip would come out quieter than it went in.
   const length = Math.min(ramp, Math.floor(samples.length / 2));
 
   for (let i = 0; i < length; i++) {

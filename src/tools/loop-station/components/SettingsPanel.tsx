@@ -10,8 +10,8 @@ import styles from "./SettingsPanel.module.css";
 
 /**
  * The settings gear, bottom-right: the default delay (±1000 ms, seeding every
- * new track and overwrite) and latency calibration. Closing the panel — by any
- * route — stops the calibration metronome immediately.
+ * new track and overwrite) and latency calibration. Closing the panel, by any
+ * route, stops the calibration metronome immediately.
  */
 export default function SettingsPanel({
   session,
@@ -83,7 +83,7 @@ export default function SettingsPanel({
                 }
               />
               <p className={styles.hint}>
-                Alignment. Positive compensates for latency — what you heard on the
+                Alignment. Positive compensates for latency: what you heard on the
                 beat plays on the beat.
               </p>
             </div>
@@ -149,7 +149,7 @@ export default function SettingsPanel({
               {calibration.running ? "Stop calibrating" : "Calibrate"}
             </button>
             {session.playing && (
-              <p className={styles.hint}>Stop the loop first — calibration needs quiet.</p>
+              <p className={styles.hint}>Stop the loop first; calibration needs quiet.</p>
             )}
             {calibration.running && (
               <p className={styles.hint} role="status">
@@ -157,7 +157,7 @@ export default function SettingsPanel({
                 {calibration.count < config.calibration.minSamples
                   ? `Heard ${calibration.count}…`
                   : `${calibration.count} hits · latency ≈ ${calibration.estimateMs} ms`}
-                {calibration.count >= config.calibration.targetBeats && " — that's plenty."}
+                {calibration.count >= config.calibration.targetBeats && ". That's plenty."}
               </p>
             )}
             {!calibration.running && calibration.estimateMs !== null && (

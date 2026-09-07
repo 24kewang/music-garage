@@ -1,6 +1,6 @@
 /**
  * mind-ar ships no type declarations. This shim covers exactly the surface the
- * scene module uses — nothing more, so drift from the real API stays visible.
+ * scene module uses: nothing more, so drift from the real API stays visible.
  */
 declare module "mind-ar/dist/mindar-face-three.prod.js" {
   import type { Camera, Group, Scene, WebGLRenderer } from "three";
@@ -15,7 +15,7 @@ declare module "mind-ar/dist/mindar-face-three.prod.js" {
     constructor(options: {
       container: HTMLElement;
       /** "yes" (default) builds MindAR's own overlay, "no" builds none, anything else
-       *  is treated as a selector for an existing element. We pass "no" — see the
+       *  is treated as a selector for an existing element. We pass "no". See the
        *  comment at the construction site. */
       uiLoading?: "yes" | "no" | string;
       uiScanning?: "yes" | "no" | string;
@@ -30,7 +30,7 @@ declare module "mind-ar/dist/mindar-face-three.prod.js" {
     scene: Scene;
     camera: Camera;
     /** The webcam element MindAR injects. Nulled in our stop() to neuter the
-     *  library's un-removable resize listener — hence `| null`. */
+     *  library's un-removable resize listener: hence `| null`. */
     video: HTMLVideoElement | null;
     addAnchor(anchorIndex: number): MindARFaceAnchor;
     start(): Promise<void>;

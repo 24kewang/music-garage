@@ -7,9 +7,9 @@ import { scoreAt, type Landing } from "./scoring";
 import { needsMicrophone, type NeedleMode } from "./settings";
 
 /**
- * setup  — place the target: spin the wheel, open and close the cover freely.
- * guess  — aim the needle. The wheel is locked; opening the cover ends the round.
- * reveal — the score is in. Touching the wheel starts over.
+ * setup : place the target: spin the wheel, open and close the cover freely.
+ * guess : aim the needle. The wheel is locked; opening the cover ends the round.
+ * reveal: the score is in. Touching the wheel starts over.
  */
 export type Phase = "setup" | "guess" | "reveal";
 
@@ -25,7 +25,7 @@ export interface DialState {
   needleDeg: number;
   /** Audio modes only: needle held at its current angle. */
   locked: boolean;
-  /** Set on reveal — which band was hit, or null for a miss. */
+  /** Set on reveal, which band was hit, or null for a miss. */
   landing: Landing | null;
   /** Bumped on every reveal so one-shot effects re-run on a repeat score. */
   revealKey: number;
@@ -85,7 +85,7 @@ export function useDial(
 
   /**
    * The cover's authoritative angle. Kept alongside the state because the animation
-   * loop and the drag both need to read the current value synchronously — and because
+   * loop and the drag both need to read the current value synchronously, and because
    * scheduling frames from inside a state updater would double up under StrictMode's
    * double-invoked updaters.
    */
@@ -165,7 +165,7 @@ export function useDial(
 
       const pointerDeg = angleAt(point);
 
-      // The needle is only grabbable while aiming, and only in manual mode — in the
+      // The needle is only grabbable while aiming, and only in manual mode: in the
       // audio modes it belongs to the microphone.
       const nearNeedle =
         Math.abs(norm(pointerDeg - needleDeg)) < motion.needleGrabDeg;
@@ -263,7 +263,7 @@ export function useDial(
     if (phase !== "guess") return;
     if (!needsMicrophone(mode) || locked) return;
     if (audioNeedleDeg === null) return;
-    // Syncing an external signal (the microphone) into React state — the case the
+    // Syncing an external signal (the microphone) into React state: the case the
     // set-state-in-effect rule explicitly allows, which the linter can't detect.
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setNeedleDeg(audioNeedleDeg);

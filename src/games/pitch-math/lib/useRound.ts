@@ -37,7 +37,7 @@ export interface Round {
   eliminated: readonly number[];
   /** The winning answer, once it has been found. */
   solved: number | null;
-  /** The notes that were played — only populated once solved. */
+  /** The notes that were played: only populated once solved. */
   revealMidis: readonly number[];
   /**
    * The captured audio, for the replay button. Survives the reveal and is cleared only
@@ -58,14 +58,14 @@ export interface Round {
 const NOTHING: readonly number[] = [];
 
 const NOTICES: Record<"silence" | "unclear", string> = {
-  silence: "Didn't hear anything — play a little louder.",
+  silence: "Didn't hear anything. Play a little louder.",
   unclear: "That wasn't clear enough. Try again, holding the notes.",
 };
 
 /**
  * One round, from pressing the microphone to the answer being found.
  *
- * The detected interval is deliberately **not** exposed. Only `eliminated` and
+ * The detected interval is **not** exposed. Only `eliminated` and
  * `solved` leave this hook, so the answer cannot be read out of the DOM or React's
  * devtools while the players are still guessing.
  */
@@ -117,7 +117,7 @@ export function useRound(mode: IntervalMode): Round {
     const result = detect(samples, analyzeSpectrum(plan, samples, sampleRate), grid);
 
     if (result.kind === "none") {
-      // Straight back to listening rather than stopping — the players shouldn't have
+      // Straight back to listening rather than stopping: the players shouldn't have
       // to reach for the mouse between attempts. The notice and the level meter are
       // what keep that from being a silent dead end. Returning false abandons the
       // replay tail too: nobody wants to listen back to a capture that heard nothing.
@@ -152,7 +152,7 @@ export function useRound(mode: IntervalMode): Round {
 
   const { start: startCapture, stop: stopCapture } = capture;
 
-  // Listening resumes whenever the phase says so — after the microphone comes up, and
+  // Listening resumes whenever the phase says so: after the microphone comes up, and
   // again after a pass that heard nothing.
   useEffect(() => {
     if (phase !== "listening") return;
@@ -232,7 +232,7 @@ export function useRound(mode: IntervalMode): Round {
   /**
    * A microphone that never opened would otherwise leave the player watching a
    * listening animation forever, so a failed permission drops the screen back to the
-   * button — where the error message is.
+   * button: where the error message is.
    *
    * Derived rather than written back into state: correcting it in an effect would
    * render once with the wrong phase and again with the right one, and would need

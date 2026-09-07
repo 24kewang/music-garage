@@ -25,7 +25,7 @@ const BEZEL_RIGHT = "M 318 0 A 318 318 0 0 1 286 143 L 296 154 A 330 330 0 0 0 3
  * The dark faceplate the wheel sits behind: a trapezoid below, and a ring above with
  * the upper semicircle punched out to form the window. Both get a speckle overlay.
  *
- * The trapezoid needs no punching of its own — it lives entirely at y ≥ 0 and the
+ * The trapezoid needs no punching of its own. It lives entirely at y ≥ 0 and the
  * window entirely at y ≤ 0, so it can never intrude into the opening.
  */
 export default function Housing() {

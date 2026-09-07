@@ -7,7 +7,7 @@ import styles from "./MicGate.module.css";
 
 /**
  * Boot overlays: the mic-permission wait, the tap-to-start autoplay gate, and
- * hard errors. Plus the Bluetooth warning — earbuds + mic at once usually force
+ * hard errors. Plus the Bluetooth warning: earbuds + mic at once usually force
  * the hands-free profile (mono, call quality, 100–300ms of drifting latency),
  * which quietly ruins loops and calibration alike.
  */
@@ -31,7 +31,7 @@ export default function MicGate({
         <WarningIcon size={16} weight="bold" aria-hidden="true" />
         <span>
           That looks like a Bluetooth microphone. Bluetooth forces call-quality mono
-          audio with high, drifting latency — wired earbuds or an audio interface will
+          audio with high, drifting latency. Wired earbuds or an audio interface will
           loop far better.
         </span>
         <button

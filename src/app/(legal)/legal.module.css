@@ -1,7 +1,7 @@
 /*
  * Long-form reading, which nothing else on the site is. Narrower than the page's
  * 68rem so lines stay at a comfortable measure, and generous vertical rhythm so the
- * sections are scannable — these are documents people skim for one clause.
+ * sections are scannable. These are documents people skim for one clause.
  */
 .doc {
   max-width: 44rem;
@@ -27,20 +27,6 @@
   font-family: var(--font-mono);
   font-size: var(--text-xs);
   color: var(--color-text-faint);
-}
-
-/*
- * The "this is not legal advice" line. An aside rather than a heading: it should be
- * read once and then stop competing with the document.
- */
-.note {
-  margin-top: var(--space-4);
-  padding: var(--space-3) var(--space-4);
-  border-left: 2px solid var(--color-accent-line);
-  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
-  background: var(--color-accent-soft);
-  font-size: var(--text-sm);
-  color: var(--color-text-muted);
 }
 
 .section {

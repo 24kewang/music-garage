@@ -35,11 +35,11 @@ export const metadata: Metadata = {
   alternates: { canonical: "/" },
   /*
    * Every icon lives in `public/` and is generated from `public/icon.svg` by
-   * `npm run icons`. They are deliberately NOT `app/` file-convention icons: those
+   * `npm run icons`. They are NOT `app/` file-convention icons, because those
    * emit hashed URLs (`/icon.svg?a1b2c3`), and `manifest.ts` needs stable paths it
    * can name.
    *
-   * Order matters — the SVG first, so anything that understands it uses the one
+   * Order matters: the SVG first, so anything that understands it uses the one
    * that stays sharp at every size. `/favicon.ico` is still worth shipping because
    * browsers probe that exact path on their own, before reading any of these tags.
    * The apple icon must be a PNG: iOS ignores SVG for `apple-touch-icon` and falls

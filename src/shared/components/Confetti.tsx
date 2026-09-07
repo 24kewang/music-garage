@@ -5,7 +5,7 @@ import styles from "./Confetti.module.css";
 
 /**
  * Everything about the look of a burst. Passed in rather than imported so each game
- * can match its own palette — the dial's confetti is cream and teal, Pitch Math's is
+ * can match its own palette: the dial's confetti is cream and teal, Pitch Math's is
  * indigo.
  */
 export interface ConfettiConfig {
@@ -68,14 +68,14 @@ export default function Confetti({
   config: ConfettiConfig;
   /**
    * Where to burst from, in viewport pixels. Given when the celebration belongs to a
-   * particular element — a button that was just pressed — rather than to the screen.
+   * particular element: a button that was just pressed: rather than to the screen.
    */
   origin?: { x: number; y: number } | null;
 }) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
   /**
-   * Read inside the effect but deliberately not a dependency: only `burstKey` should
+   * Read inside the effect but not a dependency: only `burstKey` should
    * fire a burst. A new config object on a re-render must not launch confetti.
    */
   const settingsRef = useRef({ config, origin });

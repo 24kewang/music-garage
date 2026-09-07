@@ -3,10 +3,10 @@
  *
  * Keeps the last N seconds of mic input in a ring buffer, stamped by the audio
  * clock's own frame counter, so button presses are *time marks* rather than
- * recording boundaries — extraction happens after the fact, with padding.
+ * recording boundaries: extraction happens after the fact, with padding.
  *
- * Plain JS on purpose: worklets are loaded by URL (`/worklets/loop-capture.js`),
- * outside the app bundle. Kept dumb — all decisions (onset detection, offsets,
+ * Plain JS, because worklets are loaded by URL (`/worklets/loop-capture.js`),
+ * outside the app bundle. Kept dumb: all decisions (onset detection, offsets,
  * windows) happen on the main thread in testable TypeScript; this file only
  * moves samples. Communication is postMessage, not SharedArrayBuffer, because
  * SAB needs COOP/COEP headers that would break the REG game's cross-origin
@@ -23,8 +23,8 @@
  *         Used by both latency calibration and overwrite auto-detect.
  *
  * Messages out:
- *   { type: "start", frame, time }        — once; maps currentTime ↔ frame.
- *   { type: "level", time, rms, peak }    — peak drives the meter, rms drives
+ *   { type: "start", frame, time }       : once; maps currentTime ↔ frame.
+ *   { type: "level", time, rms, peak }   : peak drives the meter, rms drives
  *                                           calibration's onset detection.
  */
 class LoopCaptureProcessor extends AudioWorkletProcessor {

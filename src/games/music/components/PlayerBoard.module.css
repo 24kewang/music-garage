@@ -1,6 +1,6 @@
 /*
  * The scoreboard. Centered, wrapping on narrow screens rather than shrinking the
- * boxes below the point where the letters can be read across the room — which is
+ * boxes below the point where the letters can be read across the room, which is
  * the distance this thing is actually read from.
  */
 
@@ -49,7 +49,7 @@
 }
 
 /*
- * Up for grabs. The affordance appears only while the box is genuinely a button, so
+ * Up for grabs. The affordance appears only while the box is actually a button, so
  * a hover that does nothing is never offered.
  */
 .card[data-pickable] {
@@ -63,7 +63,7 @@
 }
 
 /*
- * Out of the game. Dimmed rather than removed — but the lit-up word is the real
+ * Out of the game. Dimmed rather than removed, but the lit-up word is the real
  * statement, so this only has to stop the box competing for attention.
  */
 .card[data-out] {

@@ -32,7 +32,7 @@
 
 /*
  * Suppressed for the one frame where the reorder and the transform reset land
- * together — without it every row animates from its drag offset while the DOM order
+ * together: without it every row animates from its drag offset while the DOM order
  * has already changed, and the list visibly swims.
  */
 .list[data-dropping] .row {

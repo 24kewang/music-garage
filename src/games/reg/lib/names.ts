@@ -5,7 +5,7 @@ import { splitSegments } from "./paths";
  *
  * "orchestral/mahler/Symphony No. 5.png" → "orchestral - mahler - Symphony No. 5",
  * shrunk to fit a budget by sacrificing folders (longest first) before ever touching
- * the file name — the file name is the part the player actually needs to read.
+ * the file name: the file name is the part the player actually needs to read.
  */
 
 /** Path → caption segments: split on "/", strip the extension from the file name. */

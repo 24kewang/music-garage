@@ -13,8 +13,8 @@ export class CaptureBus {
   /** Latest input peak from the worklet, for the meter. */
   peak = 0;
   /**
-   * Subscribers to the per-block RMS. Two features want it — calibration and
-   * auto-detect — so the detailed-level mode is reference-counted rather than
+   * Subscribers to the per-block RMS. Two features want it: calibration and
+   * auto-detect, so the detailed-level mode is reference-counted rather than
    * flag-based; otherwise whichever finished last would switch it off under
    * the other.
    */
@@ -29,7 +29,7 @@ export class CaptureBus {
         this.origin = { frame: msg.frame, time: msg.time };
       } else if (msg.type === "level") {
         this.peak = msg.peak;
-        // Onset detection wants RMS — a peak is too twitchy to threshold on.
+        // Onset detection wants RMS: a peak is too twitchy to threshold on.
         for (const listener of this.levelListeners) listener(msg.time, msg.rms);
       } else if (msg.type === "segment") {
         const resolve = this.pending.get(msg.id);
@@ -46,7 +46,7 @@ export class CaptureBus {
 
   /**
    * Extract `[fromTime, toTime)` from the ring. Resolves once the worklet has
-   * written up to `toTime` — immediately for the past, later for a window
+   * written up to `toTime`: immediately for the past, later for a window
    * extending into the future (the post-roll padding).
    */
   extract(fromTime: number, toTime: number): Promise<Float32Array> {

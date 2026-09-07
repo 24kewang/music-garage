@@ -3,7 +3,7 @@
  *
  * Components read from here rather than embedding literals, so the look and feel can
  * be retuned without hunting through JSX. Values marked "design" come from the
- * Wavelength Dial design and changing them is a deliberate deviation from it.
+ * Wavelength Dial design, and changing them is a deviation from it.
  */
 
 export const config = {
@@ -19,7 +19,7 @@ export const config = {
   },
 
   geometry: {
-    /** Radius of the target wheel face — the bands are drawn on this circle. */
+    /** Radius of the target wheel face: the bands are drawn on this circle. */
     wheelRadius: 300,
     /** The scalloped outer plate behind the wheel. */
     scallopRadius: 336,
@@ -42,7 +42,7 @@ export const config = {
      *
      * Held inside needleMaxDeg so the outermost labels clear the window's straight
      * edge. Out at 88° a label sits only ~8 units above that edge and is rotated to
-     * run almost vertically, so its own length carries it across — moving it radially
+     * run almost vertically, so its own length carries it across: moving it radially
      * inward makes that worse, not better. Pulling the span in is the fix.
      */
     scaleMaxDeg: 86.5,
@@ -68,7 +68,7 @@ export const config = {
    * fraction of `targetHalfWidthDeg`, so band N spans
    * bands[N-1].edgeFraction … bands[N].edgeFraction either side of center.
    *
-   * The outermost band must end at 1 — that's the edge of the target.
+   * The outermost band must end at 1. That's the edge of the target.
    */
   bands: [
     { edgeFraction: 0.2, score: 4, fill: "#5b8797", labelFill: "#f1ece2" },
@@ -173,7 +173,7 @@ export const config = {
   confetti: {
     /** Fired only on a maximum score. */
     pieceCount: 160,
-    /** Burst origin as a fraction of the viewport — roughly the dial's hub. */
+    /** Burst origin as a fraction of the viewport: roughly the dial's hub. */
     originX: 0.5,
     originY: 0.48,
     /** Initial speed range, px/s. */

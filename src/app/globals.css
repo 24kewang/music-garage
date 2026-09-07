@@ -85,7 +85,7 @@ button:disabled {
 }
 
 /**
- * Visible only when focused — lets keyboard users jump the header, which matters more
+ * Visible only when focused: lets keyboard users jump the header, which matters more
  * than usual here because the header overlays the page.
  */
 .skipLink {

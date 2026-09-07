@@ -6,7 +6,7 @@ import { divisorsOf } from "./transport";
  *
  * Shortcuts are convenience only: they never make something possible that the
  * buttons don't already allow. Most of that falls out of the reducer, which
- * already refuses impossible events — but where a key has no meaningful target
+ * already refuses impossible events, but where a key has no meaningful target
  * at all (a bus that doesn't exist, nothing to delete), this returns `null`,
  * and the caller leaves the browser's own behavior alone.
  */
@@ -28,7 +28,7 @@ export const SHORTCUT_HINTS: readonly { keys: string; label: string }[] = [
 /**
  * What Delete/Backspace acts on: the selected track if there is one, otherwise
  * the bottom-most track that isn't locked. An in-progress track is never a
- * target — it can't be selected, and it's skipped when scanning from the
+ * target. It can't be selected, and it's skipped when scanning from the
  * bottom. A track carrying an overwrite loses the overwrite first; the track
  * itself only goes once it is plain again.
  */
@@ -64,7 +64,7 @@ function stepMultiplier(state: SessionState, delta: number): SessionEvent | null
 }
 
 /**
- * Cycle which bus is selected — the one new recordings land on. Wraps, like the
+ * Cycle which bus is selected: the one new recordings land on. Wraps, like the
  * multiplier does; the rack holds at most three. A single-bus rack has nothing
  * to move to, and `selectBus` would hand back a fresh state object for nothing.
  */
@@ -80,11 +80,11 @@ function stepBus(state: SessionState, delta: number): SessionEvent | null {
 /**
  * Move the track selection, but only when something is already selected.
  *
- * Steps through selectable tracks — an in-progress one can't be selected, so it
- * is skipped — and **clamps** at both ends rather than wrapping: a vertical list
+ * Steps through selectable tracks: an in-progress one can't be selected, so it
+ * is skipped, and **clamps** at both ends rather than wrapping: a vertical list
  * that jumps from bottom to top is disorienting.
  *
- * Returning null when the target is the track already selected is load-bearing,
+ * Returning null when the target is the track already selected is required,
  * not tidiness: `selectTrack` *toggles*, so dispatching it with the current id
  * would deselect instead of doing nothing.
  */
@@ -99,13 +99,13 @@ function stepTrack(state: SessionState, delta: number): SessionEvent | null {
 }
 
 /**
- * Alt+↑/↓ reorders — and it follows the **selected** track, not whichever row
+ * Alt+↑/↓ reorders, and it follows the **selected** track, not whichever row
  * happens to hold DOM focus.
  *
  * This used to live on the row itself, which meant it latched onto the row you
  * first clicked: arrow-navigating the selection doesn't move focus, so the keys
  * kept moving the old track. Keying it off `selectedTrackId` fixes both halves
- * of that — it follows the selection, and with nothing selected it declines.
+ * of that. It follows the selection, and with nothing selected it declines.
  *
  * Respects the in-progress floor for the same reason dragging does: an
  * in-progress track and everything below it are pinned.
@@ -156,7 +156,7 @@ export function resolveShortcut(key: string, state: SessionState): SessionEvent 
       const bus = state.buses[Number(key) - 1];
       return bus ? { type: "toggleBusMute", id: bus.id } : null;
     }
-    // Alt+Arrow never reaches here — the hook drops anything with a modifier,
+    // Alt+Arrow never reaches here: the hook drops anything with a modifier,
     // leaving TrackRow's own handler to own reordering.
     case "ArrowLeft":
       return stepBus(state, -1);

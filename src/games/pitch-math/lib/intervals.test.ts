@@ -67,7 +67,7 @@ describe("foldSemitones", () => {
     }
   });
 
-  it("ignores direction — the distance is measured from the lower note", () => {
+  it("ignores direction: the distance is measured from the lower note", () => {
     expect(foldSemitones(-7)).toBe(7);
     expect(foldSemitones(-19)).toBe(7);
   });
@@ -87,7 +87,7 @@ describe("invert", () => {
     expect(invert(1)).toBe(11);
   });
 
-  it("leaves the tritone alone — it is its own inversion", () => {
+  it("leaves the tritone alone: it is its own inversion", () => {
     expect(invert(6)).toBe(6);
   });
 

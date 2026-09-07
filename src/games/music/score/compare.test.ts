@@ -48,7 +48,7 @@ describe("compare", () => {
     expect(result.score).toBe(100);
     // The shift is what gets ADDED to the attempt to line it up, so copying seven
     // semitones high needs seven taken back off. Pinned because this convention
-    // inverts silently under a refactor and the graph would draw the wrong line.
+    // inverts under a refactor, with no error, and the graph would draw the wrong line.
     expect(result.shift).toBe(-7);
     expect(result.shifted).toEqual(target);
   });
@@ -108,7 +108,7 @@ describe("compare", () => {
   it("bottoms the scale out on a reversed melody", () => {
     // Playing the phrase backwards costs a full indel per note on average, which is
     // where the scale is defined to end. Pinned so a change to the cost model shows
-    // up in the diff rather than silently moving where the thresholds sit.
+    // up in the diff rather than quietly moving where the thresholds sit.
     const result = compare(target, [...target].reverse(), OPTIONS);
     expect(result.error).toBeCloseTo(1, 10);
     expect(result.score).toBe(0);
@@ -123,7 +123,7 @@ describe("compare", () => {
   });
 
   it("puts a missing note outside the strict copy threshold", () => {
-    // One indel over five notes is 0.2 — twice the strict allowance, and inside
+    // One indel over five notes is 0.2: twice the strict allowance, and inside
     // the loose one, which is the difference the setting is there to make.
     const error = compare(target, [60, 62, 65, 67], OPTIONS).error;
     expect(error).toBeGreaterThan(config.tolerance.strict.copy);

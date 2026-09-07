@@ -9,7 +9,7 @@ import styles from "./GameTab.module.css";
  * The word and how forgiving the judging is.
  *
  * Both apply immediately. Shortening the word can eliminate somebody on the spot,
- * and occasionally end the game — that is the honest consequence of the setting and
+ * and occasionally end the game. That is the honest consequence of the setting and
  * showing it at once is better than deferring it to a moment nobody connects to the
  * edit that caused it.
  */

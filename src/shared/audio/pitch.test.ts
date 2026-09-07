@@ -15,7 +15,7 @@ function sine(frequency: number, amplitude = 0.5): Float32Array {
 }
 
 /**
- * A sawtooth-ish tone with harmonics — closer to a real voice or instrument, and the
+ * A sawtooth-ish tone with harmonics: closer to a real voice or instrument, and the
  * case where naive autocorrelation is prone to octave errors.
  */
 function harmonicTone(fundamental: number, amplitude = 0.5): Float32Array {
@@ -51,7 +51,7 @@ describe("detectPitch", () => {
   it("detects the fundamental of a harmonic tone, not a harmonic of it", () => {
     const result = detectPitch(detector, harmonicTone(196), SAMPLE_RATE); // G3
     expect(result).not.toBeNull();
-    // Within a few cents of the fundamental — an octave error would land at 98 or 392.
+    // Within a few cents of the fundamental: an octave error would land at 98 or 392.
     expect(result!.frequency).toBeGreaterThan(190);
     expect(result!.frequency).toBeLessThan(202);
   });
@@ -88,7 +88,7 @@ describe("detectPitch", () => {
   });
 
   it("rejects pitches outside the configured range", () => {
-    // 440 Hz is real, but excluded by a deliberately narrow range.
+    // 440 Hz is real, but excluded by a narrow range.
     const result = detectPitch(detector, sine(440), SAMPLE_RATE, {
       minFrequency: 50,
       maxFrequency: 300,

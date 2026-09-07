@@ -28,10 +28,10 @@ import { useToasts, type Toast } from "./useToasts";
  * The whole game, wired up.
  *
  * Every *decision* here is delegated: turn order and elimination to `rules.ts`,
- * transcription to `dsp/`, judging to `score/`. What is left is sequencing — a
+ * transcription to `dsp/`, judging to `score/`. What is left is sequencing: a
  * recording arrives, it gets transcribed, it gets compared, and the result gets
  * handed to the rules. That is the only reason this file is not pure, and it is why
- * it is deliberately thin.
+ * it is kept thin.
  */
 
 /** A take, and what the pipeline heard in it. */
@@ -106,7 +106,7 @@ export function useGame({
    * **reconciled** version below, derived on read.
    *
    * Reconciling during render rather than in an effect is what keeps a settings edit
-   * from taking two passes to show up — and it means there is no window in which the
+   * from taking two passes to show up, and it means there is no window in which the
    * board is drawn from a round the roster has already invalidated.
    */
   const [rawRound, setRound] = useState<Round>(() => startRound(players, word));
@@ -119,7 +119,7 @@ export function useGame({
    * The takes, each tagged with the setter it belongs to.
    *
    * That tag is what makes them derivable. Deactivating the setter mid-set rotates
-   * the round to somebody else, and their half-finished melody has to go with them —
+   * the round to somebody else, and their half-finished melody has to go with them:
    * checking the tag on read does that without an effect racing the render.
    */
   const [heldTakeOne, setTakeOne] = useState<{ take: Take; setterId: string | null } | null>(
@@ -195,7 +195,7 @@ export function useGame({
           // A three-note figure matches almost anything once the comparison is free
           // to transpose, so a melody that short is not worth setting.
           push(
-            `Too short — that was ${notes.length} note${notes.length === 1 ? "" : "s"}. Play at least ${config.transcribe.minNotes}.`,
+            `Too short: that was ${notes.length} note${notes.length === 1 ? "" : "s"}. Play at least ${config.transcribe.minNotes}.`,
             "failure",
           );
           return;
@@ -250,7 +250,7 @@ export function useGame({
       if (passed) {
         push(`${copier?.name ?? "They"} got it.`, "success");
       } else {
-        push(`${copier?.name ?? "They"} missed it — that's a letter.`, "failure");
+        push(`${copier?.name ?? "They"} missed it. That's a letter.`, "failure");
         setVerdict({
           kind: "copy",
           player: copier,
@@ -269,7 +269,7 @@ export function useGame({
     (recording: Recording) => {
       setWorking(true);
       // Yielded to the browser so the "listening back" state paints before the
-      // pipeline blocks the main thread — thirty seconds of audio is a few thousand
+      // pipeline blocks the main thread: thirty seconds of audio is a few thousand
       // detector calls, and doing it inline would freeze mid-press.
       setTimeout(() => {
         try {
@@ -286,7 +286,7 @@ export function useGame({
     (reason: "silent" | "timeout") => {
       push(
         reason === "timeout"
-          ? "Stopped listening — nothing was played."
+          ? "Stopped listening. Nothing was played."
           : "Didn't hear anything, so nothing was recorded.",
         "neutral",
       );
@@ -309,8 +309,8 @@ export function useGame({
    *
    * Fires whether or not there is a champion. Everyone can be knocked out at the same
    * time by a settings edit that shortens the word, and that ending still has to be
-   * announced — keying the dialog off the confetti instead would leave the one case
-   * with no winner silently stuck on an unplayable board.
+   * announced: keying the dialog off the confetti instead would leave the one case
+   * with no winner, stuck on an unplayable board with no error.
    */
   const settled = useRef(false);
   useEffect(() => {
@@ -330,7 +330,7 @@ export function useGame({
    * Hand the setting turn to whoever was clicked.
    *
    * `chooseSetter` is a no-op unless the round is open to it, so the guard is the
-   * rules' rather than the board's — a stale render cannot slip a change through.
+   * rules' rather than the board's: a stale render cannot slip a change through.
    */
   const selectSetter = useCallback(
     (id: string) => {

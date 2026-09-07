@@ -5,7 +5,7 @@ import { trackPitch } from "./track";
 
 const OPTIONS = config.capture;
 
-/** Voiced frames only — the unvoiced ones carry a null. */
+/** Voiced frames only: the unvoiced ones carry a null. */
 const voiced = (frames: ReturnType<typeof trackPitch>) =>
   frames.filter((frame) => frame.midi !== null);
 

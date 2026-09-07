@@ -17,7 +17,7 @@ const STATUS_CLASS: Record<CatalogStatus, string> = {
 };
 
 /**
- * A gallery card for anything in the catalog — a game or a tool. The section it
+ * A gallery card for anything in the catalog: a game or a tool. The section it
  * belongs to shows only in the `href` and `meta` the caller passes; the card itself
  * doesn't know the difference.
  */

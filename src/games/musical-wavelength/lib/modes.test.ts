@@ -121,7 +121,7 @@ describe("pitchTicks", () => {
  *
  * This is why the scale stops short of the needle's full travel. At the chosen
  * `scaleMaxDeg` a plain note name clears outright, and a three-character accidental
- * overhangs by a fraction of a glyph — accepted deliberately, and bounded here so it
+ * overhangs by a fraction of a glyph. That is accepted, and bounded here so it
  * can't quietly grow into real clipping.
  */
 describe("outermost label clearance", () => {
@@ -148,7 +148,7 @@ describe("outermost label clearance", () => {
   }
 
   it("keeps a plain note name above the window's straight edge", () => {
-    // "C4" — the common case, and the one that must never clip.
+    // "C4": the common case, and the one that must never clip.
     expect(lowestPoint(2)).toBeLessThan(0);
   });
 

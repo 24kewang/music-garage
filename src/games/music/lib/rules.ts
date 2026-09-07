@@ -8,7 +8,7 @@
  *
  * The organizing idea: **elimination is derived, never stored.** A player is a
  * contender when they are active and hold fewer letters than the word is long. That
- * one rule is what makes the awkward settings edits fall out for free — shorten the
+ * one rule is what makes the awkward settings edits fall out for free: shorten the
  * word and people drop out, lengthen it and they come back, because the letters are
  * the truth and being out is only ever a reading of them.
  */
@@ -52,7 +52,7 @@ export function contenders(players: readonly Player[], word: string): Player[] {
   return players.filter((player) => isContender(player, word));
 }
 
-/** The last player standing, or `null` while more than one remains — or none does. */
+/** The last player standing, or `null` while more than one remains, or none does. */
 export function winner(players: readonly Player[], word: string): Player | null {
   const left = contenders(players, word);
   return left.length === 1 ? left[0] : null;
@@ -98,7 +98,7 @@ export function nextContenderAfter(
  *
  * The setter is the **round boundary**, not a participant: walking forward from the
  * current copier and stopping when we reach the setter is what ends the round. That
- * comparison happens whether or not the setter is still a contender themselves —
+ * comparison happens whether or not the setter is still a contender themselves,
  * which is the point. Deactivating the setter mid-round must not abandon a melody the
  * remaining copiers still owe an answer to, and filtering them out first would do
  * exactly that.
@@ -147,7 +147,7 @@ export function startRound(players: readonly Player[], word: string): Round {
 /**
  * The setter's confirmation take has been judged.
  *
- * A failed set costs **no letter** — in HORSE, missing your own called shot just
+ * A failed set costs **no letter**: in HORSE, missing your own called shot just
  * hands the turn on. The next contender becomes the setter and tries to call
  * something they can actually play twice.
  */
@@ -167,7 +167,7 @@ export function resolveSet(
   const copying: Round = { ...round, phase: "copying", takeIndex: 0 };
   const first = nextCopier({ ...copying, turnId: round.setterId }, next, word);
 
-  // Nobody left to answer it — the setter has outlasted the field.
+  // Nobody left to answer it: the setter has outlasted the field.
   if (first === null) {
     return { round: settle({ ...copying, turnId: null }, next, word), players: next };
   }
@@ -178,14 +178,14 @@ export function resolveSet(
 /**
  * A copier's attempt has been judged.
  *
- * A failure earns a letter, which may eliminate them — and because `nextCopier` reads
+ * A failure earns a letter, which may eliminate them, and because `nextCopier` reads
  * the updated roster, a player knocked out by their own letter is skipped on the very
  * same step rather than being offered another turn.
  *
  * When the round runs out of copiers the melody goes **back to the same setter**, not
  * on to the next player. Making your shot in HORSE keeps you shooting; you only lose
- * the ball by missing one of your own, which is what `resolveSet` handles at the other
- * end. The one exception is a setter who stopped being a contender mid-round — they
+ * the ball by missing one of your own, which `resolveSet` handles at the other
+ * end. The one exception is a setter who stopped being a contender mid-round. They
  * cannot earn a letter while setting, so this only happens by a settings edit.
  */
 export function resolveCopy(
@@ -220,7 +220,7 @@ export function resolveCopy(
  *
  * Only before a first take. `takeIndex` is the whole lock: once a melody has been
  * recorded it belongs to whoever recorded it, and it stays theirs until the round
- * comes back to setting — either because their confirmation failed, or because a full
+ * comes back to setting: either because their confirmation failed, or because a full
  * round of copies finished.
  */
 export function canChooseSetter(round: Round): boolean {
@@ -232,7 +232,7 @@ export function canChooseSetter(round: Round): boolean {
  *
  * A no-op unless the round is open to it and the player is actually a contender, so
  * an eliminated or switched-off box cannot be picked. Turn order still supplies the
- * default — this only lets the room override it, which is what a game played around
+ * default. This only lets the room override it, which is what a game played around
  * one screen actually needs.
  */
 export function chooseSetter(
@@ -282,7 +282,7 @@ export function reconcile(round: Round, players: readonly Player[], word: string
 
   // Lengthening the word brings people back, so a finished game can reopen. It
   // restarts as a fresh set rather than resuming a copying phase whose melody is
-  // long gone — and with the same setter, if they are still eligible.
+  // long gone, and with the same setter, if they are still eligible.
   if (round.phase === "finished") {
     if (contenders(players, word).length < 2) return round;
     const setterId = stillPlaying(round.setterId)

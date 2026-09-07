@@ -7,7 +7,7 @@ import styles from "./PlayButton.module.css";
  * Replay what the microphone caught.
  *
  * Stays a play triangle even while sound is coming out, because a press always
- * restarts from the beginning rather than stopping — swapping in a stop square would
+ * restarts from the beginning rather than stopping: swapping in a stop square would
  * promise something the button doesn't do. A ring pulses instead, so there is still
  * some sign that a press registered on a clip this short.
  */

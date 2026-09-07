@@ -135,7 +135,7 @@
 }
 
 /*
- * Pushed to the far end, and quieter than the main nav — these are the documents
+ * Pushed to the far end, and quieter than the main nav. These are the documents
  * you go looking for, not somewhere you browse to.
  */
 .legal {
@@ -183,7 +183,7 @@
 
 /*
  * Coarse pointers have no hover, so the reveal would strand them: pin the header open
- * and let it push nothing — it simply sits there like an ordinary sticky bar.
+ * and let it push nothing. It simply sits there like an ordinary sticky bar.
  */
 @media (hover: none), (pointer: coarse) {
   .header {

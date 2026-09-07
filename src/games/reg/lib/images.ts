@@ -4,7 +4,7 @@ import { readFileBlob } from "./opfs";
  * Excerpt images as decoded DOM images, for the camera-free mode.
  *
  * The counterpart to `textures.ts`, which feeds the same files to WebGL. That one
- * deliberately has no object URLs to manage — an `ImageBitmap` needs none — whereas an
+ * has no object URLs to manage, since an `ImageBitmap` needs none, whereas an
  * `<img>` does, so this is the one place in the game with URL lifetimes to get right:
  * every `dispose()` revokes, and the pool revokes everything it still holds on teardown.
  */
@@ -22,7 +22,7 @@ export async function loadImage(blob: Blob): Promise<LoadedImage> {
   const element = new Image();
   element.src = url;
   try {
-    // Awaiting the decode is what keeps a mid-spin swap from flashing a blank frame —
+    // Awaiting the decode is what keeps a mid-spin swap from flashing a blank frame:
     // the DOM equivalent of preloading a texture. A loaded-but-undecoded image still
     // costs a decode on first paint, and at 70ms a step that shows.
     await element.decode();

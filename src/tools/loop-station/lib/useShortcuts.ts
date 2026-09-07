@@ -30,7 +30,7 @@ export function useShortcuts({
       // Holding a key must fire once, not sixty times.
       if (event.repeat) return;
       // Leave the browser's own chords alone. Alt is ours, but only for the
-      // reorder pair — everything else with Alt still belongs to the browser.
+      // reorder pair: everything else with Alt still belongs to the browser.
       if (event.ctrlKey || event.metaKey) return;
 
       // Never while typing. This is also what stops the Enter that commits a
@@ -45,7 +45,7 @@ export function useShortcuts({
         return;
       }
 
-      // Escape belongs to whatever panel or dialog is open, if one is — closing
+      // Escape belongs to whatever panel or dialog is open, if one is: closing
       // the settings panel shouldn't also drop the track selection.
       if (event.key === "Escape" && document.querySelector('[role="dialog"]')) return;
 

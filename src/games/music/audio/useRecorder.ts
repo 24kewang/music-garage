@@ -8,14 +8,14 @@ import { assembleChunks, trimToOnset } from "../dsp/trim";
 /**
  * Recording a take.
  *
- * The shape of the interaction, which is what most of this file is arranging:
+ * The shape of the interaction, which most of this file is arranging:
  *
  * ```
  * idle ──press──► arming ──ready──► armed ──onset──► recording ──cap│press──► idle
  *                                     └────── press, nothing heard ──────► idle
  * ```
  *
- * Three things here are load-bearing.
+ * Three things here matter.
  *
  * **The clock starts at the first note, not at the press.** Somebody reaching back to
  * their instrument should not spend their ten seconds doing it, so the window is
@@ -29,7 +29,7 @@ import { assembleChunks, trimToOnset } from "../dsp/trim";
  * universe. The interval only writes digits.
  *
  * **A press with nothing heard leaves no trace.** No recording, no attempt, no
- * letter — the turn is exactly where it was, which is what the brief asks for and
+ * letter. The turn is exactly where it was, which is what the brief asks for and
  * what makes the record button safe to press experimentally.
  *
  * The microphone is acquired on the first press and **held for the session**. Four
@@ -74,7 +74,7 @@ export interface Recorder {
 export interface UseRecorderOptions {
   /** A take that heard something. */
   onCaptured: (recording: Recording) => void;
-  /** A take that heard nothing — treat it as if the button was never pressed. */
+  /** A take that heard nothing: treat it as if the button was never pressed. */
   onDiscarded: (reason: "silent" | "timeout") => void;
 }
 

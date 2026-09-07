@@ -17,8 +17,8 @@ type Load =
  * The excerpt, big enough to read.
  *
  * The filter sizes the image to the player's head, which is fine for recognizing a
- * piece and useless for actually playing it — so clicking the floating excerpt opens
- * it here at viewport size. Deliberately a still: no zoom or pan, so a phone's own
+ * piece and useless for actually playing it, so clicking the floating excerpt opens
+ * it here at viewport size. A still, with no zoom or pan, so a phone's own
  * pinch-zoom keeps working.
  */
 export default function ExcerptOverlay({
@@ -32,12 +32,12 @@ export default function ExcerptOverlay({
   onClose: () => void;
 }) {
   const [load, setLoad] = useState<Load>({ state: "loading" });
-  /** Too tall to be worth fitting to the screen — scroll it at full width instead. */
+  /** Too tall to be worth fitting to the screen: scroll it at full width instead. */
   const [tall, setTall] = useState(false);
   const cardRef = useRef<HTMLDivElement | null>(null);
   const closeRef = useRef<HTMLButtonElement | null>(null);
 
-  // Escape, or a pointer down anywhere off the card — which the backdrop guarantees
+  // Escape, or a pointer down anywhere off the card, which the backdrop guarantees
   // covers the whole viewport.
   useDismiss(true, cardRef, onClose);
 
@@ -69,7 +69,7 @@ export default function ExcerptOverlay({
     closeRef.current?.focus();
   }, []);
 
-  // The whole path, unabbreviated — the floating caption may have dropped folders.
+  // The whole path, unabbreviated: the floating caption may have dropped folders.
   const fullName = excerptSegments(path).join(config.names.separator);
 
   return (

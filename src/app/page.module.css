@@ -58,7 +58,7 @@
 }
 
 /* Page rhythm between the catalog sections. A wrapper with a gap rather than a
-   margin on each section, and scoped here rather than on the shared `.main` —
+   margin on each section, and scoped here rather than on the shared `.main`:
    game routes break out of that with negative margins. */
 .sections {
   display: flex;

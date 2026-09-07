@@ -66,7 +66,7 @@
   background: var(--color-accent);
 }
 
-/* The hottest segments warn — column-reverse puts them last in DOM order. */
+/* The hottest segments warn: column-reverse puts them last in DOM order. */
 .segment[data-lit="true"]:nth-last-child(-n + 3) {
   background: var(--color-warn);
 }

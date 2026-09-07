@@ -43,7 +43,7 @@
 
 /*
  * The panel is a child of the trigger's wrapper, and the wrapper's padding-top bridges
- * the visual gap — a gap with no hit area is what makes hover menus feel broken.
+ * the visual gap: a gap with no hit area is what makes hover menus feel broken.
  */
 .panel {
   position: absolute;

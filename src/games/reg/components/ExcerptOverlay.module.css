@@ -1,6 +1,6 @@
 /*
- * Sits above everything the game and shell put on screen — camera (0), header (30),
- * SPIN (40), gear (45), games menu (50) — but below the skip link (100), which should
+ * Sits above everything the game and shell put on screen: camera (0), header (30),
+ * SPIN (40), gear (45), games menu (50), but below the skip link (100), which should
  * stay reachable. The backdrop covering the viewport is also what makes SPIN and the
  * gear unclickable while this is open.
  */
@@ -35,7 +35,7 @@
 .card {
   position: relative;
   max-width: 100%;
-  /* Resolves against the backdrop, which has a definite height — that is what makes the
+  /* Resolves against the backdrop, which has a definite height, and that is what makes the
      percentage on .image below meaningful. `margin: auto` does the centering rather than
      `align-items`, because a flex item centered that way is unreachable by scrolling once
      it overflows: the top gets clipped with no way to reach it. */
@@ -49,7 +49,7 @@
   align-items: center;
   gap: var(--space-4);
   /* Only bites in a window so short that the caption can't fit even after the image has
-     shrunk away — then it scrolls rather than clipping. Nothing overflows in the normal
+     shrunk away: then it scrolls rather than clipping. Nothing overflows in the normal
      case, so no scrollbar appears. */
   overflow: auto;
 
@@ -119,13 +119,13 @@
   max-height: 100%;
   object-fit: contain;
   border-radius: var(--radius-sm);
-  /* Excerpt scans are usually white paper — a light mat reads as intentional against
+  /* Excerpt scans are usually white paper: a light mat reads as intentional against
    * the dark panel instead of looking like a rendering artifact. */
   background: var(--color-text);
 }
 
 /*
- * A very tall excerpt — a strip of stacked systems — is unreadable once fitted to the
+ * A very tall excerpt: a strip of stacked systems: is unreadable once fitted to the
  * height, so it renders at full width and the backdrop scrolls instead of shrinking it
  * to a few centimeters wide.
  */
