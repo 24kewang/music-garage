@@ -5,13 +5,13 @@ import { readFileBlob } from "./opfs";
  * Excerpt images as GPU textures.
  *
  * Decoding goes blob → ImageBitmap → CanvasTexture, so no object URLs exist to
- * revoke. `three` is only imported at runtime inside the loader — nothing here
+ * revoke. `three` is only imported at runtime inside the loader: nothing here
  * drags the 3D stack into pages that never reach the filter screen.
  */
 
 export interface LoadedTexture {
   texture: Texture;
-  /** width / height — what bottom-aligned plane sizing needs. */
+  /** width / height: what bottom-aligned plane sizing needs. */
   aspect: number;
   dispose(): void;
 }
@@ -19,9 +19,9 @@ export interface LoadedTexture {
 export async function loadTexture(blob: Blob): Promise<LoadedTexture> {
   const [{ CanvasTexture, SRGBColorSpace }, bitmap] = await Promise.all([
     import("three"),
-    // `imageOrientation: "flipY"` is load-bearing, and its absence is silent.
+    // `imageOrientation: "flipY"` is required, and omitting it fails without an error.
     // three sets UNPACK_FLIP_Y_WEBGL from `texture.flipY`, but WebGL *ignores* that
-    // flag for ImageBitmap sources — orientation is baked in at decode time. Without
+    // flag for ImageBitmap sources: orientation is baked in at decode time. Without
     // this the excerpt arrives with its top row at v=0 and renders upside-down, while
     // the canvas-drawn text planes (which do honor flipY) look fine.
     createImageBitmap(blob, {

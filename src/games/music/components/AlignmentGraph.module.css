@@ -1,5 +1,5 @@
 /*
- * Two step functions, one over the other. No axes and no grid — the shapes are the
+ * Two step functions, one over the other. No axes and no grid: the shapes are the
  * whole point, and a pitch scale would be a lie next to an attempt that has been
  * transposed to wherever it scored best.
  */
@@ -32,7 +32,7 @@
 
 /*
  * The vertical joins between one cell and the next. They belong to no single note,
- * so they take neither verdict's color — otherwise a riser between a right note
+ * so they take neither verdict's color: otherwise a riser between a right note
  * and a wrong one would have to pick a side and would misreport one of them.
  */
 .attempt > line {

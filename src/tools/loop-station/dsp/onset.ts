@@ -2,7 +2,7 @@
  * Rising-energy onset detection over a stream of (time, rms) block levels.
  *
  * During calibration the capture worklet posts one RMS value per 128-frame
- * block (~2.7ms at 48kHz), and this runs on the main thread — so the whole
+ * block (~2.7ms at 48kHz), and this runs on the main thread, so the whole
  * decision stays in testable TypeScript and the worklet stays dumb.
  */
 
@@ -20,7 +20,7 @@ export interface OnsetDetector {
   update(time: number, rms: number): boolean;
 }
 
-/** Smoothing factor for the running floor — slow enough to sit under attacks. */
+/** Smoothing factor for the running floor: slow enough to sit under attacks. */
 const FLOOR_ALPHA = 0.05;
 
 export function createOnsetDetector(options: OnsetOptions): OnsetDetector {

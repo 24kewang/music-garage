@@ -11,16 +11,15 @@ export const metadata: Metadata = {
  * export writes it to `out/404.html`, which the Worker returns with a real 404
  * status via `not_found_handling: "404-page"` in wrangler.jsonc.
  *
- * A server component on purpose: nothing here needs the pathname, and keeping it off
- * the client means the 404 costs no JavaScript beyond what the shell already loads.
+ * A server component: nothing here needs the pathname, and keeping it off the client
+ * means the 404 costs no JavaScript beyond what the shell already loads.
  */
 export default function NotFound() {
   return (
     <section className={styles.wrap}>
       {/*
-       * A rest, in a garage full of music — the one thing on the site that makes no
-       * sound. Hand-drawn rather than an icon: nothing in the Phosphor set says
-       * "silence" and this is the one page where the joke is the point.
+       * A rest: the one thing on the site that makes no sound. Hand-drawn because
+       * nothing in the Phosphor set says "silence".
        */}
       <svg
         className={styles.rest}
@@ -37,7 +36,7 @@ export default function NotFound() {
       <p className={styles.code}>404</p>
       <h1 className={styles.title}>Nothing playing here</h1>
       <p className={styles.blurb}>
-        That page does not exist — it may have been renamed, or the link may have been
+        That page does not exist. It may have been renamed, or the link may have been
         mistyped. Everything that does exist is one click away.
       </p>
 

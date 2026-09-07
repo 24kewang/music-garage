@@ -13,8 +13,8 @@ import styles from "./WinnerDialog.module.css";
  * confetti should not have to be sat through. The reset button stays in the station
  * either way, so closing this loses nothing.
  *
- * `champion` can legitimately be null — everyone can be knocked out at once by a
- * settings edit that shortens the word — and saying so is better than indexing into
+ * `champion` can legitimately be null: everyone can be knocked out at once by a
+ * settings edit that shortens the word, and saying so is better than indexing into
  * an empty roster and announcing that `undefined` won.
  */
 

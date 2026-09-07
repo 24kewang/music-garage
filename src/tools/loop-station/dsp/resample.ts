@@ -2,7 +2,7 @@
  * Linear resampling, for reopening a save on a device whose audio hardware
  * runs at a different rate.
  *
- * Everything downstream — padding, tiling, punch-in bounds — is computed in
+ * Everything downstream, padding, tiling, punch-in bounds, is computed in
  * frames against the *current* context's sample rate, so a 48kHz recording
  * replayed at 44.1kHz would bake at the wrong length. Converting the stored
  * samples once on load keeps every other frame calculation honest.

@@ -7,11 +7,11 @@ import styles from "./ListeningWave.module.css";
  * The dotted soundwave shown while the app is listening.
  *
  * Its height follows the live input level, which is the point: with the retry loop
- * running silently in the background, this is how a player too quiet to trigger an
+ * running unseen in the background, this is how a player too quiet to trigger an
  * onset can see that they are too quiet rather than guessing.
  *
  * Under `prefers-reduced-motion` the traveling animation stops but the level response
- * stays — the information survives, the movement doesn't.
+ * stays: the information survives, the movement doesn't.
  */
 export default function ListeningWave({
   level,

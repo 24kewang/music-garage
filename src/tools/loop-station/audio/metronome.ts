@@ -6,14 +6,14 @@ import { config } from "../config";
  * The grid is `anchor + k × beatSeconds` with beat one of each bar accented.
  * `scheduleWindow` is called every scheduler tick; `scheduledUntil` guarantees a
  * click is scheduled exactly once even though tick windows overlap. Clicks route
- * around the master chain — a muted master must not silence the count-in — but
+ * around the master chain: a muted master must not silence the count-in, but
  * into whatever output node the caller passes, so they share the master's final
  * stage and therefore its latency.
  *
  * Everything already scheduled is remembered, because a grid change has to be
  * able to take it back: the lookahead runs 100ms ahead, so at the count-in →
  * recording handover the first beat would otherwise already be booked under the
- * old grid and get booked again under the new one — an audible flam on the most
+ * old grid and get booked again under the new one: an audible flam on the most
  * important click in the interaction.
  */
 export class Metronome {
@@ -97,7 +97,7 @@ export class Metronome {
   }
 }
 
-/** A short decaying sine — clickier than an oscillator envelope and cheaper. */
+/** A short decaying sine: clickier than an oscillator envelope and cheaper. */
 function makeClick(context: BaseAudioContext, frequency: number): AudioBuffer {
   const length = Math.ceil(config.metronome.clickSeconds * context.sampleRate);
   const buffer = context.createBuffer(1, length, context.sampleRate);

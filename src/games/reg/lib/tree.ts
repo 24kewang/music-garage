@@ -3,13 +3,13 @@ import { splitSegments } from "./paths";
 /**
  * The file tree behind the settings panel.
  *
- * Only *file* paths are ever stored or persisted — a folder's checkbox is derived
+ * Only *file* paths are ever stored or persisted: a folder's checkbox is derived
  * from its descendants every render, so folder state can never drift out of sync
  * with the files it summarizes.
  */
 
 export interface TreeNode {
-  /** Last path segment — what the row displays. */
+  /** Last path segment: what the row displays. */
   name: string;
   /** Full "/"-joined path from the library root. Empty string for the root. */
   path: string;
@@ -128,7 +128,7 @@ export interface VisibilityFilter {
  *
  * Derived **file-first**: a file survives when it passes every active filter, and the
  * visible folders are then exactly the ancestors of surviving files. Composing two
- * ready-made visibility sets by intersection looks equivalent and isn't — a folder that
+ * ready-made visibility sets by intersection looks equivalent and isn't: a folder that
  * is an ancestor of a matched-but-unchecked file *and* of a checked-but-unmatched file
  * would survive with no visible children, leaving an empty folder in the tree. Deriving
  * folders from the surviving files makes that structurally impossible.
@@ -171,7 +171,7 @@ export function visiblePaths(
   return visible;
 }
 
-/** The files the tree is currently showing — all of them when unfiltered. */
+/** The files the tree is currently showing: all of them when unfiltered. */
 export function shownFiles(
   root: TreeNode,
   visible: ReadonlySet<string> | null,

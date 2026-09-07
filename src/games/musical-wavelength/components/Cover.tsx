@@ -24,7 +24,7 @@ interface CoverProps {
  * open is what ends a round.
  *
  * Its outline is the *same path* as the window it closes over, so the lid always fills
- * the opening exactly — a gap would show a sliver of the wheel and give the target away.
+ * the opening exactly: a gap would show a sliver of the wheel and give the target away.
  *
  * Child order matters: the handle goes down FIRST so the cover body paints over its
  * inner half. That keeps the handle from covering the tick scale, and leaves its

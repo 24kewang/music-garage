@@ -3,7 +3,7 @@ import type { CatalogEntry, CatalogStatus } from "@/shared/catalog";
 /**
  * The contract every tool in the garage implements.
  *
- * Tools are the utilities alongside the games — a loop station rather than a
+ * Tools are the utilities alongside the games: a loop station rather than a
  * guessing game. Like a game, a tool's manifest is the only thing the app shell
  * knows about it; unlike a game, a tool has no player counts.
  */

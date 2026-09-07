@@ -19,7 +19,7 @@ export interface CompareOptions extends AlignCosts {
 export interface Comparison {
   /** Semitones added to the **attempt** to line it up with the target. */
   shift: number;
-  /** The alignment at that shift — this is what the failure graph draws. */
+  /** The alignment at that shift. This is what the failure graph draws. */
   alignment: Alignment;
   /** Alignment cost normalized by length. 0 is perfect. */
   error: number;
@@ -50,8 +50,8 @@ export function normalizedError(
 /**
  * 100 for identical, 0 for nothing in common.
  *
- * An error of 1 is "every note missing or wrong" — one indel per note of the longer
- * sequence — so that is where the scale bottoms out. Honest rather than flattering:
+ * An error of 1 is "every note missing or wrong": one indel per note of the longer
+ * sequence, so that is where the scale bottoms out. Honest rather than flattering:
  * a copy that failed at 0.16 against a 0.1 threshold reads 84, and it should.
  */
 export function scoreFromError(error: number): number {

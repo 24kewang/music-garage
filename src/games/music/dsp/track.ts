@@ -3,9 +3,9 @@
  * convert what survives to continuous MIDI.
  *
  * DOM-free, and so is everything downstream of it. `createPitchDetector` and
- * `detectPitch` are pure with respect to the browser by design, which is what lets
+ * `detectPitch` are pure with respect to the browser by design, which lets
  * the entire transcription be a plain function of `(Float32Array, sampleRate)` and
- * be tested in Node against synthesized tones — no microphone, no jsdom.
+ * be tested in Node against synthesized tones: no microphone, no jsdom.
  */
 
 import { createPitchDetector, detectPitch, frequencyToMidi } from "@/shared/audio";
@@ -14,7 +14,7 @@ export interface Frame {
   /** Frame center, in seconds from the start of the buffer. */
   time: number;
   /**
-   * Continuous MIDI — deliberately **not** rounded. Smoothing and plateau detection
+   * Continuous MIDI, **not** rounded. Smoothing and plateau detection
    * both need the sub-semitone detail; rounding happens at step 9 and not before.
    */
   midi: number | null;
@@ -33,7 +33,7 @@ export interface TrackOptions {
 /**
  * Analyze the whole buffer at a fixed hop.
  *
- * One detector is allocated for the entire pass — it holds internal scratch buffers,
+ * One detector is allocated for the entire pass. It holds internal scratch buffers,
  * so reusing it makes the per-frame work allocation-free. That matters here: a
  * thirty-second take at a 10 ms hop is three thousand frames.
  *

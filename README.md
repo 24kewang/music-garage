@@ -1,7 +1,7 @@
 # Music Garage
 A collection of small music games and tools, live at
 **[music.trumpettuck.com](https://music.trumpettuck.com)**. Everything runs in the
-browser — no server, no accounts, no audio leaves the tab.
+browser. No server, no accounts, and no audio leaves the tab.
 
 Next.js (App Router) + TypeScript, CSS Modules, Vitest.
 
@@ -13,7 +13,7 @@ npm run dev        # http://localhost:3000
 ```
 
 **Microphone and camera access need a secure origin.** `localhost` counts, so
-`npm run dev` works; opening the dev server from another device on your network needs
+`npm run dev` works. Opening the dev server from another device on your network needs
 HTTPS.
 
 | Script | What it does |
@@ -40,12 +40,12 @@ Each has its own README with the rules and every setting.
 
 ## Architecture
 
-The organizing rule: **games and tools are self-contained; the shell knows nothing
+The organizing rule: **games and tools are self-contained. The shell knows nothing
 about them beyond their manifest.**
 
 ```
 src/
-├── app/          Routing and shell only — no game logic lives here
+├── app/          Routing and shell only. No game logic lives here.
 ├── games/        One folder per game, plus the registry
 ├── tools/        One folder per tool, plus its own registry
 └── shared/       Cross-game code: audio, UI chrome, design tokens
@@ -54,8 +54,8 @@ src/
 - `src/games/registry.ts` is the single source of truth. The header's Games menu and
   the home gallery both render from it, so registering a game is what makes it appear.
 - `src/app/games/<slug>/page.tsx` is a thin adapter that re-exports the game's root
-  component. Keeping real route folders (rather than one `[slug]` catch-all) gives
-  each game automatic code-splitting and its own page metadata.
+  component. Real route folders, instead of one `[slug]` catch-all, give each game
+  automatic code-splitting and its own page metadata.
 - A game may import from `@/shared/*`. It must **not** import from another game.
 
 Each game folder documents itself: `README.md` for how it plays, `ARCHITECTURE.md` for
@@ -69,7 +69,7 @@ Three steps:
 
    ```
    src/games/<slug>/
-   ├── manifest.ts       # slug, title, blurb, icon, status — see src/games/types.ts
+   ├── manifest.ts       # slug, title, blurb, icon, status; see src/games/types.ts
    ├── Game.tsx          # 'use client' root component
    ├── components/       # game-only UI
    ├── lib/              # game-only logic
@@ -91,13 +91,14 @@ Three steps:
 
 3. **Register it** in `src/games/registry.ts` by adding its manifest to `GAMES`.
 
-`src/games/registry.test.ts` fails the build if these three drift apart — a registered
+`src/games/registry.test.ts` fails the build if these three drift apart. A registered
 game with no route 404s, and a route with no registry entry never shows up in the tabs.
 
 ### Adding a tool
 
-Tools are the utilities alongside the games — the Loop Station is the first. Same three
-steps with `tools` in place of `games`: create `src/tools/<slug>/` (manifest type is
+Tools are the utilities alongside the games, of which the Loop Station is the first.
+Same three steps with `tools` in place of `games`: create `src/tools/<slug>/` (manifest
+type is
 `src/tools/types.ts`), add the route adapter at `src/app/tools/<slug>/page.tsx`, register
 it in `src/tools/registry.ts`. `src/tools/registry.test.ts` guards the same three-way
 contract.
@@ -105,8 +106,8 @@ contract.
 ### Styling
 
 Colors, spacing, radii, type and motion all come from CSS custom properties in
-`src/shared/styles/tokens.css` — one dark theme, no light mode. Reference tokens
-(`var(--color-accent)`) rather than hard-coding values. Everything else is CSS Modules,
+`src/shared/styles/tokens.css`. One dark theme, no light mode. Reference tokens
+(`var(--color-accent)`) instead of hard-coding values. Everything else is CSS Modules,
 colocated with the component it styles. `CLAUDE.md` has the full rules and `DESIGN.md`
 the reasoning behind them.
 
@@ -130,21 +131,22 @@ const pitch = usePitchDetector(mic.analyser, mic.sampleRate);
 | --- | --- |
 | `useMicrophone()` | Owns the mic stream and Web Audio graph; returns an `AnalyserNode` |
 | `usePitchDetector(analyser, sampleRate)` | rAF detection loop with median smoothing |
-| `detectPitch()` / `createPitchDetector()` | The detector itself — pure, unit-tested |
+| `detectPitch()` / `createPitchDetector()` | The detector itself. Pure and unit-tested |
 | `frequencyToNote()`, `midiToFrequency()`, … | Music-theory conversions in `notes.ts` |
 | `parseNoteName()` / `formatMidi()` | `"Bb4"` ↔ MIDI, for note-name input and labels |
 
-Three details in there are load-bearing and easy to undo by accident:
+Three details break easily if changed:
 
 - **`echoCancellation`, `noiseSuppression` and `autoGainControl` are all disabled.**
-  They are tuned for speech intelligibility and actively distort pitch.
+  They are tuned for speech intelligibility and distort pitch.
 - **The `AudioContext` is created inside `start()`**, which must be called from a user
   gesture. Safari and iOS refuse to start audio any other way.
-- **Smoothing takes a median, not a mean**, so a single bad frame can't drag the
-  reading — which is what keeps octave jumps off the screen.
+- **Smoothing takes a median.** A mean would let one bad frame drag the reading far
+  enough to show an octave jump.
 
 Detection is unit-tested against synthesized sine and harmonic buffers in
-`pitch.test.ts`, so accuracy regressions fail loudly rather than quietly sounding off.
+`pitch.test.ts`, so an accuracy regression fails the suite instead of quietly sounding
+wrong.
 
-The detector is **monophonic**. Anything needing two simultaneous pitches brings its own
-— see `src/games/pitch-math/dsp/`.
+The detector is **monophonic**. Anything needing two simultaneous pitches brings its own.
+See `src/games/pitch-math/dsp/`.

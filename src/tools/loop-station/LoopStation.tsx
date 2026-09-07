@@ -23,7 +23,7 @@ import styles from "./loop-station.module.css";
  * The Loop Station's root: wiring only. All musical decisions live in
  * `lib/session.ts`; all audio lives in `audio/`; this renders state and runs
  * the paint loop (playhead, meters, the record button's count) against the DOM
- * directly — 60fps visuals must not become 60fps React renders.
+ * directly: 60fps visuals must not become 60fps React renders.
  */
 export default function LoopStation() {
   const station = useLoopStation();
@@ -92,7 +92,7 @@ export default function LoopStation() {
 
   /**
    * `beforeunload` covers tab close and reload, but never fires for a Next.js
-   * client-side navigation — so nav clicks are caught in the capture phase,
+   * client-side navigation, so nav clicks are caught in the capture phase,
    * before the router sees them, and held against the same question.
    */
   useEffect(() => {
@@ -206,7 +206,7 @@ export default function LoopStation() {
           <div className={styles.trackList} ref={trackListRef}>
             {session.tracks.length === 0 && session.recording.kind === "off" && (
               <p className={styles.empty}>
-                No tracks yet. Set beats and bars, then press record — with the metronome
+                No tracks yet. Set beats and bars, then press record. With the metronome
                 on for a quantized loop, or off to set the length by playing.
               </p>
             )}
@@ -283,8 +283,8 @@ export default function LoopStation() {
           title="Delete every track?"
           body={
             session.recording.kind === "off"
-              ? "All recordings are lost — nothing is saved between sessions. The tempo, beats and bars unlock afterwards."
-              : "This also cancels the recording in progress. All recordings are lost — nothing is saved between sessions."
+              ? "All recordings are lost; nothing is saved between sessions. The tempo, beats and bars unlock afterwards."
+              : "This also cancels the recording in progress. All recordings are lost; nothing is saved between sessions."
           }
           confirmLabel="Delete all"
           onConfirm={() => {
@@ -302,7 +302,7 @@ export default function LoopStation() {
       {pendingHref !== null && (
         <ConfirmDialog
           title="Leave with unsaved changes?"
-          body="This loop hasn't been saved. Leaving now loses it — nothing is kept between sessions until you press Save."
+          body="This loop hasn't been saved. Leaving now loses it; nothing is kept between sessions until you press Save."
           confirmLabel="Leave"
           onConfirm={() => {
             const href = pendingHref;
@@ -319,7 +319,7 @@ export default function LoopStation() {
 /**
  * Light a meter from a peak amplitude.
  *
- * The fill is a dB fraction, not a linear one — real material peaks well below
+ * The fill is a dB fraction, not a linear one: real material peaks well below
  * full scale, and mapping that linearly is why the meters used to barely leave
  * the floor. Smoothing jumps to a rise and eases down from it, so a transient
  * registers instead of flashing past between frames.

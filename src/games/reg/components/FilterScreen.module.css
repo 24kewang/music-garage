@@ -1,7 +1,7 @@
 /*
  * The camera feed fills the viewport underneath everything: the site header (fixed,
  * higher z), the settings gear (z 45) and the SPIN button (z 40) float above it.
- * MindAR injects its own video and canvas into the container and sizes them itself —
+ * MindAR injects its own video and canvas into the container and sizes them itself:
  * the container just has to have real dimensions before start().
  */
 
@@ -76,4 +76,4 @@
   background: var(--color-accent-hover);
 }
 
-/* The SPIN button lives in SpinButton.module.css — both modes share it. */
+/* The SPIN button lives in SpinButton.module.css: both modes share it. */

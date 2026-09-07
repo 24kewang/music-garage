@@ -37,7 +37,7 @@ export default function TrackRow({
   index: number;
   /** This row is the one being dragged. */
   dragging: boolean;
-  /** Some row is being dragged — nothing expands until it is dropped. */
+  /** Some row is being dragged: nothing expands until it is dropped. */
   dragActive: boolean;
   /** Pixels to translate so the destination slot opens. */
   dragOffset: number;

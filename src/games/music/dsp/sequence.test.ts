@@ -29,7 +29,7 @@ describe("quantize", () => {
   });
 
   it("keeps the intervals of a consistently flat singer", () => {
-    // Every note 40 cents flat. Rounded directly these land on 60, 62, 63, 65 —
+    // Every note 40 cents flat. Rounded directly these land on 60, 62, 63, 65:
     // the third interval collapses from 2 semitones to 1 and the melody is wrong.
     const flat = [60.6, 62.6, 63.6, 65.6].map((pitch) => pitch - 1);
     const { notes, tuningOffset: offset } = quantize(flat);

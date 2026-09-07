@@ -31,7 +31,7 @@ import {
 /**
  * The loop station's one stateful hook. Owns the engine, drives the pure
  * reducer, and interprets its effects against the audio graph. Everything it
- * decides *musically* is decided in `session.ts`/`transport.ts`/`dsp/` — this
+ * decides *musically* is decided in `session.ts`/`transport.ts`/`dsp/`. This
  * file only moves bytes between them and the browser.
  */
 
@@ -86,14 +86,14 @@ export function useLoopStation() {
    * `dirty` is derived from it during render.
    */
   const [savedSignature, setSavedSignature] = useState(EMPTY_SIGNATURE);
-  /** Whether storage currently holds anything — drives hold-to-delete. */
+  /** Whether storage currently holds anything: drives hold-to-delete. */
   const [hasSave, setHasSave] = useState(false);
 
   const engineRef = useRef<LoopEngine | null>(null);
   /** Authoritative state; `setSession` mirrors it for rendering. Effects must
    *  not run inside a state updater (StrictMode double-invokes those). */
   const stateRef = useRef(session);
-  /** Padded recordings by segment id. Values upgrade quick → full silently. */
+  /** Padded recordings by segment id. Values upgrade quick → full in place. */
   const segmentsRef = useRef(new Map<number, Float32Array>());
   /** Segment ids we still care about; late extractions for others are dropped. */
   const wantedRef = useRef(new Set<number>());
@@ -300,7 +300,7 @@ export function useLoopStation() {
         return;
       }
       const s = stateRef.current;
-      // Silent while stopped — except before the first track exists, where the
+      // Silent while stopped: except before the first track exists, where the
       // clicks are how the player hears the tempo they're setting.
       const audible =
         s.metronomeOn && (s.playing || (s.anchorTime === null && s.tracks.length === 0));
@@ -392,7 +392,7 @@ export function useLoopStation() {
 
   // -------------------------------------------------------------------------
   // The new-recording defaults are the only things that persist. Recorded audio
-  // is deliberately in-memory: this is an instrument, not a project file.
+  // is in-memory: this is an instrument, not a project file.
 
   useEffect(() => {
     const stored = readStoredSettings();
@@ -468,7 +468,7 @@ export function useLoopStation() {
   }, []);
 
   /**
-   * Restore once, as soon as the engine exists. The transport stays stopped —
+   * Restore once, as soon as the engine exists. The transport stays stopped:
    * pressing play then sounds as the loop was left.
    */
   const restored = useRef(false);
@@ -510,7 +510,7 @@ export function useLoopStation() {
     return () => window.removeEventListener("beforeunload", warn);
   }, [dirty]);
 
-  /** Snapshot for the rAF paint loop — pixels only, never scheduling. */
+  /** Snapshot for the rAF paint loop: pixels only, never scheduling. */
   const readVisuals = useCallback((): Visuals => {
     const engine = engineRef.current;
     if (!engine) {
@@ -588,7 +588,7 @@ function readStoredSettings(): StoredSettings {
 function micErrorMessage(error: unknown): string {
   if (error instanceof DOMException) {
     if (error.name === "NotAllowedError" || error.name === "SecurityError") {
-      return "Microphone access was denied. The loop station needs to hear you — allow the microphone in your browser's site settings and reload.";
+      return "Microphone access was denied. The loop station needs to hear you, so allow the microphone in your browser's site settings and reload.";
     }
     if (error.name === "NotFoundError" || error.name === "OverconstrainedError") {
       return "No microphone was found. Plug one in and reload.";

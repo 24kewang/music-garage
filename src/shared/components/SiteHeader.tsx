@@ -16,7 +16,7 @@ const HIDE_DELAY_MS = 220;
 
 /**
  * The site header. Sits collapsed above the viewport and slides down when the pointer
- * reaches the top of the screen, staying put while the pointer is anywhere inside it —
+ * reaches the top of the screen, staying put while the pointer is anywhere inside it:
  * including the games dropdown, which is a DOM child so it can't trigger the header's
  * own pointer-leave.
  *
@@ -34,7 +34,7 @@ export default function SiteHeader() {
   const [focusPinned, setFocusPinned] = useState(false);
   /**
    * Which dropdown is open, if any. Tracked by name rather than as a boolean so two
-   * menus can't fight — with a shared boolean, menu A closing would unpin the header
+   * menus can't fight: with a shared boolean, menu A closing would unpin the header
    * while menu B is still open.
    */
   const [openMenu, setOpenMenu] = useState<string | null>(null);

@@ -11,7 +11,7 @@ import { norm, WEDGES } from "./geometry";
 export interface Landing {
   /** Points scored. */
   score: number;
-  /** Which mirrored group was hit — needed to aim the reveal glow. */
+  /** Which mirrored group was hit: needed to aim the reveal glow. */
   groupDeg: number;
   /** Index into WEDGES of the specific wedge hit. */
   wedgeIndex: number;

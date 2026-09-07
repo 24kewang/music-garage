@@ -23,7 +23,7 @@ export interface LivePitch {
 export interface PitchDetectorOptions extends PitchDetectionOptions {
   /**
    * How many recent readings the median is taken over. A median (not a mean) is what
-   * kills the occasional octave jump — a single wrong frame can't drag the result.
+   * kills the occasional octave jump: a single wrong frame can't drag the result.
    */
   smoothingFrames?: number;
   /**
@@ -63,7 +63,7 @@ export function usePitchDetector(
   const [pitch, setPitch] = useState<LivePitch>(IDLE);
 
   // Kept in a ref so tweaking detection options doesn't tear down and restart the
-  // animation loop. Synced in an effect rather than during render — mutating a ref
+  // animation loop. Synced in an effect rather than during render: mutating a ref
   // while rendering is what makes concurrent rendering misbehave.
   const optionsRef = useRef({ smoothingFrames, holdMs, updateIntervalMs, detectionOptions });
   useEffect(() => {
@@ -97,7 +97,7 @@ export function usePitchDetector(
         while (recent.length > smoothingFrames) recent.shift();
         lastConfidentAt = now;
       } else if (now - lastConfidentAt > holdMs) {
-        // Dropout has outlasted the hold window — forget what we were hearing.
+        // Dropout has outlasted the hold window: forget what we were hearing.
         recent.length = 0;
       }
 

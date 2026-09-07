@@ -39,7 +39,7 @@ interface SettingsPanelProps {
 }
 
 /**
- * The gear and its popup. Reachable in every phase — the mode may be changed
+ * The gear and its popup. Reachable in every phase: the mode may be changed
  * mid-round.
  *
  * Text fields hold a draft while typing and only commit when valid, so the game

@@ -1,8 +1,8 @@
 /**
  * Turning a captured buffer into a magnitude spectrum the detector can score.
  *
- * Pure — no browser APIs. Everything here is driven by synthesized buffers in the
- * tests, which is what makes the detector verifiable without a microphone.
+ * Pure: no browser APIs. Everything here is driven by synthesized buffers in the
+ * tests, which makes the detector verifiable without a microphone.
  */
 
 import { magnitudeSpectrum, planFft, type FftPlan } from "./fft";
@@ -22,7 +22,7 @@ export function rms(samples: ArrayLike<number>, from = 0, to = samples.length): 
  * A Hann window of `size` points.
  *
  * Without a window, a tone whose frequency falls between bins smears across the whole
- * spectrum — and every real note falls between bins. That leakage would swamp the
+ * spectrum, and every real note falls between bins. That leakage would swamp the
  * quieter of the two notes.
  */
 export function hannWindow(size: number): Float64Array {
@@ -113,7 +113,7 @@ export function peakNear(
  * Refine a peak's position using its neighbours.
  *
  * A parabola through the three bins around a maximum lands closer to the true
- * frequency than the bin center does — useful for reporting the note actually played
+ * frequency than the bin center does: useful for reporting the note actually played
  * rather than the nearest bin.
  */
 export function interpolatePeak(magnitude: Float64Array, bin: number): number {

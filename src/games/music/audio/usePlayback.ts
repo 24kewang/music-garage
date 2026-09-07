@@ -10,7 +10,7 @@ import type { Recording } from "./useRecorder";
  *
  * Owns an `AudioContext` of its own rather than borrowing the recorder's, for the
  * same reason Pitch Math does: the recorder closes its context when the microphone is
- * released, and that happens at the end of a game — exactly when people most want to
+ * released, and that happens at the end of a game: exactly when people most want to
  * hear the melody back. The samples are a plain array in memory and outlive it
  * without trouble.
  *
@@ -72,7 +72,7 @@ export function usePlayback(): Playback {
         recording.sampleRate,
       );
 
-      // Copied before fading — the fade is destructive and the stored recording has
+      // Copied before fading: the fade is destructive and the stored recording has
       // to survive being replayed more than once. Annotated rather than inferred,
       // since copyToChannel rejects a view that might be shared-backed.
       const faded: Float32Array<ArrayBuffer> = Float32Array.from(recording.samples);

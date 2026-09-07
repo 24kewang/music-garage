@@ -83,12 +83,12 @@ export class LoopEngine {
         levelEveryBlocks: config.capture.levelEveryBlocks,
       },
     });
-    // Deliberately no route to the destination — monitoring the mic would feed back.
+    // No route to the destination: monitoring the mic would feed back.
     this.micSource.connect(this.workletNode);
     this.capture = new CaptureBus(this.workletNode, context.sampleRate);
 
     // Soft limiter on the way out: the master fader boosts past unity and the
-    // reverb return is loud, so the sum can exceed full scale — where the
+    // reverb return is loud, so the sum can exceed full scale: where the
     // browser would hard-clip it into distortion rather than loudness.
     this.limiter = context.createDynamicsCompressor();
     this.limiter.threshold.value = config.limiter.thresholdDb;
@@ -103,7 +103,7 @@ export class LoopEngine {
     this.masterIn = context.createGain();
     this.masterIn.connect(this.masterVol);
     // Tapped post-limiter, so the meter shows what actually leaves the station
-    // — a meter pinned at the top is then an honest "you're driving it too hard".
+    //: a meter pinned at the top is then an honest "you're driving it too hard".
     this.masterAnalyser = context.createAnalyser();
     this.masterAnalyser.fftSize = 1024;
     this.limiter.connect(this.masterAnalyser);
@@ -126,8 +126,8 @@ export class LoopEngine {
 
   /**
    * Requests the microphone (the permission prompt this page opens with) and
-   * builds the graph. The context may come back `suspended` — autoplay policy
-   * wants a gesture — in which case the caller shows a tap-to-start gate.
+   * builds the graph. The context may come back `suspended`, autoplay policy
+   * wants a gesture, in which case the caller shows a tap-to-start gate.
    */
   static async create(): Promise<LoopEngine> {
     if (!navigator.mediaDevices?.getUserMedia) {
@@ -250,7 +250,7 @@ export class LoopEngine {
   /**
    * Give a track a (new) buffer. While the transport runs, the new source starts
    * a moment from now at the exact current loop phase, crossfading over the old
-   * one — the master timeline never hiccups.
+   * one: the master timeline never hiccups.
    */
   setTrackBuffer(trackId: number, buffer: AudioBuffer): void {
     const track = this.tracks.get(trackId);
@@ -331,7 +331,7 @@ export class LoopEngine {
   }
 
   // -------------------------------------------------------------------------
-  // Gains — recomputed wholesale from state after every dispatch; idempotent.
+  // Gains: recomputed wholesale from state after every dispatch; idempotent.
 
   applyGains(state: SessionState): void {
     const at = this.context.currentTime;
@@ -346,7 +346,7 @@ export class LoopEngine {
       const gain = audible ? (trackState.volume / 100) * config.mix.maxGain : 0;
       track.volume.gain.setTargetAtTime(gain, at, ramp);
       // The dry path dies with the bus, but the track send feeds the shared
-      // reverb directly — zero it under a muted bus so the tail dies too.
+      // reverb directly: zero it under a muted bus so the tail dies too.
       const send = audible && !busMuted ? trackState.reverb / 100 : 0;
       track.send.gain.setTargetAtTime(send, at, ramp);
     }

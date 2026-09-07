@@ -1,7 +1,7 @@
 import { config } from "../config";
 
 /**
- * Where the box sits above the head, and how big it is — the player's own tuning.
+ * Where the box sits above the head, and how big it is: the player's own tuning.
  *
  * Same defensive contract as the other games' settings modules: SSR-safe,
  * corrupt-safe, and a stored value that has since gone out of range costs only its
@@ -15,13 +15,13 @@ export interface Settings {
   offsetX: number;
   offsetY: number;
   offsetZ: number;
-  /** Overall size of the box — image and caption together — as a percentage. */
+  /** Overall size of the box, image and caption together, as a percentage. */
   scalePercent: number;
   /** Whether the excerpt's name is drawn under the image (and in the overlay). */
   showCaption: boolean;
 }
 
-// Camera mode is deliberately *not* here. It is session state in Game.tsx: every visit
+// Camera mode is *not* here. It is session state in Game.tsx: every visit
 // starts camera-free so the 3D stack is only fetched once a player asks for it, and a
 // stored preference would undo that on the very next load.
 
@@ -33,7 +33,7 @@ export const DEFAULT_SETTINGS: Settings = {
   showCaption: true,
 };
 
-/** The bounds each field is checked against — the same ones the sliders use. */
+/** The bounds each field is checked against: the same ones the sliders use. */
 export const BOUNDS = config.tuning;
 
 type NumericField = "offsetX" | "offsetY" | "offsetZ" | "scalePercent";

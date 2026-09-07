@@ -29,7 +29,7 @@ function vibrato(midi: number, count: number, depth: number): number[] {
 }
 
 /**
- * A contour as `findSegments` actually receives it — step 5's median filter has
+ * A contour as `findSegments` actually receives it: step 5's median filter has
  * already run. Thirteen points is 130 ms, near one vibrato period.
  */
 const contour = (midis: readonly number[]): ContourPoint[] =>
@@ -152,7 +152,7 @@ describe("dropGlides", () => {
 
   it("keeps a short note when the neighbours are close together", () => {
     // C to D leaves room for exactly one chromatic step, and a fast chromatic run
-    // is real music — a brief C sharp there is a note, not a slide.
+    // is real music: a brief C sharp there is a note, not a slide.
     const kept = dropGlides(
       [segment(60, 0.4), segment(61, 0.05), segment(62, 0.4)],
       GLIDE,

@@ -12,7 +12,7 @@ import styles from "./AlignmentGraph.module.css";
  * `var(--color-…)` directly. A canvas would force color literals into JavaScript,
  * which the styling rules rule out outright.
  *
- * No axes, no gridlines, no pitch labels — only the two shapes, which is what the
+ * No axes, no gridlines, no pitch labels: only the two shapes, which is what the
  * brief asks for and is also the honest presentation. The attempt is drawn at
  * whatever transposition scored best, so an absolute pitch scale alongside it would
  * be actively misleading.
@@ -42,7 +42,7 @@ export default function AlignmentGraph({
 
     cells.forEach((cell, index) => {
       // Only join cells that are actually adjacent. A gap left by a missed or extra
-      // note must stay a gap — it is doing as much work as the colors are.
+      // note must stay a gap. It is doing as much work as the colors are.
       if (cell && previous && index === previousIndex + 1 && previous.y !== cell.y) {
         out.push({ x: cell.x0, y0: previous.y, y1: cell.y, index });
       }

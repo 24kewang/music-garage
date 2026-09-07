@@ -5,7 +5,7 @@
  * algorithm can be swapped (YIN, a WASM detector, an AudioWorklet) without touching
  * game code.
  *
- * Pure with respect to the DOM — testable against synthesized buffers in Node.
+ * Pure with respect to the DOM: testable against synthesized buffers in Node.
  */
 
 import { PitchDetector } from "pitchy";
@@ -23,9 +23,9 @@ export interface PitchDetectionOptions {
    * to track a real singer, high enough to reject room noise and consonants.
    */
   minClarity?: number;
-  /** Ignore anything below this — below the bottom of the bass range. */
+  /** Ignore anything below this: below the bottom of the bass range. */
   minFrequency?: number;
-  /** Ignore anything above this — above the top of the soprano range. */
+  /** Ignore anything above this: above the top of the soprano range. */
   maxFrequency?: number;
   /**
    * Minimum RMS volume in dBFS (0 = full scale, negative = quieter). Silence and room
@@ -38,7 +38,7 @@ export interface PitchDetectionOptions {
  * dBFS → absolute RMS amplitude.
  *
  * Done here rather than via pitchy's `minVolumeDecibels` setter, which converts with
- * `10 ** (db / 10)` — a power-ratio formula applied to an amplitude threshold, so a
+ * `10 ** (db / 10)`: a power-ratio formula applied to an amplitude threshold, so a
  * requested -50 dB floor lands at -100 dB and effectively never triggers. The `/ 20`
  * below is the amplitude conversion the option name implies.
  */
@@ -56,7 +56,7 @@ export const DEFAULT_PITCH_OPTIONS: Required<PitchDetectionOptions> = {
 export type Detector = PitchDetector<Float32Array>;
 
 /**
- * Build a detector for a fixed buffer length. Allocate once and reuse — the detector
+ * Build a detector for a fixed buffer length. Allocate once and reuse: the detector
  * holds internal scratch buffers so per-frame detection allocates nothing, which
  * matters when this runs every animation frame.
  */
@@ -74,7 +74,7 @@ export function createPitchDetector(
  * Detect the pitch of one buffer of time-domain samples.
  *
  * Returns `null` rather than a low-confidence guess when the input is silence, noise,
- * or out of range — callers can treat `null` as "nothing being sung right now".
+ * or out of range: callers can treat `null` as "nothing being sung right now".
  */
 export function detectPitch(
   detector: Detector,

@@ -1,7 +1,7 @@
 /**
  * Player settings: how guesses are judged, and how the reveal is written.
  *
- * Same contract as the other game in the garage — defaults are always playable, and a
+ * Same contract as the other game in the garage: defaults are always playable, and a
  * stored value that has since become invalid costs only its own field, never the whole
  * configuration.
  */

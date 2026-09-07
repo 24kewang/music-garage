@@ -2,7 +2,7 @@
  * Steps 9 and 10: round the segments to whole semitones and collapse the runs.
  *
  * Absolute octave is preserved here. Register-independence is the transposition
- * search's job, later — which is what lets the sequence keep *relative* octave
+ * search's job, later, which lets the sequence keep *relative* octave
  * information, so a leap has to be reproduced as a leap, without ever testing which
  * octave somebody sang it in.
  */
@@ -11,7 +11,7 @@
 export interface Quantized {
   notes: number[];
   /**
-   * Semitones subtracted before rounding — a positive value means they were playing
+   * Semitones subtracted before rounding: a positive value means they were playing
    * sharp of concert pitch. Diagnostic only; the notes already have it removed.
    */
   tuningOffset: number;
@@ -32,8 +32,8 @@ function median(values: readonly number[]): number {
  * in (-0.5, 0.5]. Removing it before rounding is not cosmetic. A singer who is
  * consistently forty cents flat has every note sitting at x.60 of the semitone
  * below; rounding that directly sends some notes up and some down depending on
- * which side of x.50 the detector's noise happened to fall, and the *intervals* —
- * the only thing this game scores — come out wrong. Correcting first makes the
+ * which side of x.50 the detector's noise happened to fall, and the *intervals*:
+ * the only thing this game scores: come out wrong. Correcting first makes the
  * rounding unanimous.
  *
  * A median rather than a mean, so one wildly wrong segment cannot drag the whole
@@ -58,7 +58,7 @@ export function quantize(pitches: readonly number[]): Quantized {
  *
  * Only **adjacent** duplicates collapse. An oscillating figure like `C D C D` is a
  * valid sequence and survives intact; `C C D` becomes `C D`. Two repeated notes at
- * the same pitch are indistinguishable here by design — the pipeline discards
+ * the same pitch are indistinguishable here by design: the pipeline discards
  * rhythm, and without rhythm there is nothing left to tell a repeat from a hold.
  */
 export function collapse(notes: readonly number[]): number[] {

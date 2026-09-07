@@ -1,7 +1,7 @@
 /*
  * Design tokens for Music Garage.
  *
- * One dark theme, deliberately — there is no light mode. Every game and shared
+ * One dark theme. There is no light mode. Every game and shared
  * component styles itself from these custom properties, so the site reads as one
  * thing. Add a token here rather than hard-coding a value inside a component.
  *
@@ -12,7 +12,7 @@
 :root {
   color-scheme: dark;
 
-  /* Surfaces, furthest back to closest. Not pure black — it smears on OLED and
+  /* Surfaces, furthest back to closest. Not pure black. It smears on OLED and
      crushes the shadows the layering depends on. */
   --color-bg: #0d0d16;
   --color-surface: #14141f;
@@ -28,7 +28,7 @@
   --color-text-muted: #a2a3b4; /* 7.8:1 */
   --color-text-faint: #85879c; /* 5.5:1 */
 
-  /* Accent — indigo. Used for links, active nav, focus rings and primary actions. */
+  /* Accent: indigo. Used for links, active nav, focus rings and primary actions. */
   --color-accent: #818cf8; /* 6.5:1 on bg */
   --color-accent-hover: #a5b4fc;
   --color-accent-contrast: #0d0d16;
@@ -47,11 +47,11 @@
   --color-danger: #f87171;
   --color-danger-soft: rgb(248 113 113 / 0.12);
 
-  /* Waveform bars (graphics, not text — no contrast ratio owed). */
+  /* Waveform bars (graphics, not text, no contrast ratio owed). */
   --color-wave: #7f83a0;
   --color-wave-muted: #3a3d52;
 
-  /* Bus identity hues. Used only to label which bus a track belongs to — never
+  /* Bus identity hues. Used only to label which bus a track belongs to: never
      as a general accent, so the one-accent rule still holds everywhere else.
      Chosen to sit clear of --color-warn (solo) and --color-danger (delete).
      Ratios are on --color-surface, the darkest thing they label. */
@@ -92,7 +92,7 @@
   --text-3xl: 2.25rem;
   --text-4xl: 3rem;
 
-  /* Elevation — deeper and softer than a light theme needs, so panels separate. */
+  /* Elevation: deeper and softer than a light theme needs, so panels separate. */
   --shadow-sm: 0 1px 2px rgb(0 0 0 / 0.4);
   --shadow-md: 0 4px 16px rgb(0 0 0 / 0.45);
   --shadow-lg: 0 16px 48px rgb(0 0 0 / 0.55);

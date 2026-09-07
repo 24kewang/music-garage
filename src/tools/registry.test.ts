@@ -8,7 +8,7 @@ import { toolHref } from "./types";
 /**
  * Guards the three-part contract for adding a tool: a folder under `src/tools/`, a
  * route adapter under `src/app/tools/`, and an entry in the registry. Two of the
- * three can drift silently otherwise — a registered tool with no route 404s, and a
+ * three can otherwise drift apart unnoticed: a registered tool with no route 404s, and a
  * route with no registry entry never appears in the Tools menu.
  */
 

@@ -1,6 +1,6 @@
 /*
  * The station owns the whole viewport; fixed controls float above it. Nothing
- * here scrolls the page — the track list and the rail carry their own
+ * here scrolls the page: the track list and the rail carry their own
  * scrollbars, so the transport stays put no matter how many tracks exist.
  */
 .screen {
@@ -130,7 +130,7 @@
   scrollbar-gutter: stable;
 }
 
-/* Announcements for assistive tech only — visible to a screen reader, not the
+/* Announcements for assistive tech only: visible to a screen reader, not the
    eye. Clipped rather than hidden, so it is still read out. */
 .srOnly {
   position: absolute;

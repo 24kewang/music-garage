@@ -4,7 +4,7 @@ import styles from "../legal.module.css";
 
 export const metadata: Metadata = {
   title: "Privacy Policy",
-  description: `What ${SITE.name} stores, what it does not, and where it makes third-party requests.`,
+  description: `How ${SITE.name} handles your data.`,
   alternates: { canonical: "/privacy" },
 };
 
@@ -14,148 +14,174 @@ export default function PrivacyPage() {
       <header className={styles.header}>
         <h1 className={styles.title}>Privacy Policy</h1>
         <p className={styles.updated}>Last updated {SITE.legalLastUpdated}</p>
-        {/* <p className={styles.note}>
-          Written in plain language and in good faith, from an audit of what this site
-          actually does. It is not legal advice, and it has not been reviewed by a
-          lawyer.
-        </p> */}
       </header>
 
       <section className={styles.section}>
-        <h2 className={styles.heading}>The short version</h2>
         <p>
-          {SITE.name} has <strong>no accounts, no cookies, and no server</strong>. It is
-          a set of static files. Every game runs entirely inside your browser tab.
+          {SITE.name} is a set of music games and tools that run entirely in your web
+          browser. There are no accounts, no cookies, and no server that receives your
+          data. This policy explains what is stored, where it is stored, and the few
+          cases in which your browser contacts someone else.
         </p>
         <p>
-          <strong>
-            No audio, video, or image you produce or upload is ever transmitted anywhere.
-          </strong>{" "}
-          Recordings, uploaded excerpts, settings and scores are written to storage
-          inside your own browser, and only your browser can read them. Nothing is sent
-          to us, because there is no &ldquo;us&rdquo; to send it to — no database, no
-          logs of your activity, no analytics beyond an anonymous page count.
-        </p>
-        <p>
-          There are exactly two exceptions, both described below: an anonymous traffic
-          counter, and two third-party requests that happen only if you switch on the
-          camera filter in the Random Excerpt Generator.
+          The short version: <strong>we do not collect your personal information</strong>,
+          and no audio, video, or file you produce or upload is ever sent to us or to
+          anyone else.
         </p>
       </section>
 
       <section className={styles.section}>
-        <h2 className={styles.heading}>What is stored in your browser</h2>
+        <h2 className={styles.heading}>1. Information We Collect</h2>
         <p>
-          All of this lives on your device. It survives reloads by design, it is never
-          uploaded, and you can delete all of it at any time by clearing site data for
-          this domain in your browser settings.
+          We do not collect personal information. We have no accounts, no sign-in, and no
+          database. We never ask for your name, email address, or payment details.
         </p>
 
-        <h3 className={styles.subheading}>Settings and scores</h3>
+        <h3 className={styles.subheading}>Information stored on your device</h3>
         <p>
-          Stored in <span className={styles.code}>localStorage</span> under these keys:
+          The site saves your settings and your work in your own browser so they survive a
+          reload. This data stays on your device and is never uploaded. It is stored in
+          your browser&rsquo;s <span className={styles.code}>localStorage</span> under
+          these keys:
         </p>
         <ul className={styles.list}>
           <li>
-            <span className={styles.code}>music-garage:music:settings</span> — MUSIC&rsquo;s
-            player names, turn order, strike counts, word and tolerance
+            <span className={styles.code}>music-garage:music:settings</span> stores player
+            names, turn order, strike counts, word, and tolerance for MUSIC
           </li>
           <li>
             <span className={styles.code}>
               music-garage:musical-wavelength:settings
             </span>{" "}
-            — the dial&rsquo;s answer mode and range
+            stores the dial&rsquo;s answer mode and range
           </li>
           <li>
-            <span className={styles.code}>music-garage:pitch-math:settings</span> —
+            <span className={styles.code}>music-garage:pitch-math:settings</span> stores
             instrument transposition and label length
           </li>
           <li>
             <span className={styles.code}>music-garage:reg:settings</span> and{" "}
-            <span className={styles.code}>music-garage:reg:selection</span> — the filter
-            box&rsquo;s position and size, and which excerpts are ticked
+            <span className={styles.code}>music-garage:reg:selection</span> store the
+            filter box&rsquo;s position and size, and which excerpts are selected
           </li>
           <li>
-            <span className={styles.code}>loop-station:settings</span> (and the legacy{" "}
-            <span className={styles.code}>loop-station:delay-ms</span>) — default track
-            delay, volume, reverb, and your measured latency calibration
+            <span className={styles.code}>loop-station:settings</span> and the legacy{" "}
+            <span className={styles.code}>loop-station:delay-ms</span> store default track
+            delay, volume, reverb, and your latency calibration
           </li>
         </ul>
         <p>
-          The player names in MUSIC are the only place the site holds anything resembling
-          a personal detail, and they are whatever you type. They never leave the device.
+          Player names in MUSIC are the only place the site holds anything resembling a
+          personal detail, and they are whatever you choose to type. They never leave your
+          device.
         </p>
-
-        <h3 className={styles.subheading}>Recorded audio</h3>
         <p>
-          The Loop Station&rsquo;s <strong>Save</strong> button writes your loops — every
-          track&rsquo;s audio and the whole mix — to an{" "}
+          The Loop Station&rsquo;s <strong>Save</strong> button writes your loops, their
+          audio, and the whole mix to an{" "}
           <span className={styles.code}>IndexedDB</span> database named{" "}
-          <span className={styles.code}>loop-station</span>, so the session comes back
-          when you return. Holding the Save button turns it into a Delete Saved button,
-          which removes it. Audio recorded in MUSIC and Pitch Math is held in memory only
-          and is gone when the page closes.
+          <span className={styles.code}>loop-station</span>, so your session is there when
+          you return. Audio recorded in MUSIC and Pitch Math is held in memory only and is
+          gone when you close the page.
         </p>
 
-        <h3 className={styles.subheading}>Uploaded excerpt images</h3>
+        <h3 className={styles.subheading}>Camera and microphone</h3>
         <p>
-          The Random Excerpt Generator keeps your uploaded images in the browser&rsquo;s{" "}
-          <strong>Origin Private File System</strong>, in a private directory named{" "}
-          <span className={styles.code}>reg</span>. This is storage the page cannot see
-          outside its own origin and no other site can reach. The site asks the browser
-          to mark it persistent so a routine cache clean-up does not wipe your library;
-          your browser decides whether to honor that. The gear panel has a
-          delete-everything control that removes the whole library.
+          Several games use your microphone, and the Random Excerpt Generator can use your
+          camera. Your browser asks your permission first, and you can revoke it at any
+          time in your browser&rsquo;s site settings.
+        </p>
+        <p>
+          These streams are processed in your browser and then discarded. Pitch detection
+          reads the waveform to identify the note you are playing; face tracking reads the
+          video frame to locate your head.{" "}
+          <strong>
+            We do not upload, record, or retain your camera or microphone input.
+          </strong>
+        </p>
+        <p>
+          The camera filter is off by default and must be switched on each session. If you
+          leave it off, the game never requests your camera.
+        </p>
+
+        <h3 className={styles.subheading}>Files you upload</h3>
+        <p>
+          The Random Excerpt Generator lets you import images of musical excerpts. These
+          are stored in your browser&rsquo;s <strong>Origin Private File System</strong>,
+          in a private directory named <span className={styles.code}>reg</span>. No other
+          site can read it, and neither can we. The site asks your browser to keep this
+          storage persistent so routine cleanup does not remove your library; your browser
+          decides whether to honor that request.
+        </p>
+
+        <h3 className={styles.subheading}>Information collected automatically</h3>
+        <p>
+          Like most websites, our hosting provider processes basic technical data needed to
+          deliver pages to you, including your IP address. We use{" "}
+          <strong>Cloudflare Web Analytics</strong> to count page views. It is cookieless,
+          does not fingerprint your browser, and does not track you across other websites.
+          It reports aggregate figures such as how many people visited a page and roughly
+          which country and browser they used. It cannot identify you.
         </p>
       </section>
 
       <section className={styles.section}>
-        <h2 className={styles.heading}>Camera and microphone</h2>
+        <h2 className={styles.heading}>2. How We Use Your Information</h2>
         <p>
-          Several games need a microphone, and the Random Excerpt Generator can use the
-          camera. Both are requested through your browser&rsquo;s standard permission
-          prompt, and both can be revoked at any time in your browser&rsquo;s site
-          settings.
-        </p>
-        <p>
-          What comes in is analyzed in the tab and discarded. Pitch detection reads the
-          waveform to work out what note is sounding; face tracking reads the video frame
-          to work out where your head is.{" "}
-          <strong>Neither stream is uploaded, recorded to any server, or retained</strong>{" "}
-          beyond the game&rsquo;s own in-memory buffer.
-        </p>
-        <p>
-          The camera filter is <strong>off by default</strong> and has to be switched on
-          deliberately, per session. Leave it off and the game never asks for the camera
-          and never loads the face-tracking code at all.
+          The data stored on your device is used only to run the site: to restore your
+          settings, keep your saved loops, and remember your excerpt library between
+          visits. Aggregate analytics are used to understand how much the site is being
+          used. We do not build profiles, and there is no personal information for us to
+          use for anything else.
         </p>
       </section>
 
       <section className={styles.section}>
-        <h2 className={styles.heading}>Third-party requests</h2>
+        <h2 className={styles.heading}>3. How We Share Information</h2>
         <p>
-          Turning on the camera filter in the Random Excerpt Generator makes your browser
-          fetch the face-tracking software from two third-party providers. This is the
-          only time the site contacts anyone but its own server, and it happens only in
-          that mode:
+          We do not sell or rent your information, and we do not share it for advertising.
+          We have no personal information to share. Your recordings, uploads, and settings
+          never leave your device, so there is nothing for us to disclose to anyone,
+          including in response to a legal request.
+        </p>
+      </section>
+
+      <section className={styles.section}>
+        <h2 className={styles.heading}>4. Third-Party Services</h2>
+        <p>
+          Two providers are involved in delivering the site:
         </p>
         <ul className={styles.list}>
           <li>
-            <span className={styles.code}>cdn.jsdelivr.net</span> — jsDelivr, which
-            serves the MediaPipe face-detection runtime
+            <strong>Cloudflare</strong> hosts {SITE.name} and provides its analytics.
           </li>
           <li>
-            <span className={styles.code}>storage.googleapis.com</span> — Google Cloud
-            Storage, which serves the face-landmark model file
+            <strong>jsDelivr</strong> and <strong>Google Cloud Storage</strong> serve the
+            face-tracking software used by the Random Excerpt Generator&rsquo;s camera
+            filter.
           </li>
         </ul>
         <p>
-          Making those requests <strong>reveals your IP address and browser user agent</strong>{" "}
-          to jsDelivr and to Google, as any request to any server does. Neither request
-          carries anything about you, your library, or what the camera sees — they are
-          plain downloads of two public files. Once downloaded, all face tracking runs in
-          your browser. What the providers do with that request is governed by their own
-          policies:{" "}
+          When you turn on the camera filter, your browser downloads that software from{" "}
+          <span className={styles.code}>cdn.jsdelivr.net</span> and{" "}
+          <span className={styles.code}>storage.googleapis.com</span>. As with any request
+          to any server, this <strong>reveals your IP address and browser user agent</strong>{" "}
+          to those providers. The requests are plain downloads of two public files and
+          carry nothing about you, your library, or what your camera sees. All face
+          tracking then runs in your browser.
+        </p>
+        <p>
+          This is the only time the site contacts anyone other than its own host. If you
+          would prefer not to make these requests, leave the camera filter off. Your use of
+          those services is governed by their own policies:{" "}
+          <a
+            className={styles.link}
+            href="https://www.cloudflare.com/privacypolicy/"
+            target="_blank"
+            rel="noreferrer noopener"
+          >
+            Cloudflare
+          </a>
+          ,{" "}
           <a
             className={styles.link}
             href="https://www.jsdelivr.com/terms/privacy-policy-jsdelivr-net"
@@ -163,8 +189,8 @@ export default function PrivacyPage() {
             rel="noreferrer noopener"
           >
             jsDelivr
-          </a>{" "}
-          and{" "}
+          </a>
+          , and{" "}
           <a
             className={styles.link}
             href="https://policies.google.com/privacy"
@@ -175,92 +201,116 @@ export default function PrivacyPage() {
           </a>
           .
         </p>
+      </section>
+
+      <section className={styles.section}>
+        <h2 className={styles.heading}>5. Children&rsquo;s Privacy</h2>
         <p>
-          These URLs are fixed inside the face-tracking library the site uses and cannot
-          be redirected without modifying it. If you would rather not make those
-          requests, leave the camera filter off — the Random Excerpt Generator works as an
-          ordinary picker without it, and nothing else on the site loads anything
-          externally.
+          {SITE.name} is not directed to children under 13, and we do not knowingly
+          collect personal information from anyone, of any age. There are no accounts to
+          create and nothing a child could submit that would reach us. Because we collect
+          nothing, there is no information about a child for us to disclose or delete.
+        </p>
+        <p>
+          If you are a parent or guardian, the practical points are these: several games
+          request microphone access and one can request camera access, all of it processed
+          on the device and none of it recorded anywhere. Anything the site saves stays on
+          that device and can be removed by clearing the browser&rsquo;s site data.
         </p>
       </section>
 
       <section className={styles.section}>
-        <h2 className={styles.heading}>Analytics</h2>
+        <h2 className={styles.heading}>6. Data Retention</h2>
         <p>
-          The site uses <strong>Cloudflare Web Analytics</strong> to count page views. It
-          is <strong>cookieless</strong>: it sets no cookie, stores nothing on your
-          device, does not fingerprint your browser, and does not track you across other
-          websites. What it produces is aggregate — how many people visited which page,
-          roughly where in the world from, which browsers. It cannot identify you and it
-          is never combined with anything else.
-        </p>
-        <p>
-          This is the only measurement on the site, and there is no intention to extend
-          it. There are no advertising trackers, no social media pixels, and no
-          third-party analytics. Cloudflare also serves the site itself, so it processes
-          request metadata — your IP address, essentially — as any hosting provider must
-          in order to deliver a page to you.
+          We do not retain your data, because we never receive it. Everything the site
+          saves is kept in your browser until you remove it. Aggregate analytics are
+          retained by Cloudflare according to their own retention schedule and contain no
+          information that identifies you.
         </p>
       </section>
 
       <section className={styles.section}>
-        <h2 className={styles.heading}>Children</h2>
+        <h2 className={styles.heading}>7. Security</h2>
         <p>
-          {SITE.name} is not directed to children under 13, and{" "}
-          <strong>no personal information is collected from anyone</strong>, of any age.
-          There are no accounts to create, no names or email addresses requested, and
-          nothing a child could submit that would reach us.
+          The site is served over HTTPS and sends a strict Content Security Policy along
+          with other security headers. Because your recordings and files stay in your
+          browser, they are protected by your browser&rsquo;s own isolation between sites:
+          no other website can read them.
         </p>
         <p>
-          Because nothing is collected, there is nothing held about a child to disclose
-          or delete on request. If you are a parent or guardian, what is worth knowing is
-          the practical part: several games ask for microphone access and one can ask for
-          camera access, all of it processed on the device and none of it recorded
-          anywhere. Anything saved lives on that device and is removed by clearing the
-          browser&rsquo;s site data.
+          Anyone with access to your device and browser profile can open the site and see
+          what it has saved. If you share a computer, clear the site data when you are
+          done. To report a security issue, see{" "}
+          <a
+            className={styles.link}
+            href={`${SITE.repoUrl}/blob/main/SECURITY.md`}
+            target="_blank"
+            rel="noreferrer noopener"
+          >
+            SECURITY.md
+          </a>
+          .
         </p>
       </section>
 
       <section className={styles.section}>
-        <h2 className={styles.heading}>Your choices</h2>
+        <h2 className={styles.heading}>8. Your Privacy Rights</h2>
+        <p>
+          Privacy laws in many places give you rights to access, correct, export, or delete
+          the personal information a service holds about you. We hold none, so there is
+          nothing for us to produce or erase on request.
+        </p>
+        <p>You remain in full control of what the site has saved on your device:</p>
         <ul className={styles.list}>
           <li>
-            <strong>Delete everything the site has stored</strong> — clear site data for
-            this domain in your browser settings. That removes the settings, the saved
-            loops and the excerpt library in one action.
+            <strong>Delete everything</strong> by clearing site data for this domain in
+            your browser settings. This removes your settings, saved loops, and excerpt
+            library together.
           </li>
           <li>
-            <strong>Delete just the excerpt library</strong> — the delete-everything
-            control in the Random Excerpt Generator&rsquo;s gear panel.
+            <strong>Delete your excerpt library</strong> using the delete control in the
+            Random Excerpt Generator&rsquo;s settings panel.
           </li>
           <li>
-            <strong>Delete just a saved loop</strong> — hold the Loop Station&rsquo;s Save
+            <strong>Delete a saved loop</strong> by holding the Loop Station&rsquo;s Save
             button until it fills.
           </li>
           <li>
-            <strong>Revoke camera or microphone access</strong> — your browser&rsquo;s
-            site permission settings. The games degrade rather than break.
-          </li>
-          <li>
-            <strong>Avoid the third-party requests</strong> — leave the camera filter off.
+            <strong>Revoke camera or microphone access</strong> in your browser&rsquo;s
+            site permission settings.
           </li>
         </ul>
       </section>
 
       <section className={styles.section}>
-        <h2 className={styles.heading}>Changes and contact</h2>
+        <h2 className={styles.heading}>9. Do-Not-Track</h2>
         <p>
-          This policy may change as the site changes. The date at the top is the notice.
-          Questions go to{" "}
+          Most browsers offer a Do-Not-Track (DNT) setting. We do not track you across
+          websites under any setting, so there is no behavior for DNT to change.
+        </p>
+      </section>
+
+      <section className={styles.section}>
+        <h2 className={styles.heading}>10. Changes to This Policy</h2>
+        <p>
+          We may update this Privacy Policy from time to time. The date at the top of this
+          page shows when it last changed.
+        </p>
+      </section>
+
+      <section className={styles.section}>
+        <h2 className={styles.heading}>11. Contact Us</h2>
+        <p>
+          Questions about this policy? Reach us through{" "}
           <a
             className={styles.link}
             href={ISSUES_URL}
             target="_blank"
             rel="noreferrer noopener"
           >
-            the project&rsquo;s issue tracker
+            our issue tracker
           </a>
-          , which is public — do not post anything private there.
+          . It is public, so please do not post anything private there.
         </p>
       </section>
     </>

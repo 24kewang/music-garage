@@ -160,7 +160,7 @@ describe("the normal record mechanism", () => {
     const track = state.tracks[0];
     expect(track.reps).toBe(1);
     expect(track.name).toBe("TAKE 01");
-    // x1: the spawn loop is the loop just recorded, so it graduates as it is set —
+    // x1: the spawn loop is the loop just recorded, so it graduates as it is set:
     // and the clock loop processes that graduation in the same pass.
     expect(track.spawnLoopEndTime).toBeNull();
     const extract = effects.find((e) => e.type === "extract");
@@ -778,7 +778,7 @@ describe("adoptTrackDefaults", () => {
     expect(tuned.state.defaultTrackReverb).toBe(77);
   });
 
-  it("leaves the delay alone — that is alignment, not taste", () => {
+  it("leaves the delay alone: that is alignment, not taste", () => {
     const base = withOneTrack();
     const id = base.state.tracks[0].id;
     const tuned = run(base.state, [
@@ -980,7 +980,7 @@ describe("reordering", () => {
       const s = withFloor();
       const before = names(s);
       const moved = reduce(s, { type: "moveTrack", id: s.tracks[0].id, toIndex: 2 }, 200);
-      // Lands at index 1 — just above the in-progress track, not below it.
+      // Lands at index 1: just above the in-progress track, not below it.
       expect(names(moved.state)).toEqual([before[1], before[0], before[2]]);
       expect(moved.state.tracks[2].spawnLoopEndTime).not.toBeNull();
     });

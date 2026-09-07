@@ -1,5 +1,5 @@
 # Checks only. Deployment is Cloudflare's own git integration (Workers Builds),
-# which watches this repo independently — see HOSTING.md. Nothing here deploys, and
+# which watches this repo independently. See HOSTING.md. Nothing here deploys, and
 # nothing here holds Cloudflare credentials.
 name: CI
 
@@ -52,11 +52,11 @@ jobs:
       - name: Verify security headers shipped
         run: |
           test -f out/_headers || {
-            echo "::error::out/_headers is missing — the export dropped public/_headers"
+            echo "::error::out/_headers is missing; the export dropped public/_headers"
             exit 1
           }
           test -f out/404.html || {
-            echo "::error::out/404.html is missing — Workers has no page to serve for not_found_handling"
+            echo "::error::out/404.html is missing; Workers has no page for not_found_handling"
             exit 1
           }
 

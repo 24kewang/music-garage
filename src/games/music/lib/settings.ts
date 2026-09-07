@@ -7,8 +7,8 @@ import type { Player } from "./rules";
  * stored value that has since gone out of range costs only its own field rather
  * than the whole configuration.
  *
- * Letters live here rather than in the round. That is deliberate and it is what
- * makes two of the brief's requirements work at once — scores are editable in the
+ * Letters live here rather than in the round. That is intended and it is what
+ * makes two of the brief's requirements work at once: scores are editable in the
  * panel, and a game in progress survives an accidental refresh. The round holds only
  * the things that cannot be persisted anyway: which phase, whose turn, and the
  * recordings. One owner, one door.
@@ -16,7 +16,7 @@ import type { Player } from "./rules";
 
 export const STORAGE_KEY = "music-garage:music:settings";
 
-/** Boxes on the board. Fixed — who is *playing* is the active checkbox's job. */
+/** Boxes on the board. Fixed, who is *playing* is the active checkbox's job. */
 export const PLAYER_COUNT = 4;
 
 /** The longest word, and so the most letters anyone can hold. */
@@ -75,8 +75,8 @@ function coercePlayer(raw: unknown, index: number, usedIds: Set<string>): Player
 
   const candidate = raw as Partial<Record<keyof Player, unknown>>;
 
-  // A duplicate id would break resolution by id — reordering rows in the panel
-  // would start handing the melody to the wrong person — so it is reassigned
+  // A duplicate id would break resolution by id: reordering rows in the panel
+  // would start handing the melody to the wrong person, so it is reassigned
   // rather than trusted.
   const rawId = typeof candidate.id === "string" ? candidate.id.trim() : "";
   const id = rawId.length > 0 && !usedIds.has(rawId) ? rawId : fallback.id;

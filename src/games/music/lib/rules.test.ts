@@ -168,7 +168,7 @@ describe("resolveCopy", () => {
 
   it("hands the melody on when the setter was switched off mid-round", () => {
     // They cannot earn a letter while setting, so this only happens by a settings
-    // edit — but the ball still has to go somewhere.
+    // edit, but the ball still has to go somewhere.
     const players = [player("a", 0, false), player("b"), player("c")];
     const round: Round = { phase: "copying", setterId: "a", turnId: "c", takeIndex: 0 };
     const { round: after } = resolveCopy(round, players, WORD, true);
@@ -193,7 +193,7 @@ describe("resolveCopy", () => {
 
   it("runs a two-player round without giving the copier two turns at it", () => {
     // One step forward from the sole copier lands on the setter, which is the round
-    // boundary — the naive "next player still in" would have B copy twice. The round
+    // boundary: the naive "next player still in" would have B copy twice. The round
     // then ends and A, who made their shot, sets again.
     const players = [player("a"), player("b")];
     const { round } = resolveCopy(copying(), players, WORD, true);
@@ -276,7 +276,7 @@ describe("reconcile", () => {
   });
 
   it("does not change whose turn it is when the rows are reordered", () => {
-    // Resolution is by id, not by position — dragging a row in the settings panel
+    // Resolution is by id, not by position: dragging a row in the settings panel
     // must not hand the melody to somebody else.
     const round: Round = { phase: "copying", setterId: "a", turnId: "c", takeIndex: 0 };
     const reordered = [player("d"), player("c"), player("a"), player("b")];

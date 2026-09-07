@@ -7,7 +7,7 @@ import { parseSnapshot, SAVE_SLOT, type LoopSnapshot } from "./snapshot";
  * Browser-side persistence for a saved loop, on IndexedDB.
  *
  * IndexedDB rather than OPFS: it stores `ArrayBuffer`s directly through
- * structured clone — no file naming, no sync-access-handle worker dance — and
+ * structured clone: no file naming, no sync-access-handle worker dance, and
  * the manifest and the audio go in under one transaction, so a save is never
  * half-written.
  *
@@ -15,7 +15,7 @@ import { parseSnapshot, SAVE_SLOT, type LoopSnapshot } from "./snapshot";
  * roughly 70MB, which IndexedDB carries comfortably; converting to Int16 would
  * halve it if quota ever becomes the binding constraint.
  *
- * Deliberately thin, because none of it can run under the Node test
+ * Thin, because none of it can run under the Node test
  * environment. Everything with a decision in it lives in `snapshot.ts`.
  */
 
@@ -82,8 +82,8 @@ export async function saveLoop(
 
 /**
  * Drop the saved loop. Both stores are cleared, which for a single-slot design
- * is the whole save; the localStorage settings — calibration and the
- * new-recording defaults — are a separate concern and deliberately survive.
+ * is the whole save; the localStorage settings: calibration and the
+ * new-recording defaults, are a separate concern and survive.
  */
 export async function deleteLoop(): Promise<void> {
   const db = await open();

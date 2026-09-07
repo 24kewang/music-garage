@@ -8,7 +8,7 @@ import {
   planFft,
 } from "./fft";
 
-/** Straight from the definition — slow, obviously correct, and the reference. */
+/** Straight from the definition: slow, obviously correct, and the reference. */
 function naiveDft(samples: number[]): { real: number[]; imag: number[] } {
   const size = samples.length;
   const real: number[] = [];
@@ -168,7 +168,7 @@ describe("bin ↔ frequency", () => {
   });
 
   it("gives the resolution the detector depends on", () => {
-    // 32768 points at 48 kHz is ~1.46 Hz per bin — comfortably finer than the ~8 Hz
+    // 32768 points at 48 kHz is ~1.46 Hz per bin: comfortably finer than the ~8 Hz
     // gap between adjacent semitones at the bottom of the note grid.
     const spacing = binToFrequency(1, 48000, 32768);
     expect(spacing).toBeLessThan(2);

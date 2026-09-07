@@ -56,8 +56,8 @@
 
 /*
  * The hold's progress. Scaled by the rAF loop in the component, never by a CSS
- * transition — reduced motion clamps those to nothing, and this is the timer,
- * not decoration.
+ * transition: reduced motion clamps those to nothing, and this is the timer,
+ * the timer itself.
  */
 .fill {
   position: absolute;

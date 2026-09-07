@@ -1,8 +1,8 @@
 /**
  * Every tunable in the Random Excerpt Generator, in one place.
  *
- * The values here are the knobs the game was tuned with — spin feel, box placement,
- * name length — so tweaking the game never means hunting through components.
+ * The values here are the knobs the game was tuned with: spin feel, box placement,
+ * name length, so tweaking the game never means hunting through components.
  */
 export const config = {
   files: {
@@ -32,7 +32,7 @@ export const config = {
   },
 
   scene: {
-    /** MindAR face-mesh anchor 10 = top-center of the forehead — the "hat" anchor. */
+    /** MindAR face-mesh anchor 10 = top-center of the forehead: the "hat" anchor. */
     anchorIndex: 10,
     /** Local offset of the whole box from the anchor, in head space
      *  (face width = 1 unit): up one face-width, slightly forward of the crown. */
@@ -51,10 +51,10 @@ export const config = {
     maxTextWidth: 1.8,
     /** Ceiling on supersampling of MindAR's render buffer. MindAR sizes the buffer to
      *  the camera frame and then CSS-stretches it, so the overlay needs raising to be
-     *  legible — but MSAA at a huge buffer costs fill-rate on phones. */
+     *  legible, but MSAA at a huge buffer costs fill-rate on phones. */
     maxPixelRatio: 3,
     /** Caption (excerpt name) canvas-text styling. Canvas can't read CSS custom
-     *  properties, so colors are literal here — keep them matching tokens.css. */
+     *  properties, so colors are literal here. Keep them matching tokens.css. */
     caption: {
       fontPx: 48,
       /** Width at which text wraps to the next line. */

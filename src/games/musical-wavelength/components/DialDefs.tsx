@@ -2,7 +2,7 @@ import { config } from "../config";
 
 const { palette, reveal } = config;
 
-/** Speckle dots, as fractions of the 74×74 tile — straight from the design. */
+/** Speckle dots, as fractions of the 74×74 tile: straight from the design. */
 const SPECKLES = [
   { cx: 9, cy: 14, r: 1.5, light: false, opacity: 0.85 },
   { cx: 41, cy: 6, r: 0.9, light: false, opacity: 0.6 },

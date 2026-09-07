@@ -48,7 +48,7 @@ describe("transcribe", () => {
 
   it("does not let a rest re-articulate a repeated note", () => {
     // Rhythm is discarded by design, so two takes of the same pitch either side of
-    // a silence are one event — a gap must not be able to fake a repeat.
+    // a silence are one event: a gap must not be able to fake a repeat.
     const buffer = phrase(
       [
         { midi: 64, seconds: 0.4, gapSeconds: 0.3 },

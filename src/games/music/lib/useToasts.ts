@@ -6,7 +6,7 @@ import { config } from "../config";
 /**
  * A short-lived queue of notices.
  *
- * There is no toast anywhere else in the garage — the other games say things with a
+ * There is no toast anywhere else in the garage: the other games say things with a
  * single `aria-live` line, because they only ever have one thing to say. MUSIC has a
  * result to announce on every attempt, and those arrive faster than a fixed line can
  * be read, so they stack and expire instead.

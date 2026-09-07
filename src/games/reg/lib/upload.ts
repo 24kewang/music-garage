@@ -2,7 +2,7 @@ import { config } from "../config";
 import { isImagePath, normalizePath } from "./paths";
 
 /**
- * Turning the three upload gestures — file picker, folder picker, drag-and-drop —
+ * Turning the three upload gestures, file picker, folder picker, drag-and-drop,
  * into one shape: `{ path, file }` pairs with normalized relative paths.
  */
 
@@ -28,9 +28,9 @@ export function fromDirectoryInput(files: FileList): Incoming[] {
  * Drag-and-drop, which may mix loose files and whole folder trees.
  *
  * The entries must be snapshotted from every DataTransferItem *before the first
- * await* — the item list is invalidated once the drop handler yields. Directory
+ * await*: the item list is invalidated once the drop handler yields. Directory
  * reads loop `readEntries()` until an empty batch because Chromium returns at most
- * 100 entries per call and silently truncates otherwise.
+ * 100 entries per call and truncates without warning otherwise.
  */
 export async function fromDataTransfer(
   items: DataTransferItemList,

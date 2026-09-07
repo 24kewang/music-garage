@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { gapBetween, moveItem, shiftFor, targetIndex, type RowBox } from "./reorder";
 
-/** Five rows of 60px with a 12px gap — the collapsed track list. */
+/** Five rows of 60px with a 12px gap: the collapsed track list. */
 function evenRows(count = 5, height = 60, gap = 12): RowBox[] {
   return Array.from({ length: count }, (_, i) => ({ top: i * (height + gap), height }));
 }

@@ -61,7 +61,7 @@
 
 /*
  * The ring is decoration. Without motion the color shift alone marks the playing
- * state, which is enough — the sound itself is the real feedback.
+ * state, which is enough: the sound itself is the real feedback.
  */
 @media (prefers-reduced-motion: reduce) {
   .playing .ring {

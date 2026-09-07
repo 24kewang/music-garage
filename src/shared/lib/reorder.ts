@@ -1,8 +1,8 @@
 /**
  * Geometry for dragging a row of a vertical list into a new slot.
  *
- * Shared because two features reorder lists this way — the Loop Station's tracks
- * and MUSIC's player order — and the fiddly parts are identical in both. Kept pure
+ * Shared because two features reorder lists this way: the Loop Station's tracks
+ * and MUSIC's player order, and the fiddly parts are identical in both. Kept pure
  * and free of the DOM so which slot the pointer is over, and how far each sibling
  * has to move to open it, are Node-testable rather than only discoverable by
  * dragging things in a browser.
@@ -35,13 +35,13 @@ const center = (row: RowBox) => row.top + row.height / 2;
  * been dragged to.
  *
  * Counting how many *other* rows sit above that center gives the destination
- * index directly — it is the position the row would land in after being removed
+ * index directly. It is the position the row would land in after being removed
  * and re-inserted, which is exactly what `moveItem` does. Counting rather than
  * accumulating means variable row heights need no special handling and the
  * result never drifts over a long drag.
  *
- * `maxIndex` is the floor, for lists with pinned rows at the bottom — the Loop
- * Station pins an in-progress track and everything below it — so the slot is
+ * `maxIndex` is the floor, for lists with pinned rows at the bottom: the Loop
+ * Station pins an in-progress track and everything below it, so the slot is
  * capped just above them. Lists with nothing pinned can leave it at its default.
  */
 export function targetIndex(
@@ -62,7 +62,7 @@ export function targetIndex(
  * How far the row at `index` translates while a drag is in flight.
  *
  * Only the rows between the origin and the destination move, and they all move
- * by the same amount — the space the dragged row vacates. The dragged row
+ * by the same amount: the space the dragged row vacates. The dragged row
  * itself returns 0 here; it follows the pointer instead.
  */
 export function shiftFor(

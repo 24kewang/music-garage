@@ -19,7 +19,7 @@ type TabId = (typeof TABS)[number]["id"];
 /**
  * The gear and its popup, in two tabs.
  *
- * **Players** is the roster — order, names, letters, who is in. **Game** is the word
+ * **Players** is the roster: order, names, letters, who is in. **Game** is the word
  * and the tolerance. Everything applies immediately, including the changes that end a
  * game on the spot.
  *
@@ -34,7 +34,7 @@ export default function SettingsPanel({
   onChange,
 }: {
   settings: Settings;
-  /** True during copying, or while a take is running — the gear refuses to open. */
+  /** True during copying, or while a take is running: the gear refuses to open. */
   disabled: boolean;
   onChange: (settings: Settings) => void;
 }) {
@@ -50,7 +50,7 @@ export default function SettingsPanel({
 
   const close = useCallback((reason?: DismissReason) => {
     setOpen(false);
-    // Only on Escape: an outside click has already put focus somewhere deliberate.
+    // Only on Escape: an outside click has already put focus somewhere chosen.
     if (reason === "escape") gearRef.current?.focus();
   }, []);
 

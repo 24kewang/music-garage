@@ -4,7 +4,7 @@
  * The shape, following the architecture spec: score every candidate note by how much
  * of its harmonic series is present, take the strongest, subtract that note's series
  * from the spectrum, and take the strongest of what's left. If nothing convincing
- * survives the subtraction, one note was played — and the even/odd harmonic balance
+ * survives the subtraction, one note was played, and the even/odd harmonic balance
  * decides whether that one note was really two an octave apart.
  *
  * Pure. Everything here runs against synthesized buffers in the tests.
@@ -24,7 +24,7 @@ export interface DetectedPitch {
 export type Detection =
   /** Two distinct notes were separated. */
   | { kind: "two"; low: DetectedPitch; high: DetectedPitch }
-  /** One note, played by both — or one player silent. */
+  /** One note, played by both, or one player silent. */
   | { kind: "unison"; note: DetectedPitch }
   /** One fundamental, but the spectrum says an octave sits on top of it. */
   | { kind: "octave"; note: DetectedPitch }
@@ -101,8 +101,8 @@ function indexOfMax(values: Float64Array): number {
 /**
  * Remove a note's harmonic series from a spectrum, returning a new one.
  *
- * The ceiling is the load-bearing part. Where two notes share a bin — the lower note's
- * 3rd harmonic and the upper note's 2nd, for a perfect 5th — unrestricted subtraction
+ * The ceiling is the part that matters. Where two notes share a bin, the lower note's
+ * 3rd harmonic and the upper note's 2nd, for a perfect 5th: unrestricted subtraction
  * would take the *upper* note's energy with it and leave nothing to find, turning
  * every 5th into a unison. Capping the removal at a fraction of the bin leaves the
  * shared evidence standing.
@@ -134,13 +134,13 @@ export function cancel(
  * How much louder the even harmonics are than this note's own timbre predicts.
  *
  * A note and the note an octave above it share every harmonic of the upper note, so
- * the pair cannot be separated by subtraction — the upper note has no bin of its own.
+ * the pair cannot be separated by subtraction: the upper note has no bin of its own.
  * All it leaves is a signature: it reinforces the lower note's even harmonics (2nd,
  * 4th, 6th…) and not its odd ones.
  *
  * A plain even-to-odd ratio does *not* capture that, because it also moves with the
  * instrument's brightness: measured across timbres, a bright lone note reaches 0.74
- * while a quiet octave sits at 0.66 — overlapping ranges, so no threshold on that
+ * while a quiet octave sits at 0.66: overlapping ranges, so no threshold on that
  * ratio can separate them.
  *
  * So the timbre is normalized away first. A harmonic series decays smoothly, roughly

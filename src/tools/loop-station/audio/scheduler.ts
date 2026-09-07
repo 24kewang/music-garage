@@ -1,7 +1,7 @@
 import { config } from "../config";
 
 /**
- * The lookahead scheduler — the "two clocks" pattern. A coarse JS timer ticks
+ * The lookahead scheduler: the "two clocks" pattern. A coarse JS timer ticks
  * every ~25ms; each tick, the callback schedules any audio events falling in the
  * next ~100ms against their exact `AudioContext.currentTime` timestamps. The
  * timer only decides *when to schedule*; the audio hardware clock decides when

@@ -9,7 +9,7 @@ export const dynamic = "force-static";
 
 /**
  * Web app manifest, written to `out/manifest.webmanifest`. Colors are the literal
- * values behind `--color-bg` and `--color-accent` — a manifest is JSON served to the
+ * values behind `--color-bg` and `--color-accent`: a manifest is JSON served to the
  * operating system, so it cannot read a CSS custom property. If those tokens change
  * in `tokens.css`, change them here too.
  */
@@ -28,7 +28,7 @@ export default function manifest(): MetadataRoute.Manifest {
      * known sizes, and 192 + 512 is the pair every install prompt looks for.
      * Generated from `public/icon.svg` by `npm run icons`.
      *
-     * No `purpose: "maskable"` entry on purpose. A maskable icon has to keep its
+     * No `purpose: "maskable"` entry. A maskable icon has to keep its
      * artwork inside a 40% safe zone because Android crops to whatever shape the
      * launcher uses; our note glyph runs close to the edges, so declaring it
      * maskable would get the beams clipped. Better an icon Android letterboxes

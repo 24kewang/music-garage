@@ -6,12 +6,12 @@ import type { SessionEvent, SessionState } from "../lib/session";
 import styles from "./TransportBar.module.css";
 
 /**
- * Play/stop, the record button, and the multiplier — the station's feet.
+ * Play/stop, the record button, and the multiplier: the station's feet.
  *
  * The record button is one control with many meanings (count-in display, free
  * elapsed, capture, overwrite); its inner text is painted by the root's rAF
  * loop via [data-rec-count] so the count runs without re-rendering React.
- * The multiplier disappears entirely in overwrite mode — it doesn't apply there.
+ * The multiplier disappears entirely in overwrite mode. It doesn't apply there.
  */
 export default function TransportBar({
   session,
@@ -92,9 +92,9 @@ export default function TransportBar({
         {overwriteArmed && (
           <p className={styles.overwriteHint}>
             {rec.kind === "detecting"
-              ? "Listening — play to start the overwrite"
+              ? "Listening. Play to start the overwrite"
               : rec.kind === "overdub"
-                ? "Overwriting — press again or let the loop end"
+                ? "Overwriting. Press again or let the loop end"
                 : "Record overwrites the selected track"}
           </p>
         )}

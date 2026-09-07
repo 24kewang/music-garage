@@ -13,7 +13,7 @@ import {
 const midi = (name: string) => parseNoteName(name)!;
 
 /**
- * Join names with the real separator rather than retyping it — its spaces are
+ * Join names with the real separator rather than retyping it: its spaces are
  * non-breaking and look identical to ordinary ones in a source file.
  */
 const joined = (...names: string[]) => names.join(NAME_SEPARATOR);
@@ -110,7 +110,7 @@ describe("revealNames", () => {
   });
 
   it("shows an octave twice", () => {
-    // Deliberately different from a unison: the repeated name is the point.
+    // Different from a unison: the repeated name is the point.
     const reveal = revealNames([midi("A3"), midi("A4")], "C");
     expect(reveal.names).toEqual(["A", "A"]);
     expect(reveal.text).toBe(joined("A", "A"));
@@ -121,7 +121,7 @@ describe("revealNames", () => {
   });
 
   it("never changes the interval, only the names", () => {
-    // The load-bearing property: transposition is presentation. If it altered the
+    // The property that matters: transposition is presentation. If it altered the
     // distance between the notes, the button that scores would change with it.
     const pair = [midi("C4"), midi("G4")];
     const truth = foldSemitones(pair[1] - pair[0]);

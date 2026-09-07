@@ -1,7 +1,7 @@
 /**
  * Turning the worklet's stream of chunks into the clip that gets transcribed.
  *
- * Pure on purpose. The worklet stays dumb — it only moves samples — and the fiddly
+ * Pure. The worklet stays dumb and only moves samples, and the fiddly
  * question of where a recording actually begins is answered here, in TypeScript that
  * can be tested on hand-built arrays rather than only by pressing a button and
  * listening.
@@ -24,8 +24,8 @@ export function assembleChunks(chunks: readonly Float32Array[]): Float32Array {
 /**
  * Cut the clip down to what the player actually meant to record.
  *
- * The onset gate necessarily fires a few blocks into the attack — it has to hear the
- * level *hold* before it believes it — so cutting exactly at the reported onset
+ * The onset gate necessarily fires a few blocks into the attack. It has to hear the
+ * level *hold* before it believes it, so cutting exactly at the reported onset
  * shaves the transient off the first note. `preRollMs` puts it back.
  *
  * Both ends are guarded rather than trusted: an onset earlier than the capture

@@ -11,7 +11,7 @@ import styles from "./Toasts.module.css";
  * hover zone, and a toast landing there would pull the header open every time
  * somebody reached for it.
  *
- * One `role="status"` live region wrapping the stack rather than one per toast —
+ * One `role="status"` live region wrapping the stack rather than one per toast:
  * a fresh live region per message is announced inconsistently across screen readers,
  * where additions to a standing region are not. Polite throughout: results arrive on
  * every attempt, and an assertive announcement each time would interrupt rather than

@@ -6,7 +6,7 @@ import { config } from "../config";
  *
  * Normalizing is not cosmetic. Baked buffers routinely exceed 1.0 where a
  * crossfade sums correlated audio, and the raw value drives a percentage
- * height — so a single spike would push bars out through the top of the row.
+ * height, so a single spike would push bars out through the top of the row.
  * Dividing by the observed maximum also means a quiet take is still legible.
  *
  * The divisor is clamped to `config.ui.waveFloor` so a near-silent recording

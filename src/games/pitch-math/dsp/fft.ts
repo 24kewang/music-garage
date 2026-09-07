@@ -5,7 +5,7 @@
  * transform sizes are fixed and known, and a dependency here would be a third-party
  * module sitting in the middle of the one calculation the whole game rests on.
  *
- * Pure — no browser APIs — so the detector above it is testable in Node against
+ * Pure: no browser APIs, so the detector above it is testable in Node against
  * synthesized buffers.
  */
 
@@ -29,7 +29,7 @@ export function isPowerOfTwo(value: number): boolean {
  * Build the tables for a transform of `size` samples.
  *
  * Twiddle factors and the bit-reversal permutation depend only on the size, so they
- * are computed once here rather than per capture — the per-capture work is then just
+ * are computed once here rather than per capture: the per-capture work is then just
  * the butterflies.
  */
 export function planFft(size: number): FftPlan {
@@ -126,7 +126,7 @@ export function magnitudeSpectrum(
 
   const count = Math.min(size, samples.length);
   for (let i = 0; i < count; i++) real[i] = samples[i];
-  // Anything past the input length stays zero — zero-padding, which interpolates the
+  // Anything past the input length stays zero: zero-padding, which interpolates the
   // spectrum rather than adding information.
 
   fft(plan, real, imag);

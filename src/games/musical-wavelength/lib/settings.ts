@@ -1,7 +1,7 @@
 /**
  * Player settings: what drives the needle, and the parameters for each mode.
  *
- * Defaults are always usable, and invalid input never commits — between them, the
+ * Defaults are always usable, and invalid input never commits: between them, the
  * game stays playable no matter what the player types or how they leave the popup.
  */
 
@@ -13,7 +13,7 @@ export const NEEDLE_MODES: readonly NeedleMode[] = ["manual", "pitch", "intonati
 
 export interface Settings {
   mode: NeedleMode;
-  /** Low end of the pitch-mode range, as a note name — maps to the left of the dial. */
+  /** Low end of the pitch-mode range, as a note name: maps to the left of the dial. */
   pitchLow: string;
   /** High end, mapping to the right of the dial. */
   pitchHigh: string;
@@ -30,7 +30,7 @@ export const DEFAULT_SETTINGS: Settings = {
 
 /**
  * Floor of 10 because the scale is labeled every `config.ticks.labelStepCents`
- * (10) cents — a narrower span would draw a scale with no labels on it at all.
+ * (10) cents: a narrower span would draw a scale with no labels on it at all.
  */
 export const MIN_SPAN_CENTS = 10;
 export const MAX_SPAN_CENTS = 50;
@@ -94,7 +94,7 @@ function isNeedleMode(value: unknown): value is NeedleMode {
  * Take whatever was stored and produce usable settings, field by field.
  *
  * Anything missing, malformed, or no longer valid falls back to its default rather
- * than failing the whole load — a settings file that has drifted shouldn't cost the
+ * than failing the whole load: a settings file that has drifted shouldn't cost the
  * player the fields that are still fine.
  */
 export function coerceSettings(raw: unknown): Settings {

@@ -22,7 +22,7 @@ interface DragState {
   fromIndex: number;
   toIndex: number;
   /**
-   * How far a sibling moves to open the slot — the dragged row's height plus
+   * How far a sibling moves to open the slot: the dragged row's height plus
    * the list gap. Held in state rather than read from the measurement ref so
    * `offsetFor` stays a pure function of state during render. Null until the
    * rows have been measured.
@@ -48,7 +48,7 @@ interface Gesture {
 export interface TrackDrag {
   listRef: (node: HTMLDivElement | null) => void;
   onRowPointerDown: (index: number, id: number, event: React.PointerEvent) => void;
-  /** True while any row is being dragged — rows must not expand meanwhile. */
+  /** True while any row is being dragged: rows must not expand meanwhile. */
   active: boolean;
   draggingId: number | null;
   /**
@@ -64,7 +64,7 @@ export function useTrackDrag({
   onMove,
 }: {
   count: number;
-  /** First pinned index — an in-progress track and everything below it. */
+  /** First pinned index: an in-progress track and everything below it. */
   lockedFrom: number;
   onMove: (id: number, toIndex: number) => void;
 }): TrackDrag {
@@ -97,7 +97,7 @@ export function useTrackDrag({
   );
 
   /**
-   * Measure after the commit that starts the drag — by then every row has
+   * Measure after the commit that starts the drag: by then every row has
    * collapsed, so these are the heights in play for the whole gesture.
    * Coordinates are relative to the list's content, not the viewport, so
    * auto-scrolling doesn't invalidate them.
@@ -146,7 +146,7 @@ export function useTrackDrag({
   }, [contentY]);
 
   /**
-   * Scroll when the pointer nears an edge — with twenty tracks in a scrolling
+   * Scroll when the pointer nears an edge: with twenty tracks in a scrolling
    * list, dragging from the bottom to the top is impossible without it.
    */
   const stopAutoScroll = useCallback(() => {
@@ -247,7 +247,7 @@ export function useTrackDrag({
         begin();
       }
 
-      // Only once a drag is genuinely running: before that the list must be
+      // Only once a drag is running: before that the list must be
       // free to scroll normally.
       event.preventDefault();
       paint();

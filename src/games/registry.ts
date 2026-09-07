@@ -7,7 +7,7 @@ import { manifest as reg } from "@/games/reg/manifest";
 /**
  * Every game in the garage, in the order they appear in the Games menu and gallery.
  *
- * To add a game, see the "Adding a game" section of the README — the short version
+ * To add a game, see the "Adding a game" section of the README: the short version
  * is: create `src/games/<slug>/`, add a route adapter at
  * `src/app/games/<slug>/page.tsx`, then add its manifest to this array.
  */

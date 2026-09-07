@@ -202,7 +202,7 @@
 }
 
 /*
- * PitchReadout is built from the global tokens, which are dark now — so it needs no
+ * PitchReadout is built from the global tokens, which are dark now, so it needs no
  * overrides here. Only the scale is nudged down to suit the popup.
  */
 .readout {

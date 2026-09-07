@@ -197,7 +197,7 @@ describe("coerceSettings", () => {
 
   it("does not hand out a shared reference to the defaults", () => {
     // Two loads must not alias each other, or editing one game's roster would
-    // silently edit the constant every later load starts from.
+    // edit, with no error, the constant every later load starts from.
     const first = coerceSettings(null);
     const second = coerceSettings(null);
     first.players[0].name = "Mutated";

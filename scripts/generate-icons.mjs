@@ -3,22 +3,22 @@
  *
  *   npm run icons
  *
- * The outputs are committed, so neither CI nor the Cloudflare build ever runs this —
- * they just read the files. Run it after editing `icon.svg` and commit what changes.
+ * The outputs are committed, so neither CI nor the Cloudflare build ever runs this.
+ * They just read the files. Run it after editing `icon.svg` and commit what changes.
  *
- * Two things here are less obvious than they look:
+ * Two notes:
  *
- *   The apple-touch-icon is flattened onto an opaque background rather than kept
+ *   The apple-touch-icon is flattened onto an opaque background instead of kept
  *   transparent. iOS applies its own rounded mask and renders transparency as black,
- *   so the artwork's rounded corners would be rounded twice with black wedges left in
- *   between. Flattening onto the card's own background color fills those corners with
- *   the color already there, which makes the icon full-bleed square without touching
- *   the artwork.
+ *   so the artwork's rounded corners would be rounded twice with black wedges between
+ *   them. Flattening onto the card's own background color fills those corners with the
+ *   color already there, making the icon full-bleed square without touching the
+ *   artwork.
  *
- *   sharp cannot write `.ico`, so this assembles the container itself. That format is
+ *   sharp cannot write `.ico`, so this assembles the container itself. The format is
  *   simple: a 6-byte header, one 16-byte directory entry per image, then the payloads.
- *   Since Vista those payloads may be whole PNG files rather than raw DIBs, which is
- *   what makes it possible without a bitmap encoder.
+ *   Since Vista those payloads may be whole PNG files instead of raw DIBs, so no
+ *   bitmap encoder is needed.
  */
 
 import { readFileSync, writeFileSync } from "node:fs";
@@ -30,14 +30,14 @@ const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const PUBLIC = join(ROOT, "public");
 const SOURCE = join(PUBLIC, "icon.svg");
 
-/** Sizes packed into favicon.ico, smallest first — the order browsers expect. */
+/** Sizes packed into favicon.ico, smallest first: the order browsers expect. */
 const ICO_SIZES = [16, 32, 48];
 
 /**
  * What the apple icon's transparent corners are filled with. **Must match the fill of
- * the outermost shape in icon.svg** — that is what makes the flattened result read as
- * one square card rather than as a rounded card sitting on a differently colored
- * ground. Currently --color-bg, the outer rect's fill.
+ * the outermost shape in icon.svg**, so the flattened result reads as one square card
+ * instead of a rounded card sitting on a differently colored ground. Currently
+ * --color-bg, the outer rect's fill.
  */
 const APPLE_BACKGROUND = "#0d0d16";
 
@@ -57,7 +57,7 @@ function render(svg, size, { background = null } = {}) {
  *
  * Header:    reserved(2) type(2, 1 = icon) count(2)
  * Directory: width(1) height(1) colors(1) reserved(1) planes(2) bpp(2) bytes(4) offset(4)
- *            — width and height are stored as 0 to mean 256.
+ *           : width and height are stored as 0 to mean 256.
  */
 function buildIco(images) {
   const header = Buffer.alloc(6);
@@ -112,7 +112,7 @@ async function main() {
   write("icon-192.png", await render(svg, 192));
   write("icon-512.png", await render(svg, 512));
 
-  // iOS home screen. The only one that is flattened — see the note at the top.
+  // iOS home screen. The only one that is flattened. See the note at the top.
   write("apple-icon.png", await render(svg, 180, { background: APPLE_BACKGROUND }));
 
   for (const [name, bytes] of written) {

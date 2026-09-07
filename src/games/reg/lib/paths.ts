@@ -1,7 +1,7 @@
 /**
  * Path plumbing shared by upload, OPFS storage and the file tree.
  *
- * Paths are stored "/"-joined with no leading slash — the same shape whether they
+ * Paths are stored "/"-joined with no leading slash: the same shape whether they
  * came from a file picker (`name`), a folder picker (`webkitRelativePath`) or a
  * drag-and-drop walk (`FileSystemEntry.fullPath`).
  */
@@ -22,7 +22,7 @@ export function splitSegments(path: string): string[] {
     .filter((segment) => segment !== "");
 }
 
-/** Case-insensitive extension allowlist check. Extensions, not MIME types — see config. */
+/** Case-insensitive extension allowlist check. Extensions, not MIME types. See config. */
 export function isImagePath(
   path: string,
   extensions: readonly string[],

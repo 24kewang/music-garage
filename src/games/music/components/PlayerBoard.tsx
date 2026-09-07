@@ -6,7 +6,7 @@ import styles from "./PlayerBoard.module.css";
 /**
  * The row of player boxes.
  *
- * Left-to-right here is top-to-bottom in the settings panel — the same order, shown
+ * Left-to-right here is top-to-bottom in the settings panel: the same order, shown
  * the way each context wants it.
  *
  * Eliminated players stay on the board while they are active. Removing them would

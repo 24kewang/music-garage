@@ -11,10 +11,10 @@ export const config = {
     /**
      * Analyser window, in samples. Also the capture length and the FFT size.
      *
-     * 32768 is the largest an AnalyserNode allows, which is what makes the
+     * 32768 is the largest an AnalyserNode allows, which makes the
      * worklet-free capture in `useCapture` possible: after waiting this many samples
      * the analyser holds exactly the post-onset window. At 48 kHz that is 0.68 s and
-     * a 1.46 Hz bin — finer than the ~8 Hz gap between the lowest semitones.
+     * a 1.46 Hz bin: finer than the ~8 Hz gap between the lowest semitones.
      */
     fftSize: 32768,
     /**
@@ -38,7 +38,7 @@ export const config = {
      *
      * Only the first is analyzed; the rest are collected afterwards purely so the clip
      * is long enough to judge by ear. Because the analyser always holds the most recent
-     * `fftSize` samples, a read one window later is exactly contiguous with the last —
+     * `fftSize` samples, a read one window later is exactly contiguous with the last:
      * the windows join with no gap and no overlap.
      *
      * 2 gives ~1.4 s at 48 kHz. 1 disables the tail and replays only what was analyzed.
@@ -47,9 +47,9 @@ export const config = {
   },
 
   detector: {
-    /** Lowest candidate note, C2 — below a cello's open C. */
+    /** Lowest candidate note, C2: below a cello's open C. */
     minMidi: 36,
-    /** Highest candidate note, C7 — above the top of a flute's usual range. */
+    /** Highest candidate note, C7: above the top of a flute's usual range. */
     maxMidi: 96,
     /** Harmonics summed per candidate. Beyond about eight there is little left. */
     harmonics: 8,
@@ -64,7 +64,7 @@ export const config = {
      * How strong the second note must be, relative to the first, to be believed.
      *
      * Too low and one note's leftover overtones read as a second note; too high and a
-     * genuinely quieter second player is discarded as a unison.
+     * quieter second player is discarded as a unison.
      */
     secondNoteSalienceRatio: 0.3,
     /**
@@ -86,7 +86,7 @@ export const config = {
      * The case this still misses is an octave whose upper note is much quieter than
      * the lower *and* played on a bright instrument, which can fall back to ~0.99 and
      * read as a unison. Lowering this catches more of those at the cost of calling
-     * lone notes octaves, which is the worse error — it invents a note nobody played.
+     * lone notes octaves, which is the worse error. It invents a note nobody played.
      */
     octaveEvidenceThreshold: 1.25,
   },

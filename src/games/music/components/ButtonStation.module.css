@@ -1,6 +1,6 @@
 /*
  * The transport. One prominent circle with everything else arranged around it, so
- * where to press is never a question — this gets used from across a room, by
+ * where to press is never a question. This gets used from across a room, by
  * somebody holding an instrument.
  */
 
@@ -47,7 +47,7 @@
   cursor: not-allowed;
 }
 
-/* Recording. Red rather than accent — this is the state you want to get out of. */
+/* Recording. Red rather than accent. This is the state you want to get out of. */
 .record[data-live] {
   background: var(--color-danger);
 }

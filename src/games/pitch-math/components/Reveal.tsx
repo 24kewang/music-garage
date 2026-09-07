@@ -8,7 +8,7 @@ import styles from "./Reveal.module.css";
 /**
  * What was actually played, once someone has named it.
  *
- * Shown only after the round is won — before that these notes live in the round state
+ * Shown only after the round is won: before that these notes live in the round state
  * and never reach the DOM, so they can't be read out of devtools mid-guess.
  */
 export default function Reveal({

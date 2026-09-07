@@ -1,4 +1,4 @@
-# Music Garage — design system
+# Music Garage: design system
 
 The vocabulary every screen in this app is built from. Hand this to a design tool before
 wireframing a new game, and the result will drop into the codebase without restyling.
@@ -6,7 +6,7 @@ wireframing a new game, and the result will drop into the codebase without resty
 Everything here is extracted from the live code:
 [`src/shared/styles/tokens.css`](src/shared/styles/tokens.css),
 [`src/app/globals.css`](src/app/globals.css) and the three shipped games. Where a value
-appears below, it is the value in use — not an approximation.
+appears below, it is the value in use, not an approximation.
 
 ---
 
@@ -24,7 +24,7 @@ game will look bolted on.
    `--color-surface-raised` at **4.89:1**. Add or change a text color and you compute the
    ratio and record it in `tokens.css`.
 4. **Type has exactly three roles** (§3). The display face is for the wordmark and page
-   H1s *only* — never body copy, never button labels.
+   H1s *only*, never body copy and never button labels.
 5. **Icons are Phosphor, and never emoji.** Emoji render differently on every OS and read
    as filler.
 6. **Motion uses the tokens**, and `prefers-reduced-motion` removes it globally. Every
@@ -40,11 +40,11 @@ game will look bolted on.
 
 ## 2. Color
 
-### Surfaces — furthest back to closest
+### Surfaces, furthest back to closest
 
 | Token | Value | Use |
 | --- | --- | --- |
-| `--color-bg` | `#0d0d16` | Page background. Deliberately not pure black: black smears on OLED and crushes the shadows the layering depends on. |
+| `--color-bg` | `#0d0d16` | Page background. Not pure black: black smears on OLED and crushes the shadows the layering depends on. |
 | `--color-surface` | `#14141f` | Cards, inset controls, input fields. |
 | `--color-surface-raised` | `#1c1c2b` | Floating panels, hovered cards, badges. |
 | `--color-stage` | `#17172a1f` | Translucent "lit panel" a piece of apparatus is mounted on. |
@@ -62,9 +62,9 @@ game will look bolted on.
 | --- | --- | --- | --- |
 | `--color-text` | `#f2f3f7` | 17.4:1 | Body and headings. |
 | `--color-text-muted` | `#a2a3b4` | 7.8:1 | Secondary copy, inactive control labels. |
-| `--color-text-faint` | `#85879c` | 5.5:1 | Hints, metadata. The floor — don't go dimmer. |
+| `--color-text-faint` | `#85879c` | 5.5:1 | Hints, metadata. The floor; don't go dimmer. |
 
-### Accent — indigo
+### Accent: indigo
 
 Links, active nav, focus rings, primary actions. One accent, used sparingly enough that it
 always means "this is the thing to press".
@@ -85,7 +85,7 @@ always means "this is the thing to press".
 | `--color-warn` / `--color-warn-soft` | `#fbbf24` / `12%` | In-progress badges, cautions. |
 | `--color-danger` / `--color-danger-soft` | `#f87171` / `12%` | Destructive actions, validation errors. |
 
-Status colors are **text-on-soft-tint**, not solid fills — a solid red button would
+Status colors are **text-on-soft-tint**, not solid fills. A solid red button would
 outrank the accent.
 
 ---
@@ -118,7 +118,7 @@ variables.
 
 - `body`: `--font-sans`, `--text-base`, `line-height: 1.55`, antialiased.
 - `h1`–`h4`: `margin: 0`, `line-height: 1.2`, `font-weight: 650`, `letter-spacing: -0.01em`.
-- `p`: `margin: 0` — spacing is the parent's job, via `gap`.
+- `p`: `margin: 0`. Spacing is the parent's job, via `gap`.
 - `a`: `color: inherit`, no underline. `button`: `font: inherit`, `color: inherit`.
 
 **Uppercase micro-labels** are a recurring device for section eyebrows and primary button
@@ -129,7 +129,7 @@ text: `--text-xs` or `--text-sm`, `font-weight: 500–700`, `letter-spacing: 0.0
 
 ## 4. Spacing, radii, elevation
 
-**Spacing** — note it is not linear; the jumps widen deliberately.
+**Spacing.** The scale is not linear; the jumps widen as it goes up.
 
 `--space-1` 0.25rem · `--space-2` 0.5 · `--space-3` 0.75 · `--space-4` 1 · `--space-5` 1.5 ·
 `--space-6` 2 · `--space-7` 3 · `--space-8` 4
@@ -137,7 +137,7 @@ text: `--text-xs` or `--text-sm`, `font-weight: 500–700`, `letter-spacing: 0.0
 Layouts are built with `display: flex` + `gap`, not margins. Panel-internal rhythm is
 `--space-4`/`--space-5`; page rhythm is `--space-6`+.
 
-**Radii** — and what each is for.
+**Radii**, and what each is for.
 
 | Token | Value | Use |
 | --- | --- | --- |
@@ -149,7 +149,7 @@ Layouts are built with `display: flex` + `gap`, not margins. Panel-internal rhyt
 
 Circular controls use `border-radius: 50%`, not the pill token.
 
-**Elevation** — deeper and softer than a light theme needs, so panels separate from a dark
+**Elevation**, deeper and softer than a light theme needs, so panels separate from a dark
 page.
 
 | Token | Value | Use |
@@ -163,16 +163,16 @@ page.
 
 ## 5. Motion
 
-One easing pair, three durations — so timing is consistent instead of re-invented per
+One easing pair and three durations, so timing stays consistent instead of re-invented per
 component.
 
 | Token | Value |
 | --- | --- |
 | `--ease-out` | `cubic-bezier(0.16, 1, 0.3, 1)` |
 | `--ease-in-out` | `cubic-bezier(0.65, 0, 0.35, 1)` |
-| `--dur-fast` | 160ms — hover, focus, color changes |
-| `--dur-base` | 240ms — panels appearing, card hover lifts |
-| `--dur-slow` | 420ms — entrances, deliberate rotations |
+| `--dur-fast` | 160ms. Hover, focus, color changes |
+| `--dur-base` | 240ms. Panels appearing, card hover lifts |
+| `--dur-slow` | 420ms. Entrances, slow rotations |
 
 `prefers-reduced-motion: reduce` zeroes all three tokens **and** `globals.css` clamps every
 animation and transition to `0.01ms !important`. Components that animate should still add an
@@ -198,7 +198,7 @@ explicit `animation: none` under the query, as the existing ones do.
 }
 /* A modal card */
 @keyframes cardIn { from { opacity: 0; transform: scale(0.97); } to { opacity: 1; transform: scale(1); } }
-/* Rejecting an action — note it preserves the translateX(-50%) that centers the button */
+/* Rejecting an action. Preserves the translateX(-50%) that centers the button */
 @keyframes shake {
   0%, 100% { transform: translateX(-50%); }
   20% { transform: translateX(calc(-50% - 8px)); }
@@ -225,7 +225,7 @@ There is no z-index token; these are the values in use. Stay inside the scale.
 | `45` | The settings gear (bottom-right) |
 | `50` | Confetti, the games dropdown |
 | `60` | Modal backdrops |
-| `100` | The skip link — must stay reachable above everything |
+| `100` | The skip link. Must stay reachable above everything |
 
 ---
 
@@ -272,9 +272,9 @@ above it at z 40/45.
 
 ### Where controls live
 
-- **Primary action**: fixed, bottom-center — `bottom: var(--space-5); left: 50%;
+- **Primary action**: fixed, bottom-center. `bottom: var(--space-5); left: 50%;
   transform: translateX(-50%)`.
-- **Settings**: fixed, bottom-right — `right: var(--space-5); bottom: var(--space-5)`.
+- **Settings**: fixed, bottom-right. `right: var(--space-5); bottom: var(--space-5)`.
 - Panels open **upward** from their trigger and are rendered *before* the trigger in DOM
   order.
 
@@ -287,7 +287,7 @@ side padding). Plus the capability query `@media (hover: none), (pointer: coarse
 
 ## 8. Component recipes
 
-### Primary action — the accent pill
+### Primary action: the accent pill
 
 ```css
 min-width: 9rem; min-height: 3.25rem; padding: var(--space-3) var(--space-6);
@@ -303,7 +303,7 @@ transition: background var(--dur-fast) var(--ease-out), box-shadow var(--dur-fas
 
 One per screen. If you need a second prominent action, it's a ghost pill.
 
-### Ghost pill — secondary action
+### Ghost pill: secondary action
 
 ```css
 min-height: 2.5rem; padding: var(--space-2) var(--space-5);
@@ -314,14 +314,14 @@ transition: color var(--dur-fast) var(--ease-out), border-color var(--dur-fast) 
 :hover { color: var(--color-text); border-color: var(--color-text-faint); }
 ```
 
-### Small action pill — dense rows inside a panel
+### Small action pill: dense rows inside a panel
 
 `min-height: 2rem; padding: var(--space-1) var(--space-3); --radius-pill;
 --text-xs; font-weight: 600; border: 1px solid var(--color-border-strong)`. The danger
 variant swaps text to `--color-danger`. Always guard hover with `:hover:not(:disabled)`,
 and `:disabled { opacity: 0.5; cursor: default; }`.
 
-### Circular icon button — the settings gear
+### Circular icon button: the settings gear
 
 ```css
 width: 52px; height: 52px; display: grid; place-items: center;
@@ -373,7 +373,7 @@ Variants: accent-soft/accent, warn-soft/warn, surface-raised/muted with a border
 Two variants, both `role="group"` + `aria-pressed` on each button (this repo's idiom for
 "pick one of N" that isn't a panel switch).
 
-*Track variant* — inside panels:
+*Track variant*, inside panels:
 
 ```css
 .track { display: grid; grid-template-columns: repeat(N, 1fr); gap: 4px; padding: 4px;
@@ -386,7 +386,7 @@ Two variants, both `role="group"` + `aria-pressed` on each button (this repo's i
 .segActive, .segActive:hover { background: var(--color-accent); color: var(--color-accent-contrast); }
 ```
 
-*Pill variant* — on start screens: `display: inline-flex; padding: 3px;
+*Pill variant*, on start screens: `display: inline-flex; padding: 3px;
 background: var(--color-surface); border: 1px solid var(--color-border);
 border-radius: var(--radius-pill)`, segments `min-height: 2.5rem;
 padding: var(--space-2) var(--space-5); --text-sm`.
@@ -431,12 +431,12 @@ background: var(--color-surface); border: 1px solid var(--color-border-strong);
 .row input { width: 1.1rem; height: 1.1rem; accent-color: var(--color-accent); }
 ```
 
-A tri-state (folder) checkbox sets `indeterminate` as a **DOM property in a ref callback** —
+A tri-state (folder) checkbox sets `indeterminate` as a **DOM property in a ref callback**,
 it isn't an attribute.
 
 ### Range slider
 
-`accent-color: var(--color-accent)` carries both track fill and thumb — no vendor
+`accent-color: var(--color-accent)` carries both track fill and thumb, with no vendor
 pseudo-elements needed. Give it `width: 100%; height: 1.75rem` for a comfortable target.
 Pair with a label row: label left (`--text-xs / 600`), value right in
 `--font-mono` + `tabular-nums` + `min-width: 4ch; text-align: right` so the readout can't
@@ -444,8 +444,8 @@ shuffle mid-drag. Disabled fields dim to `opacity: 0.5`.
 
 ### Toggle switch
 
-For a mode that changes what the screen *is*. A `<button role="switch" aria-checked>` — a
-button so Space and Enter both work natively — with the label in a `<span>` above it and
+For a mode that changes what the screen *is*. A `<button role="switch" aria-checked>`, a
+button so Space and Enter both work natively, with the label in a `<span>` above it and
 `aria-labelledby` linking them.
 
 ```css
@@ -506,7 +506,7 @@ that search" and "nothing is selected" are different from "no items yet". Never 
   `alert` for validation and blocking warnings.
 - **Touch**: every interactive row clears 44px. Hover-only affordances (like a
   pointer-tracked cursor change) need a non-hover equivalent or must be non-essential.
-- **The skip link** matters more than usual because the header overlays content — keep it at
+- **The skip link** matters more than usual because the header overlays content. Keep it at
   z 100 and never cover it.
 - **Selection color** is already themed (`--color-accent-soft`), as are scrollbars
   (`scrollbar-color: var(--color-border-strong) transparent`).
@@ -530,7 +530,7 @@ that search" and "nothing is selected" are different from "no items yet". Never 
 ## 11. Wireframing a new game
 
 **Shape of a game in this codebase.** One self-contained folder, `src/games/<slug>/`:
-`manifest.ts` (plain data — slug, title, blurb, `iconId`, status), `Game.tsx` (the
+`manifest.ts` (plain data: slug, title, blurb, `iconId`, status), `Game.tsx` (the
 `"use client"` root, no props), `config.ts` (every tunable in one exported object),
 `game.module.css`, `components/`, `lib/` (pure, node-testable logic), plus an
 `ARCHITECTURE.md` recording the non-obvious decisions. A game may import from
@@ -542,8 +542,8 @@ play surface, a settings panel behind the bottom-right gear, and per-state messa
 
 **Reuse before drawing:** the site header and games menu, `Confetti` (takes its tuning as a
 prop plus an optional burst origin), `useDismiss` (Escape/outside-click), and the icon
-registry. A fourth hand-rolled settings panel is a smell — the gear-and-panel treatment is
-shared on purpose: three games, one way to open settings.
+registry. A fourth hand-rolled settings panel is a smell. The gear-and-panel treatment is
+shared: three games, one way to open settings.
 
 **Deliverables that translate cleanly:** wireframes at 1440px and 390px wide; the coarse-
 pointer variant of anything that relies on hover; a token name (not a color) called out for

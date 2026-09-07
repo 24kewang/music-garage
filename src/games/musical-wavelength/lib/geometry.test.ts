@@ -66,7 +66,7 @@ describe("localPoint", () => {
 /**
  * The design ships hand-written path coordinates. These assertions are what make
  * "generated from constants" safe: if the generated geometry ever stops matching the
- * design, this fails rather than silently drifting.
+ * design, this fails instead of drifting unnoticed.
  */
 describe("design fidelity", () => {
   const R = config.geometry.wheelRadius;
@@ -170,7 +170,7 @@ describe("cover and window", () => {
 
   it("draws the lid and the opening from the same function", () => {
     // The whole safety argument: identical shapes cannot leave a gap. Checked at the
-    // source, because the guarantee is that neither component grows its own path —
+    // source, because the guarantee is that neither component grows its own path:
     // comparing windowPath() to itself would prove nothing.
     const components = join(process.cwd(), "src/games/musical-wavelength/components");
     for (const file of ["Cover.tsx", "Housing.tsx"]) {

@@ -1,5 +1,5 @@
 /*
- * Only the transitional states live here — the real screens (upload, filter) carry
+ * Only the transitional states live here: the real screens (upload, filter) carry
  * their own module CSS. These fill the viewport the same way the filter does so the
  * page doesn't jump when the library scan resolves.
  */

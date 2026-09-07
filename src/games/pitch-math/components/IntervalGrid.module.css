@@ -4,7 +4,7 @@
  * auto-fit rather than a fixed column count: the brief asks for six per row full-width
  * and up to thirteen when abbreviated, but 44px touch targets can't fit thirteen
  * across a phone. Letting the columns fall out of the available width satisfies both
- * without a stack of breakpoints — wide screens get the long row, narrow ones wrap.
+ * without a stack of breakpoints: wide screens get the long row, narrow ones wrap.
  */
 .grid {
   display: grid;
@@ -60,7 +60,7 @@
 }
 
 /*
- * Ruled out. Dimmed *and* struck through — the strikethrough is what carries the
+ * Ruled out. Dimmed *and* struck through: the strikethrough is what carries the
  * meaning for anyone who can't rely on the color shift.
  */
 .buttonOut {
@@ -76,7 +76,7 @@
   text-decoration-thickness: 1px;
 }
 
-/* Correct. Again, not color alone — a tick appears alongside. */
+/* Correct. Again, not color alone: a tick appears alongside. */
 .buttonWon {
   background: var(--color-accent);
   border-color: var(--color-accent-hover);

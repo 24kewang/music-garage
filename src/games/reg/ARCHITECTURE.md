@@ -1,4 +1,4 @@
-# Random Excerpt Generator — architecture
+# Random Excerpt Generator: architecture
 
 This records the decisions that are **not** obvious from the code. Read it before
 changing the game.
@@ -7,13 +7,13 @@ changing the game.
 
 A face filter. The player's excerpt images (uploaded once, kept in OPFS) float in a
 box above their head in the webcam feed, tracked in 3D. SPIN cycles the *checked*
-images slot-machine style — fast, then slower — and lands on a random one, captioned
+images slot-machine style, fast then slower, and lands on a random one, captioned
 with a name derived from its file path. A settings gear opens two tabs: **Files** (a
 searchable checkbox tree with select-all, add-more and delete-everything) and
 **Filter** (the camera on/off switch, where the box sits above the head, and how big).
 
 **Two modes, and camera-free is the default.** With the camera off the same slot machine
-runs as plain DOM — the excerpt centered on screen with its name underneath, no feed and no
+runs as plain DOM: the excerpt centered on screen with its name underneath, no feed and no
 3D. It is not a lesser mode: it needs no camera permission and loads none of the 3D stack
 (§"Face tracking is *not* fully local"), so it is the offline, permission-free path
 through the game, and starting there is what keeps a first visit from fetching ~2 MB of
@@ -25,13 +25,13 @@ Stored settings from before this rule are harmless: `coerceSettings` only reads 
 knows, so a leftover `useCamera` key is ignored.
 
 Two screens only: **upload** (library empty) and **filter** (library has images).
-Which one shows follows from a single async fact — what `listImagePaths()` finds.
+Which one shows follows from a single async fact: what `listImagePaths()` finds.
 
 ## Layers
 
 ```
 Game.tsx              orchestration: OPFS scan → screen; selection state; spin lock
-config.ts             every tunable — spin feel, box placement, caption budget
+config.ts             every tunable: spin feel, box placement, caption budget
 game.module.css       only the loading/unsupported placeholders
 components/
   UploadScreen        file picker + folder picker + drag-drop, busy/skipped notices
@@ -59,7 +59,7 @@ lib/
 ```
 
 The rule the split serves: **decisions are pure and Node-testable; the browser
-modules only move bytes and pixels.** Vitest here runs in the `node` environment —
+modules only move bytes and pixels.** Vitest here runs in the `node` environment,
 nothing touching camera, WebGL or OPFS can be tested, so nothing decision-shaped is
 allowed to live there.
 
@@ -71,12 +71,12 @@ allowed to live there.
 head position, rotation and scale for free (face width = 1 unit), the anchor hides
 itself when no face is tracked, and one-euro filtering is built in (knobs exposed as
 `config.scene.filter`). Hand-rolled matrix smoothing is how these filters end up
-jittering — don't add any. Anchor 10 is the forehead ("hat") anchor.
+jittering, so do not add any. Anchor 10 is the forehead ("hat") anchor.
 
 ### The spin is planned up front, off the render loop
 
-`buildSpinPlan` returns the entire animation as data — target chosen first, then
-swap steps whose gaps stretch along an ease-out — and `FilterScreen` walks it with
+`buildSpinPlan` returns the entire animation as data: the target is chosen first, then
+swap steps whose gaps stretch along an ease-out. `FilterScreen` walks it with
 timeouts. The render loop just keeps drawing whatever texture is current. Coupling
 the cadence to the frame rate would tie spin feel to camera FPS; planning it as pure
 data is also what makes "always lands on the target, never repeats a frame,
@@ -85,12 +85,12 @@ decelerates monotonically" provable in Node with a seeded `random`.
 ### `imageOrientation: "flipY"` is why images aren't upside-down
 
 three sets `UNPACK_FLIP_Y_WEBGL` from `texture.flipY`, but **WebGL ignores that flag
-for `ImageBitmap` sources** — an ImageBitmap's orientation is fixed at
+for `ImageBitmap` sources.** An ImageBitmap's orientation is fixed at
 `createImageBitmap()` time. `texImage2D` puts source row 0 at `v = 0`, which
 `PlaneGeometry` maps to the *bottom* of the quad, so an unflipped bitmap renders
 upside-down. There is no warning of any kind. The canvas-drawn text planes do honor
 `flipY`, which is exactly why the original bug flipped the excerpts but not the
-captions — a misleading clue if you go looking at the geometry instead.
+captions, which is a misleading clue if you go looking at the geometry instead.
 
 So `loadTexture` passes `imageOrientation: "flipY"` (the real fix) and also sets
 `texture.flipY = false` (a no-op today, correct if a browser ever honors the flag).
@@ -108,32 +108,32 @@ unreadable.
 `applyPixelRatio()` measures the canvas's CSS width against the frame width and raises
 `setPixelRatio` to match, capped by `scene.maxPixelRatio` (MindAR enables MSAA, so an
 uncapped buffer is a real fill-rate cost on phones). It is safe because
-`setPixelRatio` re-runs `setSize` with `updateStyle: false` — MindAR's own CSS sizing
-is untouched — and the projection depends only on aspect, which doesn't change. It
+`setPixelRatio` re-runs `setSize` with `updateStyle: false`, leaving MindAR's own CSS
+sizing untouched, and the projection depends only on aspect, which does not change. It
 must run *after* `mindar.start()`, since the CSS width doesn't exist before then, and
 be re-applied on resize.
 
 `Texture.DEFAULT_ANISOTROPY` is set once from the renderer's capability rather than
 per texture: anisotropy is part of three's texture **cache key**, so changing it after
 first upload reallocates the texture. `getMaxAnisotropy()` returns **0**, not 1, when
-the extension is missing — hence the `Math.max(1, …)`.
+the extension is missing, hence the `Math.max(1, …)`.
 
 ### `stop()` has three jobs beyond stopping
 
 1. **Neuter MindAR's resize listener.** MindAR binds
    `window.addEventListener('resize', this._resize.bind(this))` inline, so the listener
-   can never be removed, and its early-return only fires when `video` is falsy —
+   can never be removed, and its early-return only fires when `video` is falsy,
    `stop()` merely detaches the element. Left alone, a resize after teardown runs
    `setSize(0, 0)` and `camera.aspect = NaN` on a dead instance and keeps the entire
    scene graph alive across navigations. Setting `mindar.video = null` makes the guard
    fire, which is why the type shim declares `video` as nullable.
-2. **Free three's caches — but *not* the GL context.** `renderer.dispose()` releases
+2. **Free three's caches, but *not* the GL context.** `renderer.dispose()` releases
    three's program/render-list caches and its canvas listeners. Our geometries and
    materials go here too, but never `imageMaterial.map`, which the `TexturePool` owns.
 
    **Do not add `renderer.forceContextLoss()`.** It was tried and it white-screens the
    filter. `mindar.stop()` stops the camera tracks and calls `video.remove()`, but it
-   **never removes `renderer.domElement`** from the container — so a torn-down
+   **never removes `renderer.domElement`** from the container, so a torn-down
    instance's canvas is still sitting in the DOM, still absolutely positioned over the
    feed. While its context is merely idle the canvas stays transparent and the live feed
    shows through; force the context to be lost and it paints as a blank white sheet
@@ -146,14 +146,14 @@ the extension is missing — hence the `Math.max(1, …)`.
    unmount, so the orphaned canvas and its context become garbage and are collected.
    The earlier worry about browsers' ~16-context cap only bites if a session mounts the
    filter many times without collection, which normal navigation doesn't do.
-3. **Be idempotent.** Teardown is genuinely reachable twice: the camera effect's cleanup
+3. **Be idempotent.** Teardown is reachable twice: the camera effect's cleanup
    can fire while `start()` is still awaiting permission, and the resolved `start()` then
    tears down again. A `stopped` flag makes the second call a no-op, which matters now
    that the method disposes things.
 
 ### Placement is one verb, and scale lives on the group
 
-`setPlacement({ x, y, z, scale })` writes `box.position` and `box.scale` — nothing
+`setPlacement({ x, y, z, scale })` writes `box.position` and `box.scale`. Nothing
 else, and no plane sizing is recomputed. A node's own scale doesn't move its own
 position, so the box stays planted at its offset and grows *around its origin*, which
 is the image's bottom edge (`imageBottomY` is 0). The caption gap scales along with it,
@@ -161,8 +161,8 @@ which is what "size of the whole filter" should mean.
 
 `createRegScene` takes the initial placement as an argument so the first rendered frame
 already reflects stored settings instead of flashing the defaults. In `FilterScreen`
-the placement deliberately does **not** appear in the camera effect's dependency
-array — that effect owns the webcam, and re-running it per slider tick would restart
+the placement does **not** appear in the camera effect's dependency array. That effect
+owns the webcam, and re-running it per slider tick would restart
 the camera. A ref carries the value across instead.
 
 MindAR's anchor group has `matrixAutoUpdate = false` and its matrix is overwritten
@@ -173,8 +173,8 @@ mirroring, so a child scale of 2.5 introduces no flipped normals or reversed tex
 ### The camera switch is a lifecycle boundary, not a visibility toggle
 
 `Game.tsx` **conditionally renders** `FilterScreen` or `StageScreen`. Never hide a mounted
-`FilterScreen` instead: the camera would keep running with its light on, and — the subtler
-half — **MindAR never removes the canvas it appended to the container**, the same fact
+`FilterScreen` instead: the camera would keep running with its light on, and, the subtler
+half, **MindAR never removes the canvas it appended to the container**, the same fact
 that makes `forceContextLoss()` unusable (§`stop()`). A hidden-but-mounted screen would
 stack one dead canvas per toggle. Unmounting makes React discard the container subtree,
 orphaned canvas included, and runs the existing cleanup: pending swaps canceled,
@@ -191,7 +191,7 @@ thing to check by hand is that the webcam light ends up off.
 `uiLoading` / `uiScanning` / `uiError` are all passed `"no"`. Not cosmetic: `UI._loadHTML`
 (`mind-ar/src/ui/ui.js:65`) appends those overlays to **`document.body`**, not to our
 container, and `mindar.stop()` never hides them. So any teardown during `start()` unmounted
-our screen and left MindAR's 120px loader spinning in the body forever — reachable from the
+our screen and left MindAR's 120px loader spinning in the body forever, reachable from the
 camera-mode switch, from navigating away mid-load, and from Strict Mode's double mount.
 With `"no"`, `UI` builds no elements and every `show*`/`hide*` call is a no-op. We render
 "Starting camera…" and our own error card, which is why these overlays were only ever
@@ -207,7 +207,7 @@ window used to skip `mindar.stop()` entirely and **leave the webcam running**. T
 keep it safe:
 
 - `stop()` calls `mindar.stop()` when `started`, and otherwise releases by hand
-  (`releaseCamera`) — `mindar.stop()` reads `video.srcObject.getTracks()` and would throw
+  (`releaseCamera`); `mindar.stop()` reads `video.srcObject.getTracks()` and would throw
   on a null `srcObject`.
 - `mindar.video = null` only happens once nothing is pending. Nulling it mid-start is
   actively worse than leaving it: `_startVideo`'s `getUserMedia` callback then runs
@@ -225,7 +225,7 @@ concern; these rules are what make the underlying path safe regardless.
 `useSpinReel` owns the cadence, the phase machine and the vibrate-reject; the medium
 arrives as `preload` / `onSpinStart` / `show` callbacks. Both modes therefore spin
 identically by construction rather than by two implementations agreeing. It keeps its
-options in a ref **synced in an effect, not written during render** — the
+options in a ref **synced in an effect, not written during render**, since the
 `react-hooks/refs` rule forbids render-time ref writes, and `spin()` only runs from a
 click, by which point effects have flushed.
 
@@ -239,10 +239,10 @@ does the pool lookup, and it runs from a timeout, not a render.
 
 ### The flat mode's images need URL lifetimes; the textures don't
 
-`images.ts` is the DOM counterpart of `textures.ts`, and the asymmetry is deliberate. An
+`images.ts` is the DOM counterpart of `textures.ts`, and the asymmetry is intended. An
 `ImageBitmap` needs no object URL, so `textures.ts` has nothing to revoke; an `<img>` does,
 so `images.ts` is the one place in the game managing URL lifetimes. `loadImage` also
-**awaits `img.decode()`** — a loaded-but-undecoded image still costs a decode on first
+**awaits `img.decode()`**, since a loaded-but-undecoded image still costs a decode on first
 paint, and at a 70 ms step that shows as a blank frame.
 
 ### Clicking the excerpt is a ray cast, not a rectangle
@@ -256,22 +256,22 @@ Two properties make that correct, and both are easy to break by "tidying":
 - **MindAR leaves the WebGL canvas free of CSS transforms.** It sets only
   `position/top/left/width/height`; the `scaleX(-1)` mirroring goes on the `<video>`
   alone. So canvas-rect coordinates map 1:1 onto what is drawn, with no mirror
-  correction. If a future version transforms the canvas, this breaks silently.
+  correction. If a future version transforms the canvas, this breaks with no error.
 - **World matrices are at most one frame stale**, because the render loop never stops.
 
 The `Raycaster` and `Vector2` are allocated once, since this runs on pointer move too
-(to light up a `zoom-in` cursor — the only affordance advertising that the excerpt is
+(to light up a `zoom-in` cursor, the only affordance advertising that the excerpt is
 clickable, and one that touch devices don't get).
 
 ### The overlay re-reads the file instead of reusing the texture
 
 `ExcerptOverlay` calls `readFileBlob` again rather than reusing the `TexturePool`'s
 `ImageBitmap`. Those bitmaps are decoded with `imageOrientation: "flipY"` for WebGL, so
-drawing one into a 2D canvas or an `<img>` would come out **upside-down** — the same trap
+drawing one into a 2D canvas or an `<img>` would come out **upside-down**, the same trap
 as above, wearing a different hat. The overlay is also where a stray flip would be most
 obvious and least excusable, since reading the notation is its whole purpose.
 
-Its backdrop sits at `z-index: 60` — above camera (0), header (30), SPIN (40), gear (45)
+Its backdrop sits at `z-index: 60`, above camera (0), header (30), SPIN (40), gear (45)
 and games menu (50), below the skip link (100), which stays reachable. The backdrop
 covering the viewport is what makes SPIN and the gear unclickable; both are *also*
 `disabled` while it's open, so neither is reachable by keyboard either.
@@ -293,10 +293,10 @@ visible node, so collapsing would change nothing observable.
 
 ### Text wraps rather than being squeezed
 
-`ctx.fillText`'s `maxWidth` argument *condenses glyphs*, which is what made long
+`ctx.fillText`'s `maxWidth` argument *condenses glyphs*, which is why long
 captions look wrong once `names.maxLength` grew. `drawTextCanvas` now word-wraps to
 `maxLines` instead. On the last allowed line the remainder is appended rather than
-dropped — that line just runs long, and the plane shrinks on both axes together to
+dropped; that line just runs long, and the plane shrinks on both axes together to
 `scene.maxTextWidth`, so text is bounded but never distorted. World size is derived
 from a one-line canvas height, so glyphs come out the same physical size whether the
 caption wrapped or not.
@@ -305,7 +305,7 @@ caption wrapped or not.
 
 Excerpt images vary wildly in shape. The image plane is unit geometry scaled per
 texture: `planeW = min(imageWidth, maxImageHeight × aspect)`, `planeH = planeW /
-aspect`, `y = imageBottomY + planeH / 2` — so every image's bottom edge sits on the
+aspect`, `y = imageBottomY + planeH / 2`, so every image's bottom edge sits on the
 same head-space line and the caption below never gets overlapped. Change
 `imageBottomY` to move the whole assembly, not the individual planes.
 
@@ -315,17 +315,17 @@ same head-space line and the caption below never gets overlapped. Change
 *unchecked*. A new upload is checked by default because it simply isn't in the set;
 a missing or corrupt store means "everything checked", which is always playable.
 Folder checkboxes are **derived** from descendant files every render (`mixed` →
-`indeterminate`) — only file paths are ever stored, so folder state can't drift.
+`indeterminate`). Only file paths are ever stored, so folder state cannot drift.
 `saveExcluded` intersects with the existing paths so deletions don't leave stale
 entries accumulating.
 
 ### Duplicate uploads overwrite
 
-`createWritable()` truncates, so re-uploading a path replaces the bytes. Deliberate:
+`createWritable()` truncates, so re-uploading a path replaces the bytes. That is intended:
 re-uploading a corrected excerpt just works, and merging a folder twice is
 idempotent instead of an error.
 
-### Two filters, one visibility set — and folders derived from files
+### Two filters, one visibility set, and folders derived from files
 
 `visiblePaths(root, { query, selectedOnly, checked })` returns the node paths to render,
 or `null` for "show everything". It returns a *set* rather than a filtered tree so the
@@ -333,13 +333,13 @@ tree keeps its shape and rows simply drop out.
 
 It is computed **file-first**: a file survives when it passes every active filter, then
 the visible folders are exactly the ancestors of surviving files. Composing two
-ready-made visibility sets by intersection looks equivalent and is quietly wrong — a
+ready-made visibility sets by intersection looks equivalent and is wrong:
 folder that is an ancestor of a matched-but-unchecked file *and* of a checked-but-
 unmatched file survives the intersection with no visible children, leaving an empty
 folder in the tree. Deriving folders from the survivors makes that impossible by
 construction, and `tree.test.ts` pins the exact case.
 
-### Row filtering and search behavior are deliberately separate
+### Row filtering and search behavior are separate
 
 `FileTree` takes `visible` **and** `searching`, rather than deriving one from the other
 as it once did. `visible` decides only which rows appear; `searching` decides whether the
@@ -348,7 +348,7 @@ tree auto-expands and drops folder checkboxes.
 They must not be conflated, because only a *search* justifies hiding folder checkboxes:
 there, checking a folder would reach files the query is hiding, so the consequence is
 invisible. The selected-only filter hides files **by the very property the checkbox
-sets** — check a folder and its files appear, uncheck it and they leave — so nothing ever
+sets**: check a folder and its files appear, uncheck it and they leave, so nothing ever
 stays hidden after being toggled, the checkboxes are safe to keep, and a `mixed` folder
 truthfully reports that some of its contents aren't selected. So selected-only alone
 feels like normal mode with fewer rows: collapsible, checkboxes intact. Add a query and
@@ -359,7 +359,7 @@ search's stricter rule takes over.
 The button reads `shownFiles(root, visible)` and toggles exactly those, so a search
 scopes it to the files that search surfaced instead of the whole library. Its label
 follows `shown.every(isChecked)`, which is why in selected-only mode it always reads
-*Deselect all* — every shown file is checked by definition, and clicking it empties the
+*Deselect all*, since every shown file is checked by definition, and clicking it empties the
 view. Note the tree can be empty for four different reasons now, so the panel passes
 `emptyMessage` in rather than letting `FileTree` guess: "no excerpts yet" would be
 alarming and wrong when the library is full and a filter is hiding all of it.
@@ -367,13 +367,13 @@ alarming and wrong when the library is full and a filter is hiding all of it.
 ### The 3D stack loads only on the filter screen
 
 `three` and `mind-ar` are imported only via dynamic `import()` inside
-`createRegScene` / `loadTexture` — never statically. MindAR's face bundle embeds tfjs
+`createRegScene` / `loadTexture`, never statically. MindAR's face bundle embeds tfjs
 and runs to ~2 MB; a static import anywhere would drag that into graphs that never show
 a camera. This is also what keeps SSR from ever evaluating it.
 
-### Face tracking is *not* fully local — two CDN fetches
+### Face tracking is *not* fully local: two CDN fetches
 
-The rest of this game is genuinely offline-capable. Face tracking is not.
+The rest of this game is offline-capable. Face tracking is not.
 `mind-ar/src/face-target/face-mesh-helper.js` hardcodes two remote URLs, neither of
 them configurable and both baked into the prod bundle we import:
 
@@ -393,32 +393,32 @@ Consequences to keep in mind:
   `img-src blob:`.
 - **The first visit needs network**, and a blocked CDN (restricted networks; Google
   domains in some regions) means no filter. That failure currently surfaces through the
-  camera-error path, so the message blames the camera — worth splitting if users on
+  camera-error path, so the message blames the camera. Worth splitting if users on
   restricted networks matter.
 - Opening the filter reveals IP and user agent to jsDelivr and Google. No video leaves
   the tab, but those requests do.
 
 **Where this is written down for production.** The CSP that allows these two origins
 lives in `public/_headers`, applied at the edge by the Cloudflare Worker. Its entries
-are annotated as belonging to this game — if you change what the filter fetches,
+are annotated as belonging to this game. If you change what the filter fetches,
 change that file too, and if you ever remove the filter those origins should come out
 of the CSP rather than lingering as permanent holes. The IP/user-agent disclosure is
 named explicitly in the site's privacy policy (`src/app/(legal)/privacy/page.tsx`),
 under "Third-party requests"; the same applies there.
 
-Self-hosting these assets would close both the privacy and supply-chain gaps — the
-files exist in `node_modules/@mediapipe/tasks-vision/wasm/` already — but the base
+Self-hosting these assets would close both the privacy and supply-chain gaps, and the
+files exist in `node_modules/@mediapipe/tasks-vision/wasm/` already, but the base
 path is a literal inside mind-ar's shipped bundle, so it needs a patch rather than a
 setting. HOSTING.md carries the recipe as a post-launch item.
 
 Self-hosting is possible but not cheap: the URLs are string literals inside mind-ar's
 prod bundle, so it means vendoring or patching that file.
 
-### The dev console is noisy, and one of the warnings is load-bearing
+### The dev console is noisy, and one of the warnings can be ignored
 
 `THREE.WebGLRenderer: Property .outputEncoding has been removed` comes from mind-ar's
-constructor assigning a property three deleted in r152. It is a no-op — the setter warns
-and then writes the `outputColorSpace` value that is already the default — and it prints
+constructor assigning a property three deleted in r152. It is a no-op: the setter warns
+and then writes the `outputColorSpace` value that is already the default. It prints
 twice in development only, because Strict Mode mounts effects twice.
 
 **Don't silence it.** It is the canary for mind-ar depending on a removed three API, and
@@ -432,7 +432,7 @@ of ours to quiet them.
 
 - **`canvas` → empty package** (`overrides` in `package.json`): mind-ar declares
   native `node-canvas` as a dependency, but only its Node-side image-target
-  compiler uses it — the browser face bundle never does. The override means
+  compiler uses it; the browser face bundle never does. The override means
   `npm install` doesn't need a C++ toolchain.
 - **`fs` → `src/shared/shims/empty.js`** (`turbopack.resolveAlias`, browser
   condition, in `next.config.ts`): mind-ar's bundled TensorFlow.js keeps Node-only
@@ -444,16 +444,16 @@ If mind-ar is ever upgraded, keep both.
 ### Storage is best-effort durable
 
 `navigator.storage.persist()` is requested after the first successful write, and its
-answer is ignored — Chrome grants it by heuristics. The library works either way;
+answer is ignored, since Chrome grants it by heuristics. The library works either way;
 un-persisted OPFS is merely evictable under storage pressure.
 
 ## Shared code this game uses
 
-- `useDismiss` from `@/shared/hooks/useDismiss` — panel Escape/outside-click.
+- `useDismiss` from `@/shared/hooks/useDismiss`: panel Escape/outside-click.
 - The gear + panel treatment copied from the other games' settings (same position,
   blur, hover rotation): three games, one way to open settings.
-- **Not** `usePitchDetector` / `@/shared/audio` — this game makes and hears no sound.
-- **Not** `Confetti` — the landing moment is the reveal itself; confetti on every
+- **Not** `usePitchDetector` / `@/shared/audio`; this game makes and hears no sound.
+- **Not** `Confetti`; the landing moment is the reveal itself, and confetti on every
   spin would wear out in minutes.
 
 ## Tests
@@ -472,14 +472,14 @@ un-persisted OPFS is merely evictable under storage pressure.
 Everything a camera sees. Face tracking quality, box placement and offsets, spin
 *feel*, caption legibility at arm's length, upload via real folder drags, OPFS
 persistence across restarts, camera permission flows, vibration on a phone, and
-that `stop()` really turns the webcam light off — all need eyes on a real browser,
+that `stop()` really turns the webcam light off. All need eyes on a real browser,
 ideally one desktop and one phone.
 
 **Image orientation and sharpness in particular.** Both bugs this file documents
 (`flipY`, the render buffer) were invisible to the whole suite and to the build, and
 would be again: nothing in Node can render a texture. The only check is looking at the
 screen. If you touch `loadTexture` or `applyPixelRatio`, spin once and confirm the
-notation is upright *and* the caption is still upright — a wrong flip fix inverts the
+notation is upright *and* the caption is still upright; a wrong flip fix inverts the
 text instead of the image. The overlay needs the same look, for the same reason.
 
 **The hit test too.** Whether a click lands on the excerpt depends on the canvas's CSS
@@ -488,17 +488,17 @@ geometry and MindAR's per-frame matrices, neither of which exists in Node. Chang
 
 **And teardown.** The `forceContextLoss()` white-screen passed `npm test`, `lint`, `tsc`
 and `build` without a murmur, because the symptom lives in what the compositor paints
-over a canvas MindAR forgot to remove. Anything touching `stop()` needs a real reload —
+over a canvas MindAR forgot to remove. Anything touching `stop()` needs a real reload;
 and in development, where Strict Mode mounts twice, that is the case that actually
 exercises it.
 
 **And the camera switch.** Flipping it exercises exactly that teardown path. Toggle it a
 few times and confirm the webcam light ends off and the container holds one canvas, not a
-stack of them. The nastier case is interrupting a *start* — flip on and navigate away while
+stack of them. The nastier case is interrupting a *start*: flip on and navigate away while
 "Starting camera…" is up, then check the light is off and no spinner is left in `<body>`.
 
 **Known gap.** `_startVideo` calls `reject()` with **no argument** (`three.js:143`), so
 `isPermissionDenied(error)` always receives `undefined` and the "permission was denied"
-branch of the error card is unreachable — a denied camera currently reports the generic
+branch of the error card is unreachable, since a denied camera currently reports the generic
 "couldn't be started" message. Telling them apart needs another signal
 (`navigator.permissions.query({ name: "camera" })`, which Safari lacks).

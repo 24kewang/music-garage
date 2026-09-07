@@ -9,7 +9,7 @@ import styles from "./SettingsPanel.module.css";
 
 /**
  * The gear and its popup: how the reveal is spelled, and how long the button labels
- * are. Neither affects who wins — the guessing mode, which does, lives on the start
+ * are. Neither affects who wins: the guessing mode, which does, lives on the start
  * screen where both players can see it.
  */
 export default function SettingsPanel({

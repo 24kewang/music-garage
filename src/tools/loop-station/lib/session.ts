@@ -14,7 +14,7 @@ import {
  * The loop station's state machine, as a pure reducer over
  * `(state, event, audioTime)`.
  *
- * Audio buffers never enter this module — recordings are referred to by segment id,
+ * Audio buffers never enter this module: recordings are referred to by segment id,
  * and the reducer returns *effects* telling the audio layer what to do (extract a
  * window from the ring buffer, re-bake a track, start the transport). That split is
  * what lets every discard, cancel and graduation rule in the spec be pinned by a
@@ -41,7 +41,7 @@ export interface TrackState {
   id: number;
   name: string;
   busId: number;
-  /** Repetitions tiled across the loop — the multiplier at record time. */
+  /** Repetitions tiled across the loop: the multiplier at record time. */
   reps: number;
   /** The padded recording this track plays, by id. Untouched by overwrites. */
   segmentId: number;
@@ -199,14 +199,14 @@ export interface Result {
 
 export const NOTICES = {
   loopTooLong: `That length is over the ${config.transport.maxLoopSeconds}s loop ceiling.`,
-  freeTooShort: "That loop was too short to keep — try again.",
+  freeTooShort: "That loop was too short to keep. Try again.",
   tooManyTracks: `The station holds ${config.mix.maxTracks} tracks.`,
-  tempoTooFast: `That loop works out faster than ${config.transport.maxTempo} BPM — play it slower, or raise the multiplier.`,
-  tempoTooSlow: `That loop works out slower than ${config.transport.minTempo} BPM — play it faster, or lower the multiplier.`,
+  tempoTooFast: `That loop works out faster than ${config.transport.maxTempo} BPM. Play it slower, or raise the multiplier.`,
+  tempoTooSlow: `That loop works out slower than ${config.transport.minTempo} BPM. Play it faster, or lower the multiplier.`,
 } as const;
 
 /**
- * Tolerance for comparing two audio-clock times, seconds (1µs — far below a
+ * Tolerance for comparing two audio-clock times, seconds (1µs, far below a
  * sample). Boundary times reached along different arithmetic paths differ by an
  * ulp, so exact comparison both mis-orders simultaneous transitions and defers
  * a transition due *now* by a whole scheduler tick.
@@ -532,8 +532,8 @@ function startRecordSession(s: SessionState, now: number): Result {
       }
       // One bar of count-in, snapped onto the next *accent* of the click grid the
       // player is already hearing. Snapping to a bar line rather than any beat
-      // means the count starts where they hear the bar start, and — since the
-      // count-in is exactly one bar — the loop anchor lands on a bar line too, so
+      // means the count starts where they hear the bar start, and, since the
+      // count-in is exactly one bar: the loop anchor lands on a bar line too, so
       // the accent grid never shifts. Only the emphasis drops out for that bar.
       const beatSeconds = 60 / s.tempo;
       const barSeconds = beatSeconds * s.beats;
@@ -633,8 +633,8 @@ function finishFreeLoop(s: SessionState, startTime: number, now: number): Result
 
 /** Turning the record button off mid-session. The in-flight segment dies; set tracks stay. */
 function endRecordSession(s: SessionState, session: RecordSession): Result {
-  // The quantized-start edge case: nothing was set yet, so the whole attempt —
-  // transport included — is canceled and the user starts again.
+  // The quantized-start edge case: nothing was set yet, so the whole attempt,
+  // transport included, is canceled and the user starts again.
   if (session.isInitial && session.targetTrackId === null) {
     return resetTransport({ ...s, recording: { kind: "off" } });
   }
@@ -677,7 +677,7 @@ function reduceOverwriteDetected(s: SessionState, at: number): Result {
   const iteration = Math.floor((at - anchor) / loop + 1e-9);
   const iterationStart = anchor + iteration * loop;
   // A level threshold fires a block or two after the attack, so start earlier
-  // than the detection — but never before this iteration began, or the phase
+  // than the detection, but never before this iteration began, or the phase
   // would wrap and punch at the wrong end of the loop.
   const startTime = Math.max(iterationStart, at - config.autoDetect.onsetBackoffMs / 1000);
   return done({
@@ -817,7 +817,7 @@ function reduceClock(s: SessionState, now: number): Result {
 
 /**
  * The earliest transition due at or before `now`, or null. Ties break by list
- * order below — most importantly, a capture completing on the same boundary that
+ * order below: most importantly, a capture completing on the same boundary that
  * graduates its track must land *before* the graduation, so the re-recorded
  * partition still replaces the track.
  */
@@ -1023,7 +1023,7 @@ function reduceDeleteTrack(s: SessionState, id: number): Result {
     state = { ...state, recording: { kind: "off" } };
   }
 
-  // Deleting the last track unlocks tempo/beats/bars — unless a record session is
+  // Deleting the last track unlocks tempo/beats/bars: unless a record session is
   // still running, which needs the loop grid to keep meaning anything.
   if (state.tracks.length === 0 && state.recording.kind === "off") {
     const reset = resetTransport(state);
@@ -1034,7 +1034,7 @@ function reduceDeleteTrack(s: SessionState, id: number): Result {
 }
 
 /**
- * Reorder one track. Purely presentational — every track plays in parallel into
+ * Reorder one track. Purely presentational: every track plays in parallel into
  * its bus, so the array order drives nothing but the render, which is why this
  * emits no effects and touches no audio.
  */
@@ -1050,7 +1050,7 @@ function reduceMoveTrack(s: SessionState, id: number, toIndex: number): Result {
 
 /**
  * Clear the station. Unlike deleting one track this reaches in-progress tracks
- * and cancels any recording — a "clear everything" that silently ignored you
+ * and cancels any recording. A "clear everything" that ignored you
  * mid-session would be worse than one that interrupts it.
  */
 function reduceDeleteAllTracks(s: SessionState): Result {
@@ -1101,7 +1101,7 @@ function spawnTrack(
   };
 }
 
-/** A track that exists and has graduated — the only kind events may modify. */
+/** A track that exists and has graduated: the only kind events may modify. */
 function editableTrack(s: SessionState, id: number): TrackState | undefined {
   const track = s.tracks.find((t) => t.id === id);
   return track && track.spawnLoopEndTime === null ? track : undefined;

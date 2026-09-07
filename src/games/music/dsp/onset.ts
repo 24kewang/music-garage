@@ -5,8 +5,8 @@
  * and this runs on the main thread, so the whole decision stays in testable
  * TypeScript and the worklet stays dumb.
  *
- * Deliberately *not* the Loop Station's `createOnsetDetector`, which solves a
- * different problem — repeated attacks with a running noise floor and a refractory
+ * *Not* the Loop Station's `createOnsetDetector`, which solves a
+ * different problem: repeated attacks with a running noise floor and a refractory
  * window. This is a one-shot gate: it fires once, on the first sound that is loud
  * enough for long enough to be someone starting to play, and never again.
  */
@@ -25,8 +25,8 @@ export interface OnsetOptions {
 
 export interface OnsetGate {
   /**
-   * Feed one block. Returns the time of the onset — the time of the *first* block
-   * of the run, not the one that completed it — on the block that confirms it, and
+   * Feed one block. Returns the time of the onset: the time of the *first* block
+   * of the run, not the one that completed it: on the block that confirms it, and
    * `null` every other time. Only ever returns non-null once.
    */
   push(time: number, rms: number): number | null;

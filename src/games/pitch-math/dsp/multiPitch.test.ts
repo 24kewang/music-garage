@@ -16,7 +16,7 @@ import { analyzeSpectrum, planSpectrum } from "./spectrum";
 import { mix, noise, tone } from "./synth";
 
 /**
- * A smaller transform than the game uses. 8192 points at 44.1 kHz is 5.4 Hz per bin —
+ * A smaller transform than the game uses. 8192 points at 44.1 kHz is 5.4 Hz per bin:
  * coarser than production, so anything that passes here has margin to spare, and the
  * suite stays quick enough to run on every save.
  */
@@ -113,7 +113,7 @@ describe("cancel", () => {
   });
 });
 
-describe("detect — two separate notes", () => {
+describe("detect: two separate notes", () => {
   const cases: [string, string, string, number][] = [
     ["a minor 2nd", "C4", "C#4", 1],
     ["a major 2nd", "C4", "D4", 2],
@@ -159,7 +159,7 @@ describe("detect — two separate notes", () => {
   });
 });
 
-describe("detect — the awkward cases", () => {
+describe("detect: the awkward cases", () => {
   it("calls two identical notes a unison", () => {
     const detection = hear([{ midi: midi("A4") }, { midi: midi("A4"), phase: 1 }]);
     expect(detection.kind).toBe("unison");
@@ -167,7 +167,7 @@ describe("detect — the awkward cases", () => {
   });
 
   it("calls a note and its octave an octave", () => {
-    // Cannot be separated by subtraction — the upper note owns no bin of its own —
+    // Cannot be separated by subtraction: the upper note owns no bin of its own:
     // so this rests entirely on the even/odd harmonic signature.
     const detection = hear([{ midi: midi("A3") }, { midi: midi("A4") }]);
     expect(detection.kind).toBe("octave");
@@ -193,7 +193,7 @@ describe("detect — the awkward cases", () => {
   });
 });
 
-describe("detect — real-world tolerance", () => {
+describe("detect: real-world tolerance", () => {
   it("survives players being out of tune", () => {
     // Nobody plays at exactly 440. Both notes are pushed well off, in opposite
     // directions, and the interval must still come out right.
@@ -225,7 +225,7 @@ describe("detect — real-world tolerance", () => {
   });
 
   it("works low down, where the bins are tightest", () => {
-    // Adjacent semitones near C2 are about 4 Hz apart — under one bin at this size.
+    // Adjacent semitones near C2 are about 4 Hz apart: under one bin at this size.
     const detection = hear([{ midi: midi("C3") }, { midi: midi("G3") }]);
     expect(heardInterval(detection)).toBe(7);
   });
@@ -241,7 +241,7 @@ describe("detect — real-world tolerance", () => {
   });
 });
 
-describe("detect — nothing to hear", () => {
+describe("detect: nothing to hear", () => {
   it("reports silence", () => {
     const samples = new Float64Array(SIZE);
     const detection = detect(samples, analyzeSpectrum(plan, samples, SAMPLE_RATE), grid);
@@ -329,7 +329,7 @@ describe("octaveEvidence", () => {
 
     expect(loneMax).toBeLessThan(threshold);
     expect(octaveMin).toBeGreaterThan(threshold);
-    // Not merely on the right side of the line — comfortably so.
+    // Not merely on the right side of the line: comfortably so.
     expect(threshold / loneMax).toBeGreaterThan(1.15);
     expect(octaveMin / threshold).toBeGreaterThan(1.15);
   });

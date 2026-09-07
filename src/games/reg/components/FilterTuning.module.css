@@ -1,7 +1,7 @@
 /*
  * The first range sliders in the garage. `accent-color` carries the track fill and
  * thumb, matching how the checkboxes elsewhere are themed, so there is no need to
- * rebuild the control from vendor pseudo-elements — only to give it a comfortable
+ * rebuild the control from vendor pseudo-elements: only to give it a comfortable
  * hit area and a readout in tabular figures.
  */
 

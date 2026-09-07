@@ -10,11 +10,11 @@ import styles from "./ResultDialog.module.css";
 /**
  * What went wrong, shown rather than asserted.
  *
- * This is the instrument for arguing about a threshold — and for accepting a letter
+ * This is the instrument for arguing about a threshold, and for accepting a letter
  * without feeling cheated. It only appears on a failure: a success has nothing to
  * explain and the toast has already said so.
  *
- * The score is deliberately honest rather than flattering. A copy that missed the
+ * The score is honest rather than flattering. A copy that missed the
  * strict threshold by a hair reads in the high eighties, and that is the number that
  * makes "switch to loose" an informed decision instead of a shrug.
  */
@@ -103,7 +103,7 @@ export default function ResultDialog({
                  */}
                 Matched {comparison.shift < 0 ? "down" : "up"}{" "}
                 {Math.abs(comparison.shift)} semitone
-                {Math.abs(comparison.shift) === 1 ? "" : "s"} — the key does not count
+                {Math.abs(comparison.shift) === 1 ? "" : "s"}. The key does not count
                 against you.
               </p>
             )}

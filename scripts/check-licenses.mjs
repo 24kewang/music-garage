@@ -1,13 +1,12 @@
 /**
  * Dependency license audit.
  *
- * Reads package-lock.json rather than walking node_modules, and that choice is
- * load-bearing: npm's v3 lockfile carries a `license` field for every resolved
- * package, whereas a node_modules walk reports whatever happens to be installed on
- * this machine. On Windows that means ~106 false UNKNOWNs, because the
- * platform-specific optional binaries for other operating systems were never
- * unpacked. The lockfile is also offline, dependency-free, and identical across CI
- * runners.
+ * Reads package-lock.json instead of walking node_modules. npm's v3 lockfile carries
+ * a `license` field for every resolved package, whereas a node_modules walk reports
+ * whatever happens to be installed on this machine. On Windows that means about 106
+ * false UNKNOWNs, because the platform-specific optional binaries for other operating
+ * systems were never unpacked. The lockfile is also offline, dependency-free, and
+ * identical across CI runners.
  *
  *   node scripts/check-licenses.mjs --check     fail on copyleft or undeclared
  *   node scripts/check-licenses.mjs --notices   regenerate THIRD-PARTY-NOTICES.md
@@ -22,7 +21,7 @@ const LOCKFILE = join(ROOT, "package-lock.json");
 const NOTICES = join(ROOT, "THIRD-PARTY-NOTICES.md");
 
 /**
- * Licenses that would impose obligations this project is not set up to meet —
+ * Licenses that would impose obligations this project is not set up to meet:
  * either source disclosure on a shipped bundle, or share-alike on our own text.
  */
 const DENIED = [
@@ -37,9 +36,9 @@ const DENIED = [
 ];
 
 /**
- * Narrowly scoped exceptions. Each is a package that has actually been looked at,
- * with the reason it is safe recorded here rather than in a commit message.
- * Anything not on this list that trips DENIED fails the build.
+ * Narrowly scoped exceptions. Each is a package that has been reviewed, with the
+ * reason it is safe recorded here instead of in a commit message. Anything not on
+ * this list that trips DENIED fails the build.
  */
 const ALLOWED = new Map([
   [
@@ -51,7 +50,7 @@ const ALLOWED = new Map([
   ],
   [
     /^axe-core$/,
-    "MPL-2.0, dev-only — reached through eslint-config-next > eslint-plugin-jsx-a11y. " +
+    "MPL-2.0, dev-only, reached through eslint-config-next > eslint-plugin-jsx-a11y. " +
       "MPL is file-level copyleft and imposes nothing on our own code; it never ships.",
   ],
 ]);
@@ -160,7 +159,7 @@ function check(packages) {
 
   const exempted = packages.filter((pkg) => exemption(pkg.name));
   if (exempted.length > 0) {
-    console.log(`Exempted (${exempted.length}) — reviewed, reasons recorded in this script:`);
+    console.log(`Exempted (${exempted.length}), reviewed, with reasons recorded in this script:`);
     const seen = new Set();
     for (const pkg of exempted) {
       const reason = exemption(pkg.name);
@@ -168,7 +167,7 @@ function check(packages) {
       seen.add(reason);
       const group = exempted.filter((other) => exemption(other.name) === reason);
       const siblings = group.length > 1 ? " (and siblings)" : "";
-      console.log(`  ${group.length}x  ${group[0].name}${siblings} — ${group[0].license}`);
+      console.log(`  ${group.length}x  ${group[0].name}${siblings}: ${group[0].license}`);
     }
     console.log("");
   }
@@ -184,11 +183,11 @@ function check(packages) {
       console.error(`  ${pkg.name}@${pkg.version}  ${pkg.license}  (${scope})`);
       console.error(`    ${pkg.path}`);
     }
-    console.error("\nIf one is genuinely safe, add it to ALLOWED in this script with the reason.");
+    console.error("\nIf one is safe, add it to ALLOWED in this script with the reason.");
   }
 
   if (unknown.length > 0 || denied.length > 0) process.exit(1);
-  console.log("OK — no disallowed or undeclared licenses.");
+  console.log("OK. No disallowed or undeclared licenses.");
 }
 
 function notices(packages, devDependencies) {
@@ -199,7 +198,7 @@ function notices(packages, devDependencies) {
   // The `devDependencies` check is not redundant with `pkg.dev`. When a package is
   // reachable both as a devDependency and as some production dependency's optional
   // one, npm collapses the flags on the single install location to the least
-  // restrictive pair — `dev: false, optional: false` — and the lockfile can no longer
+  // restrictive pair: `dev: false, optional: false`, and the lockfile can no longer
   // say it is ours for building only. `sharp` is exactly that: our icon generator
   // depends on it, and so does next, optionally, for image optimization this site
   // never uses. What the project declares about its own dependencies is the better
@@ -224,12 +223,12 @@ function notices(packages, devDependencies) {
   const lines = [
     "# Third-party notices",
     "",
-    "Music Garage itself is MIT licensed — see [LICENSE](LICENSE). It is built on the",
+    "Music Garage itself is MIT licensed; see [LICENSE](LICENSE). It is built on the",
     "open-source packages listed below, each of which remains under its own license and",
     "copyright. This file exists to satisfy the attribution requirements of those",
     "licenses, principally Apache-2.0's NOTICE clause and CC-BY-4.0's attribution clause.",
     "",
-    "Generated by `npm run licenses:notices` from `package-lock.json` — do not edit by",
+    "Generated by `npm run licenses:notices` from `package-lock.json`. Do not edit by",
     "hand. Development-only and platform-specific optional packages are excluded, since",
     "neither is distributed with the site.",
     "",
@@ -252,7 +251,7 @@ function notices(packages, devDependencies) {
   }
 
   writeFileSync(NOTICES, lines.join("\n"));
-  console.log(`Wrote ${NOTICES} — ${byName.size} distributed packages.`);
+  console.log(`Wrote ${NOTICES}: ${byName.size} distributed packages.`);
 }
 
 const mode = process.argv[2];

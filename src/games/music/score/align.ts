@@ -1,7 +1,7 @@
 /**
  * Weighted global alignment (Needleman–Wunsch) over two note sequences.
  *
- * Pure arithmetic on number arrays — no audio anywhere near it, which is what makes
+ * Pure arithmetic on number arrays, with no audio anywhere near it, which makes
  * the invariants below assertable directly rather than inferable from how a round
  * felt.
  */
@@ -37,8 +37,8 @@ export interface AlignCosts {
  * The ceiling must stay **strictly below `2 * indel`**. This is the one constraint
  * the whole cost model rests on: at or above it, the aligner discovers that any
  * badly wrong note is cheaper as a deletion plus an insertion, interval weighting
- * stops having any effect at all, and — just as bad for the player looking at the
- * failure graph — one wrong note stops reading as one wrong note and becomes a hole
+ * stops having any effect at all, and: just as bad for the player looking at the
+ * failure graph: one wrong note stops reading as one wrong note and becomes a hole
  * in one line beside a spike in the other.
  */
 export function substitutionCost(delta: number, costs: AlignCosts): number {
@@ -83,7 +83,7 @@ export function align(
       const up = cost[(i - 1) * width + j] + costs.indel;
       const left = cost[i * width + (j - 1)] + costs.indel;
 
-      // The diagonal wins ties deliberately. When a substitution costs exactly what
+      // The diagonal wins ties. When a substitution costs exactly what
       // an indel pair costs, "one wrong note" is the reading a player recognizes.
       let best = diagonal;
       let direction = DIAGONAL;

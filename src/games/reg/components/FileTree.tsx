@@ -13,15 +13,15 @@ import styles from "./FileTree.module.css";
  * Folder checkboxes are derived from their descendant files every render (mixed →
  * `indeterminate`), and cascade downward on toggle.
  *
- * `visible` and `searching` are separate on purpose. `visible` only decides which rows
- * appear, and any filter can narrow it. `searching` changes how the tree *behaves* —
- * auto-expanding and dropping folder checkboxes — and only a search query does that,
+ * `visible` and `searching` are separate. `visible` only decides which rows
+ * appear, and any filter can narrow it. `searching` changes how the tree *behaves*:
+ * auto-expanding and dropping folder checkboxes, and only a search query does that,
  * because only a search hides files that a folder toggle would still reach. The
  * selected-only filter hides files by the very property the checkbox sets, so its
  * consequences are always on screen and the checkboxes stay.
  *
  * Collapse state is owned by the panel, not here, so the Expand/Collapse all button
- * can drive it — and so it survives the panel closing.
+ * can drive it, and so it survives the panel closing.
  */
 export default function FileTree({
   root,
@@ -40,7 +40,7 @@ export default function FileTree({
   /** A search query is active: auto-expand and hide folder checkboxes. */
   searching: boolean;
   collapsed: ReadonlySet<string>;
-  /** Why the tree is empty — the panel knows which filter emptied it. */
+  /** Why the tree is empty: the panel knows which filter emptied it. */
   emptyMessage: string;
   onToggle: (node: TreeNode, value: boolean) => void;
   onToggleCollapsed: (path: string) => void;

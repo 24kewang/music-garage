@@ -1,9 +1,8 @@
 # 🔀 Random Excerpt Generator (REG)
 
-One player, a webcam, and their own practice library. Upload images of musical
-excerpts — loose files or whole nested folders — and they're kept in the browser's
-private file storage (OPFS), so the library survives reloads and nothing ever leaves
-the tab.
+One player, a webcam, and their own practice library. Upload images of musical excerpts,
+either loose files or whole nested folders. They are kept in the browser's private file
+storage (OPFS), so the library survives reloads and nothing leaves the tab.
 
 The camera feed becomes a face filter: a box floats above your head, tracked in 3D as
 you move. Press **SPIN** and it riffles through your checked excerpts slot-machine
@@ -12,8 +11,8 @@ file's path (`orchestral/mahler/Symphony 5.png` → *orchestral - mahler - Symph
 Practice what fate hands you, then spin again.
 
 The excerpt floats at head size, which is enough to recognize a piece but not to play
-it — so **clicking the excerpt itself opens it full-screen**, and the x, a click
-outside, or Escape closes it again. SPIN and the gear stay locked while it's open.
+it. **Clicking the excerpt opens it full-screen**, and the x, a click outside, or Escape
+closes it again. SPIN and the gear stay locked while it is open.
 
 ## The gear panel
 
@@ -22,7 +21,7 @@ structure (folder checkboxes cascade), expand/collapse-all, an "only show select
 filter that composes with the search, ways to add more files, and a delete-everything
 escape hatch behind a confirmation. Select/deselect-all applies to whatever the tree is
 currently showing, so during a search it only touches the files that search surfaced. At
-least one excerpt must stay checked — SPIN buzzes and shakes otherwise.
+least one excerpt must stay checked; SPIN buzzes and shakes otherwise.
 
 **Filter** is where the box lives: a **Camera mode** switch, sliders for the box's
 left/right, up/down and near/far offset, overall size as a percentage, and whether the
@@ -34,21 +33,21 @@ or away from the camera.
 
 ## Camera mode starts off
 
-Without it the same slot machine runs as an ordinary picker — the excerpt centered on
-screen with its name underneath, still clickable to enlarge — asking for no camera
-permission and loading none of the 3D stack, so a visit that never turns the camera on
-never fetches it. The position sliders gray out there, since there's no head to track.
-The switch is session-only: reload and you're back to camera-free. It also locks while
-the camera is starting, so a half-built scene can't be torn down under itself.
+Without it the same slot machine runs as an ordinary picker, with the excerpt centered
+on screen and its name underneath, still clickable to enlarge. It asks for no camera
+permission and loads none of the 3D stack, so a visit that never turns the camera on
+never fetches it. The position sliders gray out there, since there is no head to track.
+The switch is session-only: reload and you are back to camera-free. It also locks while
+the camera is starting, so a half-built scene cannot be torn down under itself.
 
-Face tracking is [MindAR](https://github.com/hiukim/mind-ar-js) + three.js, loaded only
-on this page. Note that turning it on fetches the MediaPipe runtime and model from two
-third-party origins — see the site's privacy policy.
+Face tracking is [MindAR](https://github.com/hiukim/mind-ar-js) plus three.js, loaded
+only on this page. Turning it on fetches the MediaPipe runtime and model from two
+third-party origins. See the site's privacy policy.
 
 ---
 
 The spin's cadence, the slider bounds, and the caption length budget are all tunable in
-[`config.ts`](config.ts). See [`ARCHITECTURE.md`](ARCHITECTURE.md) for the decisions —
-including why `imageOrientation: "flipY"` is load-bearing, how the render buffer is
-supersampled to make notation legible, and the two stubs (`canvas`, `fs`) that mind-ar
-needs to build.
+[`config.ts`](config.ts). See [`ARCHITECTURE.md`](ARCHITECTURE.md) for the decisions,
+including what `imageOrientation: "flipY"` fixes, how the render buffer is supersampled
+to make notation legible, and the two stubs (`canvas`, `fs`) that mind-ar needs to
+build.

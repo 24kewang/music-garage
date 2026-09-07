@@ -28,7 +28,7 @@ import styles from "./game.module.css";
 const NO_TICKS: readonly Tick[] = [];
 
 /**
- * Musical Wavelength — a two-player game around one screen.
+ * Musical Wavelength: a two-player game around one screen.
  *
  * One player spins the wheel, opens the cover to see where the target landed, and
  * describes it out loud. The other player never sees it: they answer by ear, moving
@@ -89,7 +89,7 @@ export default function Game() {
   const dial = useDial(svgRef, settings.mode, audioNeedleDeg);
 
   /**
-   * The scale printed on the cover. Only while the guesser is actually aiming — the
+   * The scale printed on the cover. Only while the guesser is actually aiming: the
    * cover is bare when the target is being placed and after the reveal.
    */
   const ticks = useMemo(() => {

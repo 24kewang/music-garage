@@ -36,7 +36,7 @@ interface WheelProps {
  * The target wheel: scalloped plate, plus a band group at each mirrored position.
  *
  * Wedge paths are generated from `config.bands` rather than copied from the design,
- * so scoring and drawing can't disagree — see `lib/geometry.ts`.
+ * so scoring and drawing can't disagree. See `lib/geometry.ts`.
  */
 export default function Wheel({ wheelDeg, landing, revealKey }: WheelProps) {
   return (

@@ -52,7 +52,7 @@ function hintsFor(phase: Phase, mode: NeedleMode, micBlocked: boolean): string[]
       needsMicrophone(mode)
         ? mode === "pitch"
           ? "Play or sing to move the needle"
-          : "Play or sing — sharp goes right, flat goes left"
+          : "Play or sing. Sharp goes right, flat goes left"
         : "Drag near the needle to aim",
       needsMicrophone(mode) ? "Press the hub to lock it" : "The wheel is locked",
       "Slide the handle to reveal",

@@ -1,8 +1,8 @@
 /**
  * Public surface of the shared audio module.
  *
- * Games should import from `@/shared/audio` only — never from the individual files
- * or from `pitchy` — so the implementation stays swappable.
+ * Games should import from `@/shared/audio` only: never from the individual files
+ * or from `pitchy`, so the implementation stays swappable.
  */
 
 export {

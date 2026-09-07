@@ -1,7 +1,7 @@
 /**
  * Music-theory conversions: frequency ↔ MIDI ↔ note name, plus cents deviation.
  *
- * Pure functions, no browser APIs — this file is directly unit-testable and safe to
+ * Pure functions, no browser APIs. This file is directly unit-testable and safe to
  * import from anywhere, including server components.
  */
 
@@ -31,7 +31,7 @@ const A4_MIDI = 69;
 export interface DetectedNote {
   /** Nearest equal-tempered note, e.g. "A". */
   name: NoteName;
-  /** Scientific pitch notation octave — A4 = 440 Hz sits in octave 4. */
+  /** Scientific pitch notation octave: A4 = 440 Hz sits in octave 4. */
   octave: number;
   /** Nearest MIDI note number (integer). */
   midi: number;
@@ -45,7 +45,7 @@ export interface DetectedNote {
 }
 
 /**
- * Fractional MIDI number for a frequency. Fractional on purpose — the fraction is
+ * Fractional MIDI number for a frequency. The fraction is
  * what makes the cents calculation possible.
  */
 export function frequencyToMidi(frequency: number, a4: number = DEFAULT_A4): number {

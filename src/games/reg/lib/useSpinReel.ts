@@ -7,13 +7,13 @@ import { buildSpinPlan, pickTargetIndex } from "./spin";
 /**
  * The slot machine, independent of what draws it.
  *
- * Both modes — the AR filter and the plain on-screen picker — need the same intro →
+ * Both modes: the AR filter and the plain on-screen picker: need the same intro →
  * spinning → result machine, the same fast-to-slow cadence and the same vibrate-reject,
  * so it lives here rather than being copied into each screen. Everything medium-specific
  * arrives as a callback: preloading, what a step shows, and what happens at spin start.
  *
- * The cadence runs on its own chained timeouts and is deliberately *not* tied to any
- * render loop — it only decides which excerpt is current.
+ * The cadence runs on its own chained timeouts and is *not* tied to any
+ * render loop. It only decides which excerpt is current.
  */
 
 export type SpinPhase = "intro" | "spinning" | "result";
@@ -40,7 +40,7 @@ export interface SpinReel {
   /** True for one animation's length after a rejected press. */
   shaking: boolean;
   spin: () => void;
-  /** Drop pending swaps — for when the medium is being torn down under us. */
+  /** Drop pending swaps: for when the medium is being torn down under us. */
   cancel: () => void;
 }
 

@@ -18,9 +18,9 @@ const STATUS_LABEL: Record<CatalogStatus, string> = {
 };
 
 /**
- * A catalog dropdown — the Games menu, the Tools menu.
+ * A catalog dropdown: the Games menu, the Tools menu.
  *
- * Opens on hover for pointers that have one, and on click or Enter for everyone else —
+ * Opens on hover for pointers that have one, and on click or Enter for everyone else:
  * a hover-only menu is simply unusable on a phone. Arrow keys walk the items and
  * Escape closes it, returning focus to the trigger.
  */
@@ -76,7 +76,7 @@ export default function NavMenu({
 
   /**
    * Escape returns focus to the trigger, so a keyboard user doesn't lose their place
-   * in the header. An outside click deliberately does not — focus belongs to whatever
+   * in the header. An outside click does not, since focus belongs to whatever
    * they just clicked on.
    */
   const dismiss = useCallback(

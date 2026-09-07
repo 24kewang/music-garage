@@ -20,12 +20,12 @@ import { useRound } from "./lib/useRound";
 import styles from "./game.module.css";
 
 /**
- * Pitch Math — two players, two notes, one interval.
+ * Pitch Math: two players, two notes, one interval.
  *
  * Both players play a note at the same time; the app works out what they were and
  * judges the guesses. Whoever names it out loud first gets to press a button, and a
  * wrong press hands the turn over. Scores and turn order are the players' business,
- * not the app's — which is why there is no scoreboard here.
+ * not the app's, which is why there is no scoreboard here.
  */
 export default function Game() {
   // Starts at the defaults so the server and first client render agree; stored
@@ -80,7 +80,7 @@ export default function Game() {
     }
   };
 
-  // Only fire once the round is actually won — the position is captured on every
+  // Only fire once the round is actually won: the position is captured on every
   // press, but the burst belongs to the correct one.
   const burstKey = round.phase === "solved" && burst ? burst.key : null;
 
@@ -117,7 +117,7 @@ export default function Game() {
               {round.notice ??
                 (round.phase === "analyzing"
                   ? "Working out what you played…"
-                  : "Listening — play when you're ready.")}
+                  : "Listening. Play when you're ready.")}
             </p>
 
             <button type="button" className={styles.stop} onClick={round.cancel}>

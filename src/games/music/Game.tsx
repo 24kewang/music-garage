@@ -19,14 +19,14 @@ import {
 import styles from "./game.module.css";
 
 /**
- * MUSIC — HORSE, played on melodies.
+ * MUSIC: HORSE, played on melodies.
  *
  * One player sets a melody and proves they can play it twice; everyone else copies it
  * or takes a letter. Spell the word and you are out.
  *
  * The app judges pitch **sequences** and nothing else. Rhythm is discarded, adjacent
  * repeats collapse, and the comparison is key-agnostic, so copying the shape is the
- * whole task — which is what makes a singer and a trumpet player able to play each
+ * whole task, which lets a singer and a trumpet player play each
  * other. One note at a time, though: the detector is monophonic and a chord gives it
  * nothing to hold on to.
  */

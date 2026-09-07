@@ -1,4 +1,4 @@
-# MUSIC — architecture
+# MUSIC: architecture
 
 HORSE, played on melodies. This file records the decisions that are **not** obvious
 from the code. For how to play see [`README.md`](README.md); for what every knob does see
@@ -12,7 +12,7 @@ and everybody else copies it in turn; a failed copy earns a letter.
 
 **Making your shot keeps you shooting.** When the round runs out of copiers the melody
 goes back to the same setter, not on to the next player. The only way to lose the ball
-is to miss one of your own — a failed confirmation costs no letter but does pass the
+is to miss one of your own. A failed confirmation costs no letter but does pass the
 turn on, exactly as in HORSE.
 
 **Who sets is chosen, not just rotated.** Turn order supplies a default, and until a
@@ -28,7 +28,7 @@ What is actually compared is a **sequence of distinct pitches** and nothing else
   that could tell a repeated note from a held one.
 - **The comparison is key-agnostic.** An octave away scores identically to in tune,
   because the transposition search treats ±12 as just another candidate. Relative
-  octave still counts — a leap has to be reproduced as a leap.
+  octave still counts: a leap has to be reproduced as a leap.
 
 That reading is what makes a singer and a trumpet player able to play each other,
 and it is the whole justification for the pipeline being as long as it is.
@@ -42,7 +42,7 @@ rather than pretending otherwise.
 ```
 config.ts        Every tunable, one frozen object.
 
-dsp/             Pure signal processing — no React, no DOM, no Web Audio.
+dsp/             Pure signal processing. No React, no DOM, no Web Audio.
   onset.ts       One-shot energy gate over (time, rms) blocks     (pure, tested)
   track.ts       Buffer → voiced frames of continuous MIDI        (pure, tested)
   contour.ts     Concatenate voiced frames, median filter         (pure, tested)
@@ -61,7 +61,7 @@ lib/
   rules.ts       Phases, turn order, letters, elimination         (pure, tested)
   settings.ts    Validate / coerce / persist                      (pure, tested)
   graph.ts       Geometry for the failure graph                   (pure, tested)
-  useGame.ts     Sequencing — the only stateful game logic        (browser)
+  useGame.ts     Sequencing, the only stateful game logic         (browser)
   useRecorder.ts Take machine: arming, onset, countdown, handoff  (browser)
   useRowDrag.ts  Pointer gesture for the settings list            (browser)
   useToasts.ts   Notice queue                                     (browser)
@@ -74,7 +74,7 @@ public/worklets/music-capture.js   Plain JS, loaded by URL. Moves samples, decid
 The split is the one the rest of the repo uses and it earns its keep here more than
 anywhere: **every decision this game makes is in a pure module with a test.** The
 transcription, the scoring, the turn order and the graph geometry are all plain
-functions over arrays. What is left in React is sequencing — a recording arrives, it
+functions over arrays. What is left in React is sequencing: a recording arrives, it
 gets transcribed, it gets compared, the result goes to the rules.
 
 ## Decisions
@@ -86,7 +86,7 @@ needs exactly one window. MUSIC needs up to thirty seconds, and a rAF loop that 
 a frame under load tears a hole in the middle of the buffer. The worklet runs on the
 audio thread and cannot.
 
-It is deliberately **not** the Loop Station's worklet, and not a shared one. That one
+It is **not** the Loop Station's worklet, and not a shared one. That one
 keeps a ring buffer so presses can be treated as time marks and audio extracted from
 the *past*; MUSIC only ever records forward from a press, so the ring would be
 machinery with nothing to do. What is shared is the principle: the worklet moves
@@ -97,7 +97,7 @@ where it can be tested.
 
 Somebody reaching back to their instrument should not spend their ten seconds doing
 it, so the window is measured from the energy onset. The armed state shows **no
-digits at all** — a countdown that is not counting is a lie about how much time
+digits at all**. A countdown that is not counting misstates how much time
 somebody has, and the absence is what communicates "not started yet".
 
 The cap is checked in the level handler, against `AudioContext.currentTime`. The
@@ -121,14 +121,14 @@ The spec asks for "regions where the derivative is near zero". That is the right
 intent and the wrong implementation: half a semitone of vibrato at 5.5 Hz peaks around
 **seventeen semitones per second**, so a frame-to-frame difference calls every
 sustained note a glide. A least-squares slope over a window does not rescue it either
-— the regression slope of a sine over one period is zero only at one particular phase.
+since the regression slope of a sine over one period is zero only at one phase.
 
 What is actually stable about a held note is that it *stays put*. So a run extends
 while the contour remains within `toleranceSemitones` of the pitch the run started at.
-Both halves are load-bearing:
+Both halves matter:
 
 - **A band, not a derivative**, so vibrato inside the band is simply ignored. The band
-  is 0.7 semitones — above the vibrato it must tolerate, below a semitone so it can
+  is 0.7 semitones: above the vibrato it must tolerate, below a semitone so it can
   never merge two neighbouring notes.
 - **A fixed anchor, not a running one.** A running median drifts along with a slow
   portamento and swallows the whole slide into one "note". Anchored, a glide leaves
@@ -141,7 +141,7 @@ is a real coupling between two stages and the tests assert it by smoothing first
 
 ### The median filter is long, and that is safe because it is a median
 
-The spec's 150–200 ms kernel looked wrong at first glance — longer than the shortest
+The spec's 150-200 ms kernel looks wrong at first glance, being longer than the shortest
 note the pipeline is meant to keep. It is not, because a **median preserves step
 edges** where a mean would round them off. It only erases a feature shorter than half
 the kernel. 130 ms sits comfortably above one vibrato period and comfortably below
@@ -151,7 +151,7 @@ twice `minNoteMs`.
 
 Not in the spec, and a genuine correctness fix. A singer consistently forty cents flat
 has every note sitting at x.60 of the semitone below. Rounded directly, some go up and
-some go down depending on which side of x.50 the detector's noise happened to fall —
+some go down depending on which side of x.50 the detector's noise happened to fall,
 and the *intervals*, the only thing this game scores, come out wrong. The median
 distance to the nearest semitone is subtracted first so the rounding is unanimous.
 
@@ -166,7 +166,7 @@ Two constraints hold the cost model up:
 
 - **The substitution ceiling stays strictly below `2 × indel`.** At or above it the
   aligner discovers that any badly wrong note is cheaper as a deletion plus an
-  insertion — interval weighting stops mattering, and one wrong note stops *reading*
+  insertion. Interval weighting stops mattering, and one wrong note stops *reading*
   as one wrong note in the graph, becoming a hole in one line beside a spike in the
   other. There is a test that asserts this directly.
 - **The traceback prefers the diagonal on ties**, for the same reason.
@@ -177,17 +177,17 @@ an ambiguous phrase reports the smallest shift that explains it rather than anno
 
 Normalizing by `max(len(target), len(attempt))` keeps a short attempt from scoring
 well against a long target. It does make long phrases marginally more forgiving per
-note, which is a real consequence and a deliberate trade.
+note, which is a real consequence and an accepted trade.
 
 ### The setter is picked by hand, and `takeIndex` is the lock
 
 Four people around one screen do not take turns in the order an array happens to be
-in. Rotation still supplies the default — nobody has to click anything — but the
+in. Rotation still supplies the default, so nobody has to click anything, but the
 boxes are buttons until a melody exists, so the room can say who is up without opening
 settings and dragging rows.
 
 The lock needs no new state. `takeIndex` is already 0 before a first take and 1 after
-one, and it returns to 0 exactly when the round returns to setting — whether that is
+one, and it returns to 0 exactly when the round returns to setting, whether that is
 because a confirmation failed or because a full round of copies finished. So
 `canChooseSetter` is `phase === "setting" && takeIndex === 0`, and that is the whole
 rule. `chooseSetter` refuses anyone who is not a contender, so an eliminated box is
@@ -203,7 +203,7 @@ long. That single rule is what makes the settings edits fall out for free: short
 word and people drop out, lengthen it and they come back, because the letters are the
 truth and being out is only a reading of them.
 
-Two consequences worth knowing:
+Two consequences:
 
 - **`settle()` runs at the tail of every transition**, so "everybody but one was
   knocked out halfway through a round" needs no branch of its own.
@@ -227,7 +227,7 @@ without an effect racing the render.
 
 ### The graph's x axis follows the alignment, not the target
 
-Every alignment step gets identical width — evenly spaced, as asked — which means an
+Every alignment step gets identical width, evenly spaced as asked, which means an
 inserted note occupies real width instead of being wedged into a boundary. The payoff
 is that **a missed note leaves a gap in the attempt's line and an extra one leaves a
 gap in the target's**, so both kinds of error are legible with the colors ignored
@@ -237,26 +237,26 @@ The y range comes from the **target alone**, with the attempt clamped into it. F
 the range to both would let one note sung two octaves out squash the real phrase into
 a flat sliver; clamping pins it to the edge instead, which reads correctly.
 
-No axes, no gridlines, no pitch labels — and that is honesty as much as restraint. The
+No axes, no gridlines, no pitch labels. The
 attempt is drawn at whatever transposition scored best, so an absolute pitch scale
 alongside it would be actively misleading.
 
 ### The transcription is not shown during play
 
 `MUSIC-design.md` leaves this open. Showing the setter what the game heard would help
-them re-record a bad transcription — but everyone is looking at the same screen, so it
+them re-record a bad transcription, but everyone is looking at the same screen, so it
 is a crib sheet for the copiers. The failure dialog reveals the comparison only after
 a round resolves, which explains an outcome without giving one away.
 
 ## Shared code this game uses
 
-- `@/shared/audio` — `createPitchDetector`, `detectPitch`, `frequencyToMidi`,
+- `@/shared/audio`: `createPitchDetector`, `detectPitch`, `frequencyToMidi`,
   `midiToFrequency`. Being DOM-free is what makes the whole pipeline Node-testable.
-- `@/shared/lib/reorder` — moved here from the Loop Station as part of this change,
+- `@/shared/lib/reorder`: moved here from the Loop Station as part of this change,
   since two features now reorder lists the same way.
-- `@/shared/hooks/useDismiss` — both dialogs and the settings panel.
-- `@/shared/components/Confetti` — the win.
-- `@/shared/icons` — `basketball`, added for the manifest.
+- `@/shared/hooks/useDismiss`: both dialogs and the settings panel.
+- `@/shared/components/Confetti`: the win.
+- `@/shared/icons`: `basketball`, added for the manifest.
 
 **Not `usePitchDetector`.** It is a live rAF loop over an analyser; this game analyzes
 a stored buffer after the fact and needs the frame-by-frame contour, not a smoothed
@@ -268,7 +268,7 @@ can hold them across a whole game.
 
 **Not the Loop Station's `useTrackDrag`.** Most of its size is edge auto-scrolling and
 long-press-versus-scroll arbitration over a long scrolling list. Four rows in a fixed
-panel need neither — and MUSIC's rows are grabbed by a **handle only**, which removes
+panel need neither. MUSIC's rows are grabbed by a **handle only**, which removes
 the swipe-versus-drag question outright. A row of text fields, steppers and checkboxes
 has no spare pointer surface to give away, so there is no long-press wait here and no
 exclusion list of controls a press should mean something else on.
@@ -282,12 +282,12 @@ exclusion list of controls a press should mean something else on.
 | `dsp/contour.test.ts` | unvoiced frames dropped and the contour closed over a rest; a one-frame octave spike removed; a spike on the very first frame still outvoted; step edges survive |
 | `dsp/segment.test.ts` | a vibrato'd note is one segment; a slow glide is not a note; one bad frame does not split a run; runs under the minimum dropped; neighbours a semitone apart stay separate; oscillating figures preserved; glide removal keeps short *real* notes and chromatic runs |
 | `dsp/sequence.test.ts` | tuning offset found and not dragged off by an outlier; a consistently flat performance keeps its intervals; adjacent duplicates collapse and `C D C D` does not |
-| `dsp/transcribe.test.ts` | end to end on synthesized phrases — clean, transposed, vibrato'd, portamento-joined, noisy, flat, silent, and at both sample rates |
+| `dsp/transcribe.test.ts` | end to end on synthesized phrases: clean, transposed, vibrato'd, portamento-joined, noisy, flat, silent, and at both sample rates |
 | `dsp/trim.test.ts` | chunk assembly; pre-roll trimming; pre-roll longer than the head; onset before the capture began or past the end; the fade's ramps do not overlap on a short clip |
 | `score/align.test.ts` | the ceiling stays under an indel pair; **a large substitution is not decomposed**; ties prefer the diagonal; one sub / one del / one ins each cost what they should; empty inputs; and a property check over 200 random pairs that every index appears exactly once and the path sums to the cost |
 | `score/compare.test.ts` | key-agnosticism with the shift's **sign pinned**; octave equivalence; smallest shift on an ambiguous phrase; `max` normalization; padding is not rewarded; the strict and loose thresholds land where documented |
-| `lib/rules.test.ts` | every edge case above — two-player rounds, a setter deactivated mid-copying, a player eliminated by their own letter, a shortened word ending the game, a lengthened word reopening it, reordering not changing whose turn it is, and nobody left standing; plus the setter keeping the melody at round end, and `chooseSetter` refusing a locked round, a copying round, and anyone who is not a contender |
-| `lib/settings.test.ts` | per-field coercion — duplicate ids reassigned, strikes clamped, blank names filled, an empty word refused, one bad entry costing only itself; and the two-player floor: who may be switched off, and a stored roster below it being brought back up |
+| `lib/rules.test.ts` | every edge case above: two-player rounds, a setter deactivated mid-copying, a player eliminated by their own letter, a shortened word ending the game, a lengthened word reopening it, reordering not changing whose turn it is, and nobody left standing; plus the setter keeping the melody at round end, and `chooseSetter` refusing a locked round, a copying round, and anyone who is not a contender |
+| `lib/settings.test.ts` | per-field coercion: duplicate ids reassigned, strikes clamped, blank names filled, an empty word refused, one bad entry costing only itself; and the two-player floor, covering who may be switched off and a stored roster below it being brought back up |
 | `lib/graph.test.ts` | even spacing; higher pitches drawn higher; gaps where notes were missed or added; a unison phrase not dividing by zero; a narrow phrase not blown up to fill the panel; an out-of-range attempt clamped rather than NaN, without rescaling the target |
 
 ## What the tests cannot prove
@@ -300,10 +300,10 @@ covered and all of it needs a person:
 - Whether a melody someone actually sings transcribes to the notes they meant. The
   values in `config.transcribe` are starting points; expect a tuning pass.
 - Whether the copy threshold feels fair in play. The failure dialog's score out of 100
-  is the instrument for judging that — it is deliberately honest rather than
+  is the instrument for judging that, and it reports honestly rather than
   flattering, so a near miss reads in the high eighties.
 - That the worklet's chunks join without an audible seam.
-- Drag-to-reorder under touch — the handle arms immediately, and a touch anywhere else
+- Drag-to-reorder under touch. The handle arms immediately, and a touch anywhere else
   on a row should scroll the panel rather than drag.
 - The header's coarse-pointer fallback on this page.
 - That the countdown and the armed state read clearly under `prefers-reduced-motion`.

@@ -19,7 +19,7 @@ type CameraState = "starting" | "ready" | "denied" | "failed";
 /**
  * The filter itself: MindAR's camera feed filling the viewport, the SPIN button,
  * and the intro → spinning → result state machine. The slot-machine cadence runs on
- * its own timeouts — the render loop just keeps drawing whatever texture is current.
+ * its own timeouts: the render loop just keeps drawing whatever texture is current.
  */
 export default function FilterScreen({
   checked,
@@ -52,12 +52,12 @@ export default function FilterScreen({
   const sceneRef = useRef<RegScene | null>(null);
   const poolRef = useRef<TexturePool | null>(null);
   // Mirrors the latest placement so scene creation can read it without the camera
-  // effect depending on it — a dependency there would restart the webcam on every
+  // effect depending on it: a dependency there would restart the webcam on every
   // slider tick. Seeded with the first value, then kept current by the effect below,
   // which is declared first so the ref is fresh before the scene is ever built.
   const placementRef = useRef(placement);
 
-  // Slider drags land here. The scene may not exist yet, which is fine — creation
+  // Slider drags land here. The scene may not exist yet, which is fine: creation
   // reads placementRef, so nothing is missed.
   useEffect(() => {
     placementRef.current = placement;

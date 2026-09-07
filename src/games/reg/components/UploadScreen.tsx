@@ -16,7 +16,7 @@ export interface UploadResult {
 }
 
 /**
- * The empty-library screen: three ways in — file picker, folder picker, and a
+ * The empty-library screen: three ways in: file picker, folder picker, and a
  * drag-and-drop zone that takes mixed loose files and whole folder trees.
  */
 export default function UploadScreen({
@@ -39,8 +39,8 @@ export default function UploadScreen({
       if (added === 0) {
         setNotice(
           incoming.length === 0
-            ? "Nothing arrived — try picking the files again."
-            : "No images found — only image files are kept.",
+            ? "Nothing arrived. Try picking the files again."
+            : "No images found. Only image files are kept.",
         );
       } else if (skipped > 0) {
         setNotice(`Skipped ${skipped} non-image file${skipped === 1 ? "" : "s"}.`);
@@ -64,7 +64,7 @@ export default function UploadScreen({
       <div className={styles.stage}>
         <h1 className={styles.title}>Random Excerpt Generator</h1>
         <p className={styles.tagline}>
-          Load your excerpt library — images of the passages you practice. They stay
+          Load your excerpt library: images of the passages you practice. They stay
           in this browser; nothing is uploaded anywhere.
         </p>
 

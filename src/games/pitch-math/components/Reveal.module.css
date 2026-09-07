@@ -6,7 +6,7 @@
   animation: revealIn var(--dur-slow) var(--ease-out) backwards;
 }
 
-/* The payoff line — the one place the display face earns its keep. */
+/* The payoff line: the one place the display face earns its keep. */
 .notes {
   font-family: var(--font-display);
   font-size: var(--text-3xl);

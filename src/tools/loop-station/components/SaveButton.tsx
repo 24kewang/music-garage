@@ -15,14 +15,14 @@ const LABEL: Record<SaveStatus, string> = {
 };
 
 /**
- * Writes the loop to browser storage, and — held down — deletes it.
+ * Writes the loop to browser storage, and, held down, deletes it.
  *
  * A short press saves. Holding past `deleteArmMs` turns the button red and
  * starts a two-second fill; letting go before it completes does nothing at all.
  *
- * The fill is painted by rAF rather than a CSS transition on purpose:
+ * The fill is painted by rAF rather than a CSS transition:
  * `globals.css` clamps every transition to 0.01ms under `prefers-reduced-motion`,
- * which would erase the gesture's only feedback — and this bar isn't decoration,
+ * which would erase the gesture's only feedback, and this bar isn't decoration,
  * it *is* the timer, so it also has to stay exactly in step with the moment the
  * delete fires rather than being a second clock that can disagree.
  */
