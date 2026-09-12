@@ -21,12 +21,12 @@
     "mind-ar": "1.2.5",
     "next": "16.3.4",
     "pitchy": "^4.1.0",
-    "react": "19.2.8",
-    "react-dom": "19.2.8",
+    "react": "19.3.0",
+    "react-dom": "19.3.0",
     "three": "0.160.0"
   },
   "devDependencies": {
-    "@types/node": "^24.13.3",
+    "@types/node": "^24.13.4",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "@types/three": "0.160.0",
@@ -34,8 +34,8 @@
     "eslint-config-next": "16.3.4",
     "sharp": "^0.35.4",
     "typescript": "^5",
-    "vitest": "^4.1.11",
-    "wrangler": "^4.128.0"
+    "vitest": "^5.0.0",
+    "wrangler": "^4.130.0"
   },
   "overrides": {
     "mind-ar": {
